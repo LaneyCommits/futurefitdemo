@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Career Quiz – Student Career Helper{% endblock %}
+
+{% block content %}
+<section class="page-section quiz-intro">
+    <h1 class="page-title">Career Discovery Quiz</h1>
+    <p class="page-intro">Not sure what career path fits you? This short quiz uses your likes, dislikes, and personality to suggest careers that might be a good fit.</p>
+    <p class="quiz-meta">8 questions · About 2 minutes</p>
+    <a href="{% url 'career_quiz_take' %}" class="btn btn-primary">Start the quiz</a>
+</section>
+{% endblock %}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Career Helper{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="{% url 'home' %}" class="logo">Student Career Helper</a>
+            <nav class="nav">
+                <a href="{% url 'home' %}" class="nav-link">Home</a>
+                <a href="{% url 'gap_analysis' %}" class="nav-link">Resume Gap Analysis</a>
+                <a href="{% url 'career_quiz_home' %}" class="nav-link">Career Quiz</a>
+            </nav>
+        </div>
+    </header>
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+        <p>Built for students. Compare your resume to job listings and discover career paths that fit you.</p>
+    </footer>
+</body>
+</html>

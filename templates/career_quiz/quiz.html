@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Take the Quiz – Student Career Helper{% endblock %}
+
+{% block content %}
+<section class="page-section quiz-page">
+    <h1 class="page-title">Career Discovery Quiz</h1>
+    <p class="page-intro">Answer each question honestly. There are no wrong answers.</p>
+
+    <form method="post" action="{% url 'career_quiz_results' %}" class="quiz-form">
+        {% csrf_token %}
+        {% for q in questions %}
+        <fieldset class="quiz-question">
+            <legend class="quiz-question-legend">{{ forloop.counter }}. {{ q.text }}</legend>
+            <ul class="quiz-options">
+                {% for opt_key, label, _ in q.options %}
+                <li>
+                    <label class="quiz-option">
+                        <input type="radio" name="q{{ q.id }}" value="{{ opt_key }}" required>
+                        <span class="quiz-option-text">{{ label }}</span>
+                    </label>
+                </li>
+                {% endfor %}
+            </ul>
+        </fieldset>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">See my results</button>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Resume Gap Analysis – Student Career Helper{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <h1 class="page-title">Resume Gap Analysis</h1>
+    <p class="page-intro">Paste your resume and the job listing below. We’ll highlight skills and requirements from the job that are missing or weak on your resume.</p>
+
+    <form method="post" class="gap-form">
+        {% csrf_token %}
+        <div class="form-row two-cols">
+            <div class="form-group">
+                <label for="id_resume_text">{{ form.resume_text.label }}</label>
+                {{ form.resume_text }}
+                {% if form.resume_text.errors %}<span class="form-error">{{ form.resume_text.errors.0 }}</span>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_job_listing_text">{{ form.job_listing_text.label }}</label>
+                {{ form.job_listing_text }}
+                {% if form.job_listing_text.errors %}<span class="form-error">{{ form.job_listing_text.errors.0 }}</span>{% endif %}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Run gap analysis</button>
+    </form>
+
+    {% if result %}
+    <div class="results-section">
+        <h2 class="results-heading">Results</h2>
+        <div class="summary-box">
+            <p>Match: <strong>{{ result.summary.match_percentage }}%</strong> of job keywords found on your resume ({{ result.summary.matched_count }} matched, {{ result.summary.missing_count }} potential gaps).</p>
+        </div>
+        <div class="results-grid">
+            <div class="result-card result-card--match">
+                <h3>✓ Matching skills / keywords</h3>
+                <ul class="keyword-list">
+                    {% for kw in result.matching_skills %}
+                    <li>{{ kw }}</li>
+                    {% empty %}
+                    <li>None detected.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="result-card result-card--gap">
+                <h3>△ Gaps (in job, not on resume)</h3>
+                <ul class="keyword-list">
+                    {% for kw in result.missing_skills %}
+                    <li>{{ kw }}</li>
+                    {% empty %}
+                    <li>None detected.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% if result.missing_requirements %}
+        <div class="result-card result-card--req">
+            <h3>Requirements from the job you may want to address</h3>
+            <ul class="requirement-list">
+                {% for req in result.missing_requirements %}
+                <li>{{ req }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

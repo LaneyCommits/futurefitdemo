@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Quiz Results – Student Career Helper{% endblock %}
+
+{% block content %}
+<section class="page-section results-page">
+    <h1 class="page-title">Your Career Suggestions</h1>
+
+    {% if error %}
+    <p class="results-error">{% if message %}{{ message }}{% else %}Something went wrong. Please <a href="{% url 'career_quiz_take' %}">take the quiz again</a>.{% endif %}</p>
+    {% else %}
+    <p class="page-intro">Based on your answers, here are careers that might fit your interests and personality.</p>
+
+    <div class="career-cards">
+        {% for s in suggestions %}
+        <div class="career-card">
+            <h3 class="career-card-title">{{ s.title }}</h3>
+            <p class="career-card-desc">{{ s.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if scores %}
+    <div class="scores-section">
+        <h2>Your top categories</h2>
+        <ul class="scores-list">
+            {% for cat_key, score, name, desc in scores %}
+            <li><strong>{{ name }}</strong> — {{ score }} point{{ score|pluralize }}. {{ desc }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'career_quiz_take' %}" class="btn btn-secondary">Retake the quiz</a>
+    {% endif %}
+</section>
+{% endblock %}

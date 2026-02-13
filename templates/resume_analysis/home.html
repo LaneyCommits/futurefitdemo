@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Home – Student Career Helper{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1 class="hero-title">Your career journey starts here</h1>
+    <p class="hero-subtitle">Two tools to help you land the right role and find the right path.</p>
+    <div class="hero-cards">
+        <a href="{% url 'gap_analysis' %}" class="card card-link">
+            <span class="card-icon" aria-hidden="true">📄</span>
+            <h2 class="card-title">Resume Gap Analysis</h2>
+            <p class="card-desc">Paste your resume and a job listing. We’ll show you what’s missing so you can tailor your application.</p>
+            <span class="card-cta">Try it →</span>
+        </a>
+        <a href="{% url 'career_quiz_home' %}" class="card card-link">
+            <span class="card-icon" aria-hidden="true">🎯</span>
+            <h2 class="card-title">Career Discovery Quiz</h2>
+            <p class="card-desc">Not sure which career fits you? Answer a short quiz based on your likes, dislikes, and personality.</p>
+            <span class="card-cta">Take the quiz →</span>
+        </a>
+    </div>
+</section>
+{% endblock %}
