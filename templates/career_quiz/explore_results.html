@@ -27,7 +27,7 @@
         </div>
     </div>
     <script type="application/json" id="quiz-scores-json">{{ scores_json|safe }}</script>
-    <script src="{% static 'js/quiz-results-chart.js' %}"></script>
+    <script src="{% static 'js/quiz-results-chart.js' %}?v=3"></script>
     {% endif %}
 
     {% if explore_summary %}
@@ -98,4 +98,11 @@
     </div>
     {% endif %}
 </section>
+<script>
+(function() {
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+  document.addEventListener('DOMContentLoaded', function() { window.scrollTo(0, 0); });
+})();
+</script>
 {% endblock %}

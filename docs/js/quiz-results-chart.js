@@ -33,10 +33,21 @@
     };
   });
 
-  // Distinct slice colors (like the reference pie)
+  // Top 5 categories only
+  segments = segments.slice(0, 5);
+  var top5Total = segments.reduce(function (sum, s) { return sum + s.score; }, 0);
+  segments.forEach(function (s) {
+    s.percentage = top5Total > 0 ? Math.round((s.score / top5Total) * 100) : 0;
+    s.rawRatio = top5Total > 0 ? s.score / top5Total : 0;
+  });
+
+  // FutureFit palette: 5 distinct colors matching site vibe
   var COLORS = [
-    '#a78bfa', '#f97316', '#3b82f6', '#ec4899', '#22c55e',
-    '#eab308', '#06b6d4', '#8b5cf6'
+    '#584053',  /* plum */
+    '#8dc6bf',  /* teal */
+    '#fcbc66',  /* peach */
+    '#f97b4f',  /* coral */
+    '#9a8a95'   /* dusty mauve */
   ];
 
   // --- Calculating animation: count up then hide ---
@@ -142,10 +153,12 @@
           var pct = segments[i].percentage;
           var label = pct + '%';
           ctx.save();
-          ctx.fillStyle = '#86efac';
+          ctx.fillStyle = '#ffffff';
           ctx.font = 'bold 13px DM Sans, system-ui, sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
+          ctx.shadowColor = 'rgba(0,0,0,0.35)';
+          ctx.shadowBlur = 2;
           ctx.fillText(label, x, y);
           ctx.restore();
         }

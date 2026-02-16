@@ -34,7 +34,14 @@
       </div>
     </div>
     <script type="application/json" id="quiz-scores-json">{{ scores_json|safe }}</script>
-    <script src="{% static 'js/quiz-results-chart.js' %}"></script>
+    <script src="{% static 'js/quiz-results-chart.js' %}?v=3"></script>
+    {% endif %}
+
+    {% if results_summary %}
+    <div class="results-summary">
+        <h2 class="results-summary-title">Why these roles fit you</h2>
+        <p class="results-summary-text">{{ results_summary }}</p>
+    </div>
     {% endif %}
 
     <div class="career-cards">
@@ -56,13 +63,6 @@
         {% endfor %}
     </div>
 
-    {% if results_summary %}
-    <div class="results-summary">
-        <h2 class="results-summary-title">Why these roles fit you</h2>
-        <p class="results-summary-text">{{ results_summary }}</p>
-    </div>
-    {% endif %}
-
     {% if scores %}
     <div class="scores-section">
         <h2>Your top categories</h2>
@@ -83,4 +83,11 @@
     </div>
     {% endif %}
 </section>
+<script>
+(function() {
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+  document.addEventListener('DOMContentLoaded', function() { window.scrollTo(0, 0); });
+})();
+</script>
 {% endblock %}

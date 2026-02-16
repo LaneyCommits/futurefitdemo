@@ -758,12 +758,15 @@ body.is-scrolled .site-header {
 }
 
 /* Career results */
+.results-summary + .career-cards {
+  margin-top: 2.5rem;
+}
 .career-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.25rem;
   margin-bottom: 2rem;
-  align-items: start;
+  align-items: stretch;
 }
 .career-card {
   background: var(--surface);
@@ -819,7 +822,8 @@ body.is-scrolled .site-header {
 
 .results-summary {
   margin-top: 2rem;
-  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1.25rem 1.5rem 1.5rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -859,7 +863,23 @@ body.is-scrolled .site-header {
 @keyframes quiz-spin { to { transform: rotate(360deg); } }
 .quiz-chart-container { margin-bottom: 2rem; }
 .quiz-chart-title { font-size: 1.1rem; margin-bottom: 1rem; color: var(--plum); }
-.quiz-chart-wrap { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: flex-start; }
+.quiz-chart-wrap {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  align-items: center;
+}
+@media (max-width: 640px) {
+  .quiz-chart-wrap {
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 1.5rem;
+  }
+  .quiz-chart-wrap .quiz-chart-legend {
+    margin-top: 0.5rem;
+  }
+}
 .quiz-pie-chart { display: block; border-radius: 50%; border: 2px solid var(--border); }
 .quiz-chart-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem; color: var(--text-muted); }
 .quiz-legend-item { display: flex; align-items: center; gap: 0.5rem; }

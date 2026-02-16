@@ -356,6 +356,7 @@
       html += '</section>';
 
       app.innerHTML = html;
+      window.scrollTo(0, 0);
 
       if (state.fromExploreMajor) {
         app.querySelector('#quiz-back-explore').addEventListener('click', function() {
