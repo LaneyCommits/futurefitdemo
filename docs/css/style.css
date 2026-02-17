@@ -1865,6 +1865,7 @@ body.is-scrolled .site-header {
   gap: 0.5rem;
   transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
   box-shadow: var(--shadow);
+  text-align: left;
 }
 .resume-option-card:hover {
   border-color: var(--teal-accent);
@@ -1888,6 +1889,7 @@ body.is-scrolled .site-header {
   line-height: 1.55;
   margin: 0;
   flex: 1;
+  text-align: left;
 }
 .resume-option-cta {
   color: var(--teal-accent);
@@ -2004,6 +2006,7 @@ body.is-scrolled .site-header {
 }
 .resume-details {
   border-bottom: 1px solid var(--border);
+  text-align: left;
 }
 .resume-details:last-child {
   border-bottom: none;
@@ -2014,6 +2017,7 @@ body.is-scrolled .site-header {
 .resume-details-toggle {
   display: block;
   padding: 0.85rem 1.25rem;
+  text-align: left;
   font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 700;
@@ -2229,6 +2233,7 @@ body.is-scrolled .site-header {
   border-bottom: 1px solid var(--border);
   padding-bottom: 0.25rem;
   margin-bottom: 0.5rem;
+  text-align: left;
 }
 .rp-content {
   color: #444;
@@ -2282,6 +2287,7 @@ body.is-scrolled .site-header {
   color: var(--text-muted);
   font-size: 0.9rem;
   line-height: 1.6;
+  text-align: left;
 }
 .resume-sidebar-tips li,
 .resume-sidebar-sections li,
@@ -2385,16 +2391,17 @@ body.is-scrolled .site-header {
   padding: 1.25rem;
   box-shadow: var(--shadow);
   margin-bottom: 1rem;
+  text-align: left;
 }
 .ai-key-header {
   display: flex;
   gap: 0.75rem;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 0.75rem;
 }
-.ai-key-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
+.ai-key-icon { font-size: 1.5rem; flex-shrink: 0; line-height: 1; }
 .ai-key-header strong { display: block; font-size: 1rem; color: var(--text); margin-bottom: 0.15rem; }
-.ai-key-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin: 0; }
+.ai-key-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin: 0; text-align: left; }
 .ai-key-link {
   display: inline-block;
   font-size: 0.85rem;
@@ -2453,12 +2460,14 @@ body.is-scrolled .site-header {
 }
 .ai-tool-body {
   padding: 0 1rem 1rem;
+  text-align: left;
 }
 .ai-tool-hint {
   font-size: 0.85rem;
   color: var(--text-muted);
   line-height: 1.5;
   margin: 0 0 0.75rem;
+  text-align: left;
 }
 
 /* AI inputs */

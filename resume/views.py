@@ -195,7 +195,7 @@ def ai_suggest_skills_view(request):
 @csrf_exempt
 @require_POST
 def ai_tailor_resume_view(request):
-    """Tailor resume content to a job description."""
+    """Tailor resume content to a job description, or run gap analysis (compare resume to job posting)."""
     try:
         body = json.loads(request.body)
     except (json.JSONDecodeError, ValueError):
@@ -203,9 +203,69 @@ def ai_tailor_resume_view(request):
 
     resume = body.get('resume', '').strip()
     job = body.get('job', '').strip()
+    mode = body.get('mode', '')
+
     if not resume or not job:
         return JsonResponse({'error': 'Please provide both resume content and a job description.'}, status=400)
 
+    if mode == 'gap_analysis':
+        return _ai_gap_analysis(resume, job)
+    return _ai_tailor_resume(resume, job)
+
+
+def _ai_gap_analysis(resume, job):
+    """Compare resume to job posting; return match score, strengths, missing keywords, and suggestions."""
+    prompt = (
+        'You are an expert resume consultant and hiring manager. Analyze how well the following resume matches '
+        'the job description. Return your analysis as a JSON object with EXACTLY this structure (no markdown, no code fences, ONLY raw JSON):\n'
+        '{\n'
+        '  "match_score": <number 0-100 representing overall match percentage>,\n'
+        '  "summary": "<1-2 sentence overview of how well the resume matches>",\n'
+        '  "strengths": ["<strength 1>", "<strength 2>", ...],\n'
+        '  "missing_keywords": ["<keyword 1>", "<keyword 2>", ...],\n'
+        '  "suggestions": ["<actionable suggestion 1>", "<actionable suggestion 2>", ...]\n'
+        '}\n\n'
+        'Rules:\n'
+        '- match_score should reflect realistic alignment (most students score 30-70)\n'
+        '- strengths: 2-4 things the resume already does well for this role\n'
+        '- missing_keywords: 4-8 specific skills, tools, or keywords from the job posting missing from the resume\n'
+        '- suggestions: 3-5 specific, actionable things the student could add or change to improve their match\n'
+        '- Return ONLY the JSON object, nothing else\n\n'
+        f'--- RESUME ---\n{resume}\n\n--- JOB DESCRIPTION ---\n{job}'
+    )
+    text, err = _call_gemini(prompt)
+    if err:
+        return JsonResponse({'error': err}, status=502)
+    # Parse JSON response
+    cleaned = text.strip().replace('```json', '').replace('```', '').strip()
+    try:
+        parsed = json.loads(cleaned)
+        match_score = parsed.get('match_score', 50)
+        if not isinstance(match_score, (int, float)):
+            match_score = 50
+        match_score = max(0, min(100, int(match_score)))
+        result = {
+            'match_score': match_score,
+            'summary': parsed.get('summary', 'Analysis complete.'),
+            'strengths': parsed.get('strengths', []) if isinstance(parsed.get('strengths'), list) else [],
+            'missing_keywords': parsed.get('missing_keywords', []) if isinstance(parsed.get('missing_keywords'), list) else [],
+            'suggestions': parsed.get('suggestions', []) if isinstance(parsed.get('suggestions'), list) else [],
+        }
+        return JsonResponse({'result': result})
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'result': {
+                'match_score': 50,
+                'summary': cleaned[:500] if cleaned else 'Analysis complete.',
+                'strengths': [],
+                'missing_keywords': [],
+                'suggestions': [cleaned] if cleaned else ['Could not parse structured analysis.']
+            }
+        })
+
+
+def _ai_tailor_resume(resume, job):
+    """Rewrite resume content to better match the job description."""
     prompt = (
         'You are an expert resume consultant. A student has the following resume content and wants to tailor it '
         'to a specific job posting. Rewrite their resume content to better match the job description by:\n'

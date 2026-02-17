@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}How the Career Quiz Works – FutureFit{% endblock %}
+{% block body_class %}about-page-wrap{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="about-hero">
+    <div class="about-hero-inner">
+        <p class="hero-badge">No sign-up required</p>
+        <h1 class="about-hero-title">Find careers that actually fit you</h1>
+        <p class="about-hero-sub">The Career Discovery Quiz matches you to majors and careers based on your interests and personality — not just what everyone else is doing. It takes a few minutes, it's free, and you might be surprised by what you find.</p>
+        <a href="{% url 'career_quiz_home' %}" class="btn btn-primary btn-hero-primary" style="margin-top:0.5rem;">Take the quiz <span class="btn-arrow" aria-hidden="true">→</span></a>
+    </div>
+</section>
+
+<!-- Pick your format -->
+<section class="about-section">
+    <h2 class="about-section-title reveal">Pick your format</h2>
+    <p class="about-section-desc reveal">Both quizzes use the same style of questions. The full quiz adds more on personality, teamwork, and job preferences for deeper results.</p>
+    <div class="about-format-grid">
+        <div class="about-format-card reveal">
+            <div class="about-format-badge about-format-badge--quick">Quick</div>
+            <h3 class="about-format-name">Short quiz</h3>
+            <p class="about-format-time">~3 minutes · 10 questions</p>
+            <p class="about-format-desc">A fast snapshot of your career interests. Great if you're curious but short on time.</p>
+            <a href="{% url 'career_quiz_home' %}?length=short" class="about-format-cta">Start short quiz →</a>
+        </div>
+        <div class="about-format-card about-format-card--featured reveal reveal-delay-1">
+            <div class="about-format-badge about-format-badge--full">Recommended</div>
+            <h3 class="about-format-name">Full quiz</h3>
+            <p class="about-format-time">~6–7 minutes · 25 questions</p>
+            <p class="about-format-desc">More accurate, research-backed results. Covers personality, teamwork, and job preferences for a fuller picture.</p>
+            <a href="{% url 'career_quiz_home' %}?length=full" class="about-format-cta">Start full quiz →</a>
+        </div>
+    </div>
+</section>
+
+<!-- Two paths -->
+<section class="about-section about-section--cream">
+    <h2 class="about-section-title reveal">Two ways to take the quiz</h2>
+    <p class="about-section-desc reveal">You don't need to know your major to get started. That's the whole point.</p>
+    <div class="about-paths-grid">
+        <div class="about-path-card reveal">
+            <div class="about-path-icon">🎓</div>
+            <h3 class="about-path-name">I have a major in mind</h3>
+            <p class="about-path-desc">Pick your major first, then take the quiz. You'll get job suggestions that fit both your degree and your personality.</p>
+        </div>
+        <div class="about-path-card reveal reveal-delay-1">
+            <div class="about-path-icon">🤷</div>
+            <h3 class="about-path-name">I'm not sure what I want</h3>
+            <p class="about-path-desc">Take the quiz without choosing a major. We'll suggest majors and job categories that fit you, plus sample careers to explore.</p>
+        </div>
+    </div>
+</section>
+
+<!-- What you'll get -->
+<section class="about-section">
+    <h2 class="about-section-title reveal">What you'll get</h2>
+    <p class="about-section-desc reveal">Real, useful output — not a vague personality label.</p>
+    <div class="about-results-grid">
+        <div class="about-result-card reveal">
+            <span class="about-result-icon">📊</span>
+            <div><h4 class="about-result-name">Your top career categories</h4>
+            <p class="about-result-desc">See which career fields match your personality, displayed in an interactive chart.</p></div>
+        </div>
+        <div class="about-result-card reveal reveal-delay-1">
+            <span class="about-result-icon">💼</span>
+            <div><h4 class="about-result-name">Specific job suggestions</h4>
+            <p class="about-result-desc">Concrete roles you can actually search for — filtered by your major or across all fields.</p></div>
+        </div>
+        <div class="about-result-card reveal reveal-delay-2">
+            <span class="about-result-icon">🗺️</span>
+            <div><h4 class="about-result-name">A personalized summary</h4>
+            <p class="about-result-desc">A plain-language breakdown of your strengths, interests, and what kind of work fits you.</p></div>
+        </div>
+        <div class="about-result-card reveal reveal-delay-3">
+            <span class="about-result-icon">📝</span>
+            <div><h4 class="about-result-name">Resume next steps</h4>
+            <p class="about-result-desc">Jump straight from your results to building a resume tailored to your matched career path.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="about-cta-section reveal">
+    <div class="about-cta-inner">
+        <h2 class="about-cta-title">Ready to find out?</h2>
+        <p class="about-cta-desc">It's free, takes a few minutes, and you don't need to create an account. The worst that can happen is you discover something interesting.</p>
+        <a href="{% url 'career_quiz_home' %}" class="btn btn-primary btn-hero-primary">Take the quiz <span class="btn-arrow" aria-hidden="true">→</span></a>
+    </div>
+</section>
+{% endblock %}

@@ -34,9 +34,14 @@ def choose_path_view(request):
     })
 
 
-def about_quiz_view(request):
-    """Info page about the Career Discovery Quiz."""
+def about_view(request):
+    """About FutureFit — company info, mission, what we offer."""
     return render(request, 'career_quiz/quiz_about.html')
+
+
+def how_it_works_view(request):
+    """How the Career Discovery Quiz works — formats, paths, what you get."""
+    return render(request, 'career_quiz/quiz_how_it_works.html')
 
 
 def major_selection_view(request):
