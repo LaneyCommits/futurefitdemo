@@ -2728,6 +2728,8 @@ body.is-scrolled .site-header {
   padding: 0;
   max-width: none;
   width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 .schools-hero {
   min-height: auto !important;
@@ -2739,11 +2741,14 @@ body.is-scrolled .site-header {
 }
 .schools-content-section {
   padding: 0;
+  box-sizing: border-box;
 }
 .schools-content-section .block-inner {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 3rem;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 /* Quiz result badge */
@@ -2776,14 +2781,16 @@ body.is-scrolled .site-header {
 /* Filters */
 .schools-filters {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   margin-bottom: 1.5rem;
+  min-width: 0;
 }
 .schools-filter-group {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+  min-width: 0;
 }
 .schools-filter-label {
   font-size: 0.78rem;
@@ -2791,8 +2798,14 @@ body.is-scrolled .site-header {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .schools-filter-select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   padding: 0.55rem 0.85rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -2807,6 +2820,7 @@ body.is-scrolled .site-header {
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   padding-right: 2rem;
+  box-sizing: border-box;
 }
 .schools-filter-select:focus {
   outline: none;
@@ -2819,6 +2833,8 @@ body.is-scrolled .site-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin-bottom: 1.25rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border);
@@ -2986,10 +3002,22 @@ body.is-scrolled .site-header {
   font-size: 0.95rem;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .schools-filters { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .schools-content-section .block-inner { padding: 1.5rem 1rem 2rem; }
+  .schools-filters {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .schools-filter-label { white-space: normal; }
+  .schools-results-bar { flex-direction: column; align-items: flex-start; }
   .schools-grid { grid-template-columns: 1fr; }
   .school-card-image { height: 160px; }
+}
+@media (max-width: 380px) {
+  .schools-content-section .block-inner { padding: 1.25rem 0.75rem 1.5rem; }
 }
 
 /* Footer */

@@ -868,7 +868,7 @@ SCHOOLS = [
         'strong_majors': ['business', 'computer_science', 'education', 'sports_recreation'],
         'highlight': 'Fast-growing university in metro Atlanta',
         'url': 'https://kennesaw.edu',
-        'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/KSU_StudentCenter.jpg/915px-KSU_StudentCenter.jpg',
+        'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Kennesaw_State_University%2C_Marietta_Campus_9.jpg/960px-Kennesaw_State_University%2C_Marietta_Campus_9.jpg',
     },
     {
         'id': 'mga',
