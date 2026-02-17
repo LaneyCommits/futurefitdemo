@@ -235,13 +235,15 @@ body.is-scrolled .site-header {
   transform: translateY(-2px);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
 }
-.block--hero-with-bg .btn-hero-secondary {
+.block--hero-with-bg .btn-hero-secondary,
+.block--hero-with-bg .btn-hero-tertiary {
   background: rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.9);
   border-color: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(4px);
 }
-.block--hero-with-bg .btn-hero-secondary:hover {
+.block--hero-with-bg .btn-hero-secondary:hover,
+.block--hero-with-bg .btn-hero-tertiary:hover {
   background: rgba(255, 255, 255, 0.18);
   border-color: rgba(255, 255, 255, 0.5);
   color: #fff;
@@ -309,12 +311,28 @@ body.is-scrolled .site-header {
   text-decoration: none;
   transition: background 0.2s, border-color 0.2s;
 }
-.btn-hero-secondary:hover { background: rgba(127, 175, 157, 0.30); border-color: var(--navy); color: var(--navy); }
+.btn-hero-secondary:hover,
+.btn-hero-tertiary:hover { background: rgba(127, 175, 157, 0.30); border-color: var(--navy); color: var(--navy); }
+.btn-hero-tertiary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.35rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: transparent;
+  color: var(--navy);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
 .btn-arrow { font-size: 1.1em; }
 .btn-arrow--outline { font-size: 0.85em; }
 @media (max-width: 600px) {
   .btn-hero-primary,
-  .btn-hero-secondary {
+  .btn-hero-secondary,
+  .btn-hero-tertiary {
     padding: 0.75rem 1.15rem;
     font-size: 0.88rem;
     white-space: nowrap;
@@ -393,6 +411,9 @@ body.is-scrolled .site-header {
 }
 .block--cream .block-title { color: var(--text); margin-bottom: 0.5rem; }
 .block--cream .block-desc { color: var(--text-muted); margin-bottom: 1.5rem; }
+.block--schools-cta { background: var(--surface); padding: 4rem 1.5rem; border-top: 1px solid var(--border); }
+.block--schools-cta .block-title { color: var(--text); margin-bottom: 0.5rem; }
+.block--schools-cta .block-desc { color: var(--text-muted); margin-bottom: 1.5rem; }
 .block-inner--narrow { max-width: 560px; margin-left: auto; margin-right: auto; }
 .block-desc--why { font-size: 1.1rem; line-height: 1.65; margin-bottom: 1.5rem; }
 

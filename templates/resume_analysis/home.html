@@ -8,10 +8,11 @@
     <div class="block-inner">
         <p class="hero-badge">Built for students</p>
         <h1 class="block-hero-title">You don't have to have it all figured out</h1>
-        <p class="block-hero-sub">Explore careers that match your personality, build a resume that stands out, and see exactly what skills you need — all in one place, all free.</p>
+        <p class="block-hero-sub">Explore careers that match your personality, build a resume that stands out, and find schools that fit your major — all in one place, all free.</p>
         <div class="block-hero-buttons">
             <a href="{% url 'career_quiz_home' %}" class="btn btn-primary btn-hero-primary">Take the career quiz <span class="btn-arrow" aria-hidden="true">→</span></a>
             <a href="{% url 'resume_home' %}" class="btn btn-hero-secondary">Build your resume <span class="btn-arrow btn-arrow--outline" aria-hidden="true">→</span></a>
+            <a href="{% url 'schools_home' %}" class="btn btn-hero-tertiary">Find schools <span class="btn-arrow btn-arrow--outline" aria-hidden="true">→</span></a>
         </div>
     </div>
 </section>
@@ -19,6 +20,7 @@
 <section class="stats-bar">
     <div class="stats-bar-inner">
         <div class="stat-item"><span class="stat-number">15+</span><span class="stat-label">Majors covered</span></div>
+        <div class="stat-item"><span class="stat-number">62+</span><span class="stat-label">Schools to explore</span></div>
         <div class="stat-item"><span class="stat-number">50+</span><span class="stat-label">Career paths</span></div>
         <div class="stat-item"><span class="stat-number">AI</span><span class="stat-label">Resume gap analysis</span></div>
         <div class="stat-item"><span class="stat-number">$0</span><span class="stat-label">Always free</span></div>
@@ -59,6 +61,14 @@
         <h2 class="block-title">Why FutureFit?</h2>
         <p class="block-desc block-desc--why">Most career tools assume you already know what you want. FutureFit is built for the moment before that — when you're exploring, not committing. We help you discover what fits, build the tools to get there, and close the gap between where you are and where you could be.</p>
         <a href="{% url 'resume_home' %}" class="btn btn-primary">Build your resume <span class="btn-arrow" aria-hidden="true">→</span></a>
+    </div>
+</section>
+
+<section class="block block--schools-cta reveal">
+    <div class="block-inner block-inner--narrow">
+        <h2 class="block-title">Find schools that match your path</h2>
+        <p class="block-desc block-desc--why">Filter 62+ colleges by major, state, cost, and type. Take the quiz first and we’ll suggest schools strong in the majors that fit you — or browse on your own.</p>
+        <a href="{% url 'schools_home' %}" class="btn btn-primary">Explore schools <span class="btn-arrow" aria-hidden="true">→</span></a>
     </div>
 </section>
 
