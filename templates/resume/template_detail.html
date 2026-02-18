@@ -162,15 +162,12 @@
             alert('Add some content to your resume before reviewing.');
             return;
         }
-        if (!ResumeAI.canUseAI()) {
-            alert('Please set up your AI key in the sidebar first.');
-            return;
-        }
-        reviewBtn.disabled = true;
-        reviewBtn.innerHTML = '<span class="gap-btn-spinner"></span> Reviewing...';
-        reviewResults.style.display = 'none';
+        function doReview() {
+            reviewBtn.disabled = true;
+            reviewBtn.innerHTML = '<span class="gap-btn-spinner"></span> Reviewing...';
+            reviewResults.style.display = 'none';
 
-        ResumeAI.reviewResume(resumeText, major)
+            ResumeAI.reviewResume(resumeText, major)
             .then(function (data) {
                 renderReview(data);
                 reviewResults.style.display = 'block';
@@ -184,6 +181,15 @@
                 reviewBtn.disabled = false;
                 reviewBtn.innerHTML = 'Review my resume <span aria-hidden="true">✦</span>';
             });
+        }
+        if (!ResumeAI.canUseAI()) {
+            ResumeAI.checkServer().then(function (ok) {
+                if (ok) doReview();
+                else alert('AI needs the Django server with GEMINI_API_KEY in .env. Start the server, set the key, then refresh this page.');
+            });
+            return;
+        }
+        doReview();
     });
 
     function renderReview(data) {

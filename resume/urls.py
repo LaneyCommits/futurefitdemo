@@ -14,4 +14,5 @@ urlpatterns = [
     path('api/ai/generate-summary/', views.ai_generate_summary_view, name='resume_ai_generate_summary'),
     path('api/ai/suggest-skills/', views.ai_suggest_skills_view, name='resume_ai_suggest_skills'),
     path('api/ai/tailor-resume/', views.ai_tailor_resume_view, name='resume_ai_tailor_resume'),
+    path('api/ai/review-resume/', views.ai_review_resume_view, name='resume_ai_review_resume'),
 ]

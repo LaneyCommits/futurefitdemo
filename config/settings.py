@@ -9,6 +9,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load .env from project root (e.g. SECRET_KEY, DEBUG)
 from dotenv import load_dotenv
 load_dotenv(BASE_DIR / '.env')
+import environ
+env = environ.Env()
+environ.Env.read_env(BASE_DIR / '.env')
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-change-me-in-production')
 

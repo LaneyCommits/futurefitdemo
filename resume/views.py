@@ -1,15 +1,12 @@
 import json
 import os
-import ssl
-import urllib.request
-import urllib.error
-
-import certifi
 
 from django.shortcuts import render
 from django.http import Http404, JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
+from google import genai
+
 from .resume_data import RESUME_TEMPLATES, RESUME_TIPS
 
 
@@ -54,56 +51,73 @@ def resume_ai_tools_view(request):
 
 
 # --------------- AI API endpoints ---------------
-
-GEMINI_MODEL = 'gemini-2.0-flash'
-GEMINI_URL = (
-    'https://generativelanguage.googleapis.com/v1beta/models/'
-    + GEMINI_MODEL + ':generateContent'
-)
+# API key stays in backend only (.env). Auto-detects AI Studio vs Vertex (Google Cloud) key.
+GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.0-flash')
+_force_vertex_ai = None  # Set to True after first "API keys are not supported" so we use Vertex
 
 
 def _get_gemini_key():
-    return os.environ.get('GEMINI_API_KEY', '')
+    return (
+        os.environ.get('GEMINI_API_KEY')
+        or os.environ.get('YOUR_GEMINI_API_KEY')
+        or os.environ.get('GOOGLE_API_KEY', '')
+    )
+
+
+def _use_vertex_ai():
+    if _force_vertex_ai is not None:
+        return _force_vertex_ai
+    v = os.environ.get('GEMINI_USE_VERTEX_AI', '').lower()
+    return v in ('true', '1', 'yes')
+
+
+def _gemini_client(use_vertex=False):
+    """Return a genai Client: AI Studio (api_key) or Vertex AI (vertexai=True, api_key)."""
+    key = _get_gemini_key()
+    if not key or key == 'your-gemini-api-key-here':
+        return None
+    if use_vertex:
+        return genai.Client(vertexai=True, api_key=key)
+    return genai.Client(api_key=key)
+
+
+def _do_generate(client, prompt):
+    """One attempt with given client. Returns (text, None) or (None, error_msg)."""
+    try:
+        response = client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=prompt,
+            config={'temperature': 0.7, 'max_output_tokens': 1024},
+        )
+        text = getattr(response, 'text', None)
+        if not text and response.candidates and response.candidates[0].content.parts:
+            text = response.candidates[0].content.parts[0].text
+        if not text:
+            return None, 'Empty response from model'
+        return text, None
+    except Exception as e:
+        return None, str(e)
 
 
 def _call_gemini(prompt):
-    """Call the Gemini API and return the generated text."""
-    api_key = _get_gemini_key()
-    if not api_key or api_key == 'your-gemini-api-key-here':
-        return None, 'Gemini API key not configured. Add GEMINI_API_KEY to your .env file.'
+    """Call the Gemini API. Tries AI Studio first; if key needs Vertex, retries with Vertex and remembers."""
+    global _force_vertex_ai
+    key = _get_gemini_key()
+    if not key or key == 'your-gemini-api-key-here':
+        return None, 'Gemini API key not configured. Add GEMINI_API_KEY in your .env file.'
 
-    url = GEMINI_URL + '?key=' + api_key
-    payload = json.dumps({
-        'contents': [{'parts': [{'text': prompt}]}],
-        'generationConfig': {
-            'temperature': 0.7,
-            'maxOutputTokens': 1024,
-        },
-    }).encode('utf-8')
+    client = _gemini_client(use_vertex=_use_vertex_ai())
+    if client is None:
+        return None, 'Gemini API key not configured. Add GEMINI_API_KEY in your .env file.'
 
-    req = urllib.request.Request(
-        url,
-        data=payload,
-        headers={'Content-Type': 'application/json'},
-        method='POST',
-    )
-
-    try:
-        ssl_ctx = ssl.create_default_context(cafile=certifi.where())
-        with urllib.request.urlopen(req, timeout=30, context=ssl_ctx) as resp:
-            data = json.loads(resp.read().decode('utf-8'))
-            text = data['candidates'][0]['content']['parts'][0]['text']
-            return text, None
-    except urllib.error.HTTPError as e:
-        body = e.read().decode('utf-8', errors='replace')
-        try:
-            err_data = json.loads(body)
-            msg = err_data.get('error', {}).get('message', str(e))
-        except Exception:
-            msg = str(e)
-        return None, msg
-    except Exception as e:
-        return None, str(e)
+    text, err = _do_generate(client, prompt)
+    if err and ('API keys are not supported' in err or 'OAuth2' in err or 'assert a principal' in err):
+        _force_vertex_ai = True
+        client_vertex = _gemini_client(use_vertex=True)
+        text, err = _do_generate(client_vertex, prompt)
+    if err:
+        return None, err
+    return text, None
 
 
 def ai_status_view(request):
@@ -282,3 +296,66 @@ def _ai_tailor_resume(resume, job):
     if err:
         return JsonResponse({'error': err}, status=502)
     return JsonResponse({'result': text.strip()})
+
+
+@csrf_exempt
+@require_POST
+def ai_review_resume_view(request):
+    """Full resume review: score, verdict, strengths, improvements, missing."""
+    try:
+        body = json.loads(request.body)
+    except (json.JSONDecodeError, ValueError):
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+    resume_text = body.get('resume', '').strip()
+    major = body.get('major', 'college')
+    if not resume_text or len(resume_text) < 30:
+        return JsonResponse({'error': 'Please provide resume content (at least 30 characters).'}, status=400)
+
+    prompt = (
+        f'You are an expert resume reviewer and career counselor for {major} students. '
+        'Review the following resume and provide detailed, actionable feedback. '
+        'Return your review as a JSON object with EXACTLY this structure (no markdown, no code fences, ONLY raw JSON):\n'
+        '{\n'
+        '  "score": <number 0-100 representing overall resume quality>,\n'
+        '  "verdict": "<one short phrase like \'Strong foundation, needs polish\'>",\n'
+        '  "strengths": ["<strength 1>", "<strength 2>", ...],\n'
+        '  "improvements": [\n'
+        '    {"area": "<section or aspect>", "issue": "<what\'s wrong>", "fix": "<specific suggestion>"},\n'
+        '    ...\n'
+        '  ],\n'
+        '  "missing": ["<thing they should add 1>", ...]\n'
+        '}\n\n'
+        'Rules: score 40-75 typical; 2-3 strengths; 3-5 improvements; 2-4 missing. '
+        'Return ONLY the JSON object, nothing else.\n\n'
+        f'--- RESUME ---\n{resume_text}'
+    )
+    text, err = _call_gemini(prompt)
+    if err:
+        return JsonResponse({'error': err}, status=502)
+
+    cleaned = text.strip().replace('```json', '').replace('```', '').strip()
+    try:
+        parsed = json.loads(cleaned)
+        score = parsed.get('score', 50)
+        if not isinstance(score, (int, float)):
+            score = 50
+        score = max(0, min(100, int(score)))
+        result = {
+            'score': score,
+            'verdict': parsed.get('verdict') or 'Review complete',
+            'strengths': parsed.get('strengths') if isinstance(parsed.get('strengths'), list) else [],
+            'improvements': parsed.get('improvements') if isinstance(parsed.get('improvements'), list) else [],
+            'missing': parsed.get('missing') if isinstance(parsed.get('missing'), list) else [],
+        }
+        return JsonResponse({'result': result})
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'result': {
+                'score': 50,
+                'verdict': 'Review complete',
+                'strengths': [],
+                'improvements': [{'area': 'General', 'issue': 'Could not parse feedback', 'fix': cleaned[:300]}],
+                'missing': [],
+            }
+        })

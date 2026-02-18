@@ -54,6 +54,19 @@ python manage.py runserver
 
 Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in your browser.
 
+### 6. (Optional) AI resume tools — Gemini API key
+
+For “Review my resume” and other AI features, add a Gemini API key to a `.env` file in the project root:
+
+- **Use a key from [Google AI Studio](https://aistudio.google.com/apikey)** (create one there).  
+- Do **not** use a key from Google Cloud Console; that will give “API keys are not supported” and requires OAuth.
+
+In `.env`:
+
+```
+GEMINI_API_KEY=your-key-from-aistudio-google-com
+```
+
 ## Run on GitHub Pages (static site)
 
 FutureFit includes a **static version** in the `docs/` folder that runs entirely in the browser—no server needed. To host it on GitHub Pages:

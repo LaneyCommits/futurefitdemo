@@ -1,31 +1,20 @@
 /**
- * FutureFit Resume AI — auto-detects server mode vs client mode.
- *
- * Server mode (Django): Calls /resume/api/ai/* endpoints. No API key needed by users.
- * Client mode (GitHub Pages): Falls back to direct Gemini calls with user's own key.
+ * FutureFit Resume AI — server-only. All AI calls go to the Django backend.
+ * The API key is stored in .env (GEMINI_API_KEY) and never sent to the client.
  */
 (function () {
   'use strict';
 
-  var STORAGE_KEY = 'futurefit_gemini_key';
-  var GEMINI_MODEL = 'gemini-2.0-flash';
-  var GEMINI_API = 'https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent';
-
-  /* Default key for the static site so AI works out of the box */
-  var DEFAULT_KEY = 'AIzaSyDa1nPd3toFkz7GK2kxEBJo0BhsC-XsNzA';
-
-  /* Server endpoints (Django) */
   var SERVER_ENDPOINTS = {
     status: '/resume/api/ai/status/',
     enhance: '/resume/api/ai/enhance-bullet/',
     summary: '/resume/api/ai/generate-summary/',
     skills: '/resume/api/ai/suggest-skills/',
     tailor: '/resume/api/ai/tailor-resume/',
+    review: '/resume/api/ai/review-resume/',
   };
 
-  var _serverAvailable = null; // null = not checked, true/false after check
-
-  /* ---- Mode detection ---- */
+  var _serverAvailable = null;
 
   function checkServer() {
     if (_serverAvailable !== null) return Promise.resolve(_serverAvailable);
@@ -38,14 +27,6 @@
   function isServerMode() {
     return _serverAvailable === true;
   }
-
-  /* ---- Client-side key management (fallback) ---- */
-
-  function getClientKey() { return localStorage.getItem(STORAGE_KEY) || DEFAULT_KEY || ''; }
-  function setClientKey(key) { localStorage.setItem(STORAGE_KEY, key.trim()); }
-  function hasClientKey() { return getClientKey().length > 10; }
-
-  /* ---- API calls ---- */
 
   function callServer(endpoint, body) {
     return fetch(endpoint, {
@@ -60,188 +41,44 @@
     });
   }
 
-  function callGeminiDirect(prompt) {
-    var key = getClientKey();
-    if (!key) return Promise.reject(new Error('No API key set'));
-    return fetch(GEMINI_API + '?key=' + encodeURIComponent(key), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
-      })
-    }).then(function (r) {
-      if (!r.ok) return r.json().then(function (e) { throw new Error((e.error && e.error.message) || 'API error'); });
-      return r.json();
-    }).then(function (d) {
-      if (!d.candidates || !d.candidates[0]) throw new Error('No response');
-      return d.candidates[0].content.parts[0].text;
-    });
-  }
-
-  /* ---- Feature: Enhance bullet ---- */
-
   function enhanceBullet(bullet, major) {
-    if (isServerMode()) {
-      return callServer(SERVER_ENDPOINTS.enhance, { bullet: bullet, major: major });
-    }
-    var prompt = 'You are an expert resume writer for ' + (major || 'college') + ' students. ' +
-      'Rewrite this resume bullet point to be more impactful. Use a strong action verb, ' +
-      'add specificity, and quantify results where possible. Keep it to ONE concise bullet point (one sentence). ' +
-      'Return ONLY the improved bullet point, no explanation or extra text.\n\nOriginal: ' + bullet;
-    return callGeminiDirect(prompt).then(function (t) { return t.replace(/^[-•*]\s*/, '').trim(); });
+    return callServer(SERVER_ENDPOINTS.enhance, { bullet: bullet, major: major });
   }
-
-  /* ---- Feature: Generate summary ---- */
 
   function generateSummary(major, role, level, skills) {
-    if (isServerMode()) {
-      return callServer(SERVER_ENDPOINTS.summary, { major: major, role: role, level: level, skills: skills });
-    }
-    var prompt = 'You are an expert resume writer. Write a professional resume summary (2-3 sentences) for a ' +
-      level + ' ' + major + ' student' + (role ? ' targeting a ' + role + ' role' : '') + '. ' +
-      (skills ? 'Key skills: ' + skills + '. ' : '') +
-      'Make it confident, specific, and tailored. Return ONLY the summary paragraph, no labels or explanation.';
-    return callGeminiDirect(prompt).then(function (t) { return t.trim(); });
+    return callServer(SERVER_ENDPOINTS.summary, { major: major, role: role, level: level, skills: skills });
   }
-
-  /* ---- Feature: Suggest skills ---- */
 
   function suggestSkills(major, role) {
-    if (isServerMode()) {
-      return callServer(SERVER_ENDPOINTS.skills, { major: major, role: role });
-    }
-    var prompt = 'You are a career advisor for ' + major + ' students. ' +
-      (role ? 'The student is targeting a ' + role + ' role. ' : '') +
-      'List 12-15 relevant skills they should include on their resume, separated into ' +
-      '"Technical Skills" and "Soft Skills" categories. Format as two short lists. ' +
-      'Return ONLY the skill lists, no extra explanation. Use bullet points.';
-    return callGeminiDirect(prompt).then(function (t) { return t.trim(); });
+    return callServer(SERVER_ENDPOINTS.skills, { major: major, role: role });
   }
-
-  /* ---- Feature: Tailor to job ---- */
 
   function tailorResume(resume, job) {
-    if (isServerMode()) {
-      return callServer(SERVER_ENDPOINTS.tailor, { resume: resume, job: job });
-    }
-    var prompt = 'You are an expert resume consultant. A student has the following resume content and wants to tailor it ' +
-      'to a specific job posting. Rewrite their resume content to better match the job description by:\n' +
-      '1. Incorporating relevant keywords from the job posting\n' +
-      '2. Reordering bullet points to highlight the most relevant experience\n' +
-      '3. Strengthening bullet points with action verbs and quantified results\n' +
-      '4. Keeping the same overall structure\n\n' +
-      'Return ONLY the improved resume content, formatted with clear section headers and bullet points. ' +
-      'Do not include any explanation or commentary.\n\n' +
-      '--- RESUME CONTENT ---\n' + resume + '\n\n--- JOB DESCRIPTION ---\n' + job;
-    return callGeminiDirect(prompt).then(function (t) { return t.trim(); });
+    return callServer(SERVER_ENDPOINTS.tailor, { resume: resume, job: job });
   }
-
-  /* ---- Feature: Gap analysis ---- */
 
   function analyzeGap(resume, job) {
-    var prompt = 'You are an expert resume consultant and hiring manager. Analyze how well the following resume matches ' +
-      'the job description. Return your analysis as a JSON object with EXACTLY this structure (no markdown, no code fences, ONLY raw JSON):\n' +
-      '{\n' +
-      '  "match_score": <number 0-100 representing overall match percentage>,\n' +
-      '  "summary": "<1-2 sentence overview of how well the resume matches>",\n' +
-      '  "strengths": ["<strength 1>", "<strength 2>", ...],\n' +
-      '  "missing_keywords": ["<keyword 1>", "<keyword 2>", ...],\n' +
-      '  "suggestions": ["<actionable suggestion 1>", "<actionable suggestion 2>", ...]\n' +
-      '}\n\n' +
-      'Rules:\n' +
-      '- match_score should reflect realistic alignment (most students score 30-70)\n' +
-      '- strengths: 2-4 things the resume already does well for this role\n' +
-      '- missing_keywords: 4-8 specific skills, tools, or keywords from the job posting missing from the resume\n' +
-      '- suggestions: 3-5 specific, actionable things the student could add or change to improve their match\n' +
-      '- Return ONLY the JSON object, nothing else\n\n' +
-      '--- RESUME ---\n' + resume + '\n\n--- JOB DESCRIPTION ---\n' + job;
-
-    if (isServerMode()) {
-      return callServer(SERVER_ENDPOINTS.tailor, { resume: resume, job: job, mode: 'gap_analysis' })
-        .then(parseGapResponse);
-    }
-    return callGeminiDirect(prompt).then(parseGapResponse);
+    return callServer(SERVER_ENDPOINTS.tailor, { resume: resume, job: job, mode: 'gap_analysis' })
+      .then(parseGapResponse);
   }
 
-  function parseGapResponse(text) {
-    if (typeof text === 'object' && text.match_score !== undefined) return text;
-    var cleaned = text.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
-    try {
-      var parsed = JSON.parse(cleaned);
-      if (typeof parsed.match_score !== 'number') parsed.match_score = 50;
-      parsed.match_score = Math.max(0, Math.min(100, parsed.match_score));
-      if (!Array.isArray(parsed.strengths)) parsed.strengths = [];
-      if (!Array.isArray(parsed.missing_keywords)) parsed.missing_keywords = [];
-      if (!Array.isArray(parsed.suggestions)) parsed.suggestions = [];
-      if (!parsed.summary) parsed.summary = 'Analysis complete.';
-      return parsed;
-    } catch (e) {
-      return {
-        match_score: 50,
-        summary: cleaned.substring(0, 200),
-        strengths: [],
-        missing_keywords: [],
-        suggestions: [cleaned]
-      };
-    }
+  function parseGapResponse(data) {
+    if (typeof data === 'object' && data.match_score !== undefined) return data;
+    return {
+      match_score: 50,
+      summary: 'Analysis complete.',
+      strengths: [],
+      missing_keywords: [],
+      suggestions: [],
+    };
   }
-
-  /* ---- Feature: Full resume review ---- */
 
   function reviewResume(resumeText, major) {
-    var prompt = 'You are an expert resume reviewer and career counselor for ' + (major || 'college') + ' students. ' +
-      'Review the following resume and provide detailed, actionable feedback. ' +
-      'Return your review as a JSON object with EXACTLY this structure (no markdown, no code fences, ONLY raw JSON):\n' +
-      '{\n' +
-      '  "score": <number 0-100 representing overall resume quality>,\n' +
-      '  "verdict": "<one short phrase like \'Strong foundation, needs polish\' or \'Great start — a few tweaks will make it shine\'>",\n' +
-      '  "strengths": ["<strength 1>", "<strength 2>", ...],\n' +
-      '  "improvements": [\n' +
-      '    {"area": "<section or aspect>", "issue": "<what\'s wrong>", "fix": "<specific suggestion>"},\n' +
-      '    ...\n' +
-      '  ],\n' +
-      '  "missing": ["<thing they should add 1>", "<thing they should add 2>", ...]\n' +
-      '}\n\n' +
-      'Rules:\n' +
-      '- score: be realistic (most student resumes score 40-75)\n' +
-      '- strengths: 2-3 things done well\n' +
-      '- improvements: 3-5 specific issues with concrete fixes (e.g. "Your bullet about social media should quantify reach")\n' +
-      '- missing: 2-4 sections or items they should consider adding\n' +
-      '- Be encouraging but honest. This is for a student.\n' +
-      '- Return ONLY the JSON object, nothing else\n\n' +
-      '--- RESUME ---\n' + resumeText;
-
-    return callGeminiDirect(prompt).then(parseReviewResponse);
+    return callServer(SERVER_ENDPOINTS.review, { resume: resumeText, major: major });
   }
-
-  function parseReviewResponse(text) {
-    if (typeof text === 'object' && text.score !== undefined) return text;
-    var cleaned = text.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
-    try {
-      var parsed = JSON.parse(cleaned);
-      if (typeof parsed.score !== 'number') parsed.score = 50;
-      parsed.score = Math.max(0, Math.min(100, parsed.score));
-      if (!parsed.verdict) parsed.verdict = 'Review complete';
-      if (!Array.isArray(parsed.strengths)) parsed.strengths = [];
-      if (!Array.isArray(parsed.improvements)) parsed.improvements = [];
-      if (!Array.isArray(parsed.missing)) parsed.missing = [];
-      return parsed;
-    } catch (e) {
-      return {
-        score: 50,
-        verdict: 'Review complete',
-        strengths: [],
-        improvements: [{ area: 'General', issue: 'Could not parse structured feedback', fix: cleaned.substring(0, 300) }],
-        missing: []
-      };
-    }
-  }
-
-  /* ---- UI Helpers ---- */
 
   function canUseAI() {
-    return isServerMode() || hasClientKey();
+    return isServerMode();
   }
 
   function formatMarkdown(text) {
@@ -278,59 +115,24 @@
     });
   }
 
-  /* ---- UI: Key setup (only shown in client mode) ---- */
-
   function createKeySetup(onSave) {
-    /* If a default key is present, AI works automatically — show ready badge */
-    if (DEFAULT_KEY && DEFAULT_KEY.length > 10 && !localStorage.getItem(STORAGE_KEY)) {
-      var readyWrap = document.createElement('div');
-      readyWrap.className = 'ai-key-setup';
-      readyWrap.style.borderColor = 'rgba(127, 175, 157, 0.3)';
-      readyWrap.style.background = 'rgba(127, 175, 157, 0.06)';
-      readyWrap.innerHTML =
+    if (isServerMode()) {
+      var wrap = document.createElement('div');
+      wrap.className = 'ai-key-setup';
+      wrap.style.borderColor = 'rgba(127, 175, 157, 0.3)';
+      wrap.style.background = 'rgba(127, 175, 157, 0.06)';
+      wrap.innerHTML =
         '<div class="ai-key-header">' +
           '<span class="ai-key-icon">✅</span>' +
           '<div>' +
             '<strong>AI is ready to use</strong>' +
-            '<p class="ai-key-desc">AI features are powered by Google Gemini. No setup needed — just use the tools below.</p>' +
+            '<p class="ai-key-desc">AI runs on the server. Your API key stays in .env and is never sent to the browser.</p>' +
           '</div>' +
         '</div>';
-      return readyWrap;
+      return wrap;
     }
-
-    var wrap = document.createElement('div');
-    wrap.className = 'ai-key-setup';
-    wrap.innerHTML =
-      '<div class="ai-key-header">' +
-        '<span class="ai-key-icon">🔑</span>' +
-        '<div>' +
-          '<strong>Connect your free AI</strong>' +
-          '<p class="ai-key-desc">Enter your free Google Gemini API key to unlock AI features. ' +
-          'Your key stays in your browser and is never sent to our servers.</p>' +
-        '</div>' +
-      '</div>' +
-      '<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="ai-key-link">' +
-        'Get a free API key from Google AI Studio →</a>' +
-      '<div class="ai-key-input-row">' +
-        '<input type="password" class="ai-key-input" placeholder="Paste your Gemini API key" value="' + (localStorage.getItem(STORAGE_KEY) || '') + '">' +
-        '<button type="button" class="btn btn-primary ai-key-save">Save key</button>' +
-      '</div>';
-
-    wrap.querySelector('.ai-key-save').addEventListener('click', function () {
-      var val = wrap.querySelector('.ai-key-input').value.trim();
-      if (!val) return;
-      setClientKey(val);
-      this.textContent = 'Saved ✓';
-      this.style.background = 'var(--sage)';
-      var btn = this;
-      setTimeout(function () { btn.textContent = 'Save key'; btn.style.background = ''; }, 2000);
-      if (onSave) onSave();
-    });
-
-    return wrap;
+    return document.createElement('div');
   }
-
-  /* ---- UI: Server-mode ready badge ---- */
 
   function createServerBadge() {
     var wrap = document.createElement('div');
@@ -342,13 +144,11 @@
         '<span class="ai-key-icon">✅</span>' +
         '<div>' +
           '<strong>AI is ready to use</strong>' +
-          '<p class="ai-key-desc">AI features are powered by Google Gemini. No setup needed — just use the tools below.</p>' +
+          '<p class="ai-key-desc">AI runs on the server. Your API key stays in .env and is never sent to the browser.</p>' +
         '</div>' +
       '</div>';
     return wrap;
   }
-
-  /* ---- UI Components for each feature ---- */
 
   function createBulletEnhancer(major) {
     var wrap = document.createElement('div');
@@ -377,7 +177,7 @@
     btn.addEventListener('click', function () {
       var text = textarea.value.trim();
       if (!text) return;
-      if (!canUseAI()) { showError(wrap, 'Please save your API key first.'); return; }
+      if (!canUseAI()) { showError(wrap, 'AI is only available when the Django server is running with GEMINI_API_KEY in .env.'); return; }
       clearError(wrap); btn.disabled = true; btn.textContent = 'Enhancing...'; result.style.display = 'none';
       enhanceBullet(text, major)
         .then(function (r) { resultText.textContent = r; result.style.display = 'block'; })
@@ -425,7 +225,7 @@
     var copyBtn = wrap.querySelector('.ai-copy-btn');
 
     btn.addEventListener('click', function () {
-      if (!canUseAI()) { showError(wrap, 'Please save your API key first.'); return; }
+      if (!canUseAI()) { showError(wrap, 'AI is only available when the Django server is running with GEMINI_API_KEY in .env.'); return; }
       clearError(wrap);
       var role = wrap.querySelector('[data-field="role"]').value.trim();
       var level = wrap.querySelector('[data-field="level"]').value;
@@ -468,7 +268,7 @@
     var resultText = wrap.querySelector('.ai-result-text');
 
     btn.addEventListener('click', function () {
-      if (!canUseAI()) { showError(wrap, 'Please save your API key first.'); return; }
+      if (!canUseAI()) { showError(wrap, 'AI is only available when the Django server is running with GEMINI_API_KEY in .env.'); return; }
       clearError(wrap);
       var role = wrap.querySelector('[data-field="role"]').value.trim();
       btn.disabled = true; btn.textContent = 'Thinking...'; result.style.display = 'none';
@@ -509,7 +309,7 @@
       var resume = wrap.querySelector('[data-field="resume"]').value.trim();
       var job = wrap.querySelector('[data-field="job"]').value.trim();
       if (!resume || !job) { showError(wrap, 'Please paste both your resume content and the job description.'); return; }
-      if (!canUseAI()) { showError(wrap, 'Please save your API key first.'); return; }
+      if (!canUseAI()) { showError(wrap, 'AI is only available when the Django server is running with GEMINI_API_KEY in .env.'); return; }
       clearError(wrap); btn.disabled = true; btn.textContent = 'Tailoring your resume...'; result.style.display = 'none';
       tailorResume(resume, job)
         .then(function (r) { resultText.innerHTML = formatMarkdown(r); result.style.display = 'block'; result.scrollIntoView({ behavior: 'smooth', block: 'start' }); })
@@ -527,7 +327,8 @@
     return wrap;
   }
 
-  /* ---- Public API ---- */
+  // Run server check as soon as script loads so status is known before user clicks
+  checkServer();
 
   window.ResumeAI = {
     checkServer: checkServer,
