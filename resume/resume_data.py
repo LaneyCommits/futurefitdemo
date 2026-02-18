@@ -7,6 +7,7 @@ RESUME_TEMPLATES = {
     'business': {
         'label': 'Business & Management',
         'icon': '📊',
+        'image': 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=280&fit=crop',
         'focus': 'Leadership, analytics, and business impact',
         'sections': ['Summary', 'Education', 'Professional Experience', 'Leadership & Activities', 'Skills', 'Certifications'],
         'tips': [
@@ -25,6 +26,7 @@ RESUME_TEMPLATES = {
     'computer_science': {
         'label': 'Computer Science & IT',
         'icon': '💻',
+        'image': 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=280&fit=crop',
         'focus': 'Technical skills, projects, and problem-solving',
         'sections': ['Summary', 'Education', 'Technical Skills', 'Projects', 'Experience', 'Certifications'],
         'tips': [
@@ -43,6 +45,7 @@ RESUME_TEMPLATES = {
     'engineering': {
         'label': 'Engineering',
         'icon': '⚙️',
+        'image': 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=280&fit=crop',
         'focus': 'Technical expertise, design projects, and certifications',
         'sections': ['Summary', 'Education', 'Technical Skills', 'Engineering Projects', 'Experience', 'Certifications & Licenses'],
         'tips': [
@@ -61,6 +64,7 @@ RESUME_TEMPLATES = {
     'health_sciences': {
         'label': 'Health Sciences & Nursing',
         'icon': '🏥',
+        'image': 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=400&h=280&fit=crop',
         'focus': 'Clinical experience, patient care, and certifications',
         'sections': ['Summary', 'Education', 'Clinical Experience', 'Certifications & Licenses', 'Skills', 'Volunteer Experience'],
         'tips': [
@@ -79,6 +83,7 @@ RESUME_TEMPLATES = {
     'humanities': {
         'label': 'Humanities',
         'icon': '📚',
+        'image': 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=280&fit=crop',
         'focus': 'Writing, research, and critical thinking',
         'sections': ['Summary', 'Education', 'Research & Writing', 'Experience', 'Skills', 'Activities & Honors'],
         'tips': [
@@ -97,6 +102,7 @@ RESUME_TEMPLATES = {
     'social_sciences': {
         'label': 'Social Sciences',
         'icon': '🧠',
+        'image': 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=280&fit=crop',
         'focus': 'Research methods, data analysis, and people skills',
         'sections': ['Summary', 'Education', 'Research Experience', 'Professional Experience', 'Skills', 'Publications & Presentations'],
         'tips': [
@@ -115,6 +121,7 @@ RESUME_TEMPLATES = {
     'arts_design': {
         'label': 'Arts & Design',
         'icon': '🎨',
+        'image': 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=400&h=280&fit=crop',
         'focus': 'Portfolio, creative tools, and client work',
         'sections': ['Summary', 'Education', 'Portfolio & Projects', 'Experience', 'Tools & Software', 'Exhibitions & Awards'],
         'tips': [
@@ -133,6 +140,7 @@ RESUME_TEMPLATES = {
     'education': {
         'label': 'Education',
         'icon': '🍎',
+        'image': 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&h=280&fit=crop',
         'focus': 'Teaching experience, certifications, and classroom skills',
         'sections': ['Summary', 'Education', 'Teaching Experience', 'Certifications & Licenses', 'Skills', 'Professional Development'],
         'tips': [
@@ -151,6 +159,7 @@ RESUME_TEMPLATES = {
     'environmental': {
         'label': 'Environmental & Sustainability',
         'icon': '🌱',
+        'image': 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=280&fit=crop',
         'focus': 'Fieldwork, data collection, and sustainability projects',
         'sections': ['Summary', 'Education', 'Field & Research Experience', 'Professional Experience', 'Technical Skills', 'Certifications'],
         'tips': [
@@ -169,6 +178,7 @@ RESUME_TEMPLATES = {
     'communications': {
         'label': 'Communications & Media',
         'icon': '📡',
+        'image': 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=400&h=280&fit=crop',
         'focus': 'Content creation, campaigns, and media skills',
         'sections': ['Summary', 'Education', 'Media & Content Experience', 'Professional Experience', 'Skills & Tools', 'Portfolio'],
         'tips': [
@@ -187,6 +197,7 @@ RESUME_TEMPLATES = {
     'law': {
         'label': 'Law & Criminal Justice',
         'icon': '⚖️',
+        'image': 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=280&fit=crop',
         'focus': 'Research, writing, and legal experience',
         'sections': ['Summary', 'Education', 'Legal Experience', 'Research & Writing', 'Skills', 'Activities & Honors'],
         'tips': [
@@ -205,6 +216,7 @@ RESUME_TEMPLATES = {
     'agriculture': {
         'label': 'Agriculture & Natural Resources',
         'icon': '🌾',
+        'image': 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=280&fit=crop',
         'focus': 'Hands-on experience, land management, and agribusiness',
         'sections': ['Summary', 'Education', 'Field Experience', 'Professional Experience', 'Technical Skills', 'Certifications'],
         'tips': [
@@ -223,6 +235,7 @@ RESUME_TEMPLATES = {
     'hospitality': {
         'label': 'Hospitality & Tourism',
         'icon': '🏨',
+        'image': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=280&fit=crop',
         'focus': 'Guest experience, operations, and service leadership',
         'sections': ['Summary', 'Education', 'Hospitality Experience', 'Leadership & Activities', 'Skills', 'Certifications'],
         'tips': [
@@ -241,6 +254,7 @@ RESUME_TEMPLATES = {
     'real_estate': {
         'label': 'Real Estate & Property',
         'icon': '🏠',
+        'image': 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=280&fit=crop',
         'focus': 'Sales, analysis, and property management',
         'sections': ['Summary', 'Education', 'Real Estate Experience', 'Professional Experience', 'Skills', 'Licenses & Certifications'],
         'tips': [
@@ -259,6 +273,7 @@ RESUME_TEMPLATES = {
     'sports_recreation': {
         'label': 'Sports & Recreation',
         'icon': '🏃',
+        'image': 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=280&fit=crop',
         'focus': 'Coaching, program management, and fitness',
         'sections': ['Summary', 'Education', 'Coaching & Recreation Experience', 'Professional Experience', 'Certifications', 'Skills'],
         'tips': [
@@ -277,6 +292,7 @@ RESUME_TEMPLATES = {
     'trades_construction': {
         'label': 'Skilled Trades & Construction',
         'icon': '🔧',
+        'image': 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&h=280&fit=crop',
         'focus': 'Hands-on skills, safety, and project experience',
         'sections': ['Summary', 'Education & Training', 'Project Experience', 'Work Experience', 'Certifications & Licenses', 'Skills & Equipment'],
         'tips': [

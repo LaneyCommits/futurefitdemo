@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}AI Resume Generator – FutureFit{% endblock %}
+{% block body_class %}page-resume{% endblock %}
+
+{% block content %}
+<section class="block block--hero block--hero-with-bg resume-hero resume-hero--compact">
+    <div class="block-inner">
+        <p class="resume-back-top"><a href="{% url 'resume_home' %}" class="btn btn-secondary btn--back">← Back to resume</a></p>
+        <p class="hero-badge">AI-powered</p>
+        <h1 class="block-hero-title">Generate Your Resume</h1>
+        <p class="block-hero-sub">Answer a few questions about the role and your background. We’ll create a tailored resume and deliver it as a PDF.</p>
+    </div>
+</section>
+
+<section class="block resume-generate-section">
+    <div class="block-inner">
+        <form id="resumeGenerateForm" class="resume-generate-form">
+            <div class="resume-generate-grid">
+                <fieldset class="resume-generate-fieldset">
+                    <legend>Contact info</legend>
+                    <label for="name">Full name <span class="required">*</span></label>
+                    <input type="text" id="name" name="name" required placeholder="Jane Smith">
+
+                    <label for="email">Email <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required placeholder="jane@example.com">
+
+                    <label for="phone">Phone <span class="required">*</span></label>
+                    <input type="tel" id="phone" name="phone" required placeholder="(555) 123-4567">
+
+                    <label for="location">Location (city, state)</label>
+                    <input type="text" id="location" name="location" placeholder="Boston, MA">
+
+                    <label for="linkedin">LinkedIn URL</label>
+                    <input type="url" id="linkedin" name="linkedin" placeholder="linkedin.com/in/yourname">
+                </fieldset>
+
+                <fieldset class="resume-generate-fieldset">
+                    <legend>Target role</legend>
+                    <label for="job_title">Job title or role you’re applying for <span class="required">*</span></label>
+                    <input type="text" id="job_title" name="job_title" required placeholder="e.g. Marketing Intern, Software Engineer">
+
+                    <label for="company">Company or industry (optional)</label>
+                    <input type="text" id="company" name="company" placeholder="e.g. Tech startup, Healthcare">
+
+                    <label for="keywords">Keywords to include (optional)</label>
+                    <input type="text" id="keywords" name="keywords" placeholder="e.g. Python, project management, data analysis">
+                </fieldset>
+
+                <fieldset class="resume-generate-fieldset resume-generate-fieldset--wide">
+                    <legend>Education</legend>
+                    <label for="degree">Degree and major</label>
+                    <input type="text" id="degree" name="degree" placeholder="e.g. Bachelor of Science in Computer Science">
+
+                    <label for="school">School name</label>
+                    <input type="text" id="school" name="school" placeholder="e.g. State University">
+
+                    <label for="graduation">Graduation date</label>
+                    <input type="text" id="graduation" name="graduation" placeholder="e.g. May 2026">
+
+                    <label for="gpa">GPA (optional)</label>
+                    <input type="text" id="gpa" name="gpa" placeholder="e.g. 3.6/4.0">
+                </fieldset>
+
+                <fieldset class="resume-generate-fieldset resume-generate-fieldset--wide">
+                    <legend>Experience & skills</legend>
+                    <label for="experience">Work experience</label>
+                    <textarea id="experience" name="experience" rows="5" placeholder="List your roles, companies, dates, and key achievements. Example:&#10;Marketing Intern | ABC Corp | Summer 2025&#10;• Managed social media, grew followers 20%&#10;• Assisted with campaign analysis"></textarea>
+
+                    <label for="skills">Key skills</label>
+                    <textarea id="skills" name="skills" rows="3" placeholder="e.g. Python, Excel, teamwork, project management"></textarea>
+
+                    <label for="projects">Projects or extracurriculars (optional)</label>
+                    <textarea id="projects" name="projects" rows="3" placeholder="Relevant projects, clubs, volunteer work"></textarea>
+
+                    <label for="certifications">Certifications (optional)</label>
+                    <input type="text" id="certifications" name="certifications" placeholder="e.g. Google Analytics, CPR certified">
+
+                    <label for="summary">Career summary (optional — we’ll write one if left blank)</label>
+                    <textarea id="summary" name="summary" rows="2" placeholder="1–2 sentences about your goals and strengths"></textarea>
+                </fieldset>
+            </div>
+            <div class="resume-generate-actions">
+                <button type="submit" class="btn btn-primary btn-lg" id="generateBtn">Generate Resume PDF <span aria-hidden="true">↓</span></button>
+                <p class="resume-generate-hint">Your answers are sent to our AI to create a professional, tailored resume. No account needed.</p>
+            </div>
+        </form>
+        <div id="generateError" class="resume-generate-error" style="display:none;"></div>
+    </div>
+</section>
+
+<script>
+(function() {
+    var form = document.getElementById('resumeGenerateForm');
+    var btn = document.getElementById('generateBtn');
+    var errEl = document.getElementById('generateError');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var data = {
+            name: document.getElementById('name').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            phone: document.getElementById('phone').value.trim(),
+            location: document.getElementById('location').value.trim(),
+            linkedin: document.getElementById('linkedin').value.trim(),
+            job_title: document.getElementById('job_title').value.trim(),
+            company: document.getElementById('company').value.trim(),
+            keywords: document.getElementById('keywords').value.trim(),
+            degree: document.getElementById('degree').value.trim(),
+            school: document.getElementById('school').value.trim(),
+            graduation: document.getElementById('graduation').value.trim(),
+            gpa: document.getElementById('gpa').value.trim(),
+            experience: document.getElementById('experience').value.trim(),
+            skills: document.getElementById('skills').value.trim(),
+            projects: document.getElementById('projects').value.trim(),
+            certifications: document.getElementById('certifications').value.trim(),
+            summary: document.getElementById('summary').value.trim()
+        };
+        if (!data.name || !data.email || !data.phone || !data.job_title) {
+            errEl.textContent = 'Please fill in name, email, phone, and job title.';
+            errEl.style.display = 'block';
+            return;
+        }
+        errEl.style.display = 'none';
+        btn.disabled = true;
+        btn.innerHTML = '<span class="gap-btn-spinner"></span> Generating...';
+        fetch('/resume/api/generate-pdf/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).then(function(r) {
+            var ct = r.headers.get('content-type') || '';
+            if (ct.indexOf('application/json') !== -1) return r.json().then(function(j) { throw new Error(j.error || 'Something went wrong'); });
+            return r.blob();
+        }).then(function(blob) {
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = (data.name.replace(/\s+/g, '-') || 'resume') + '-resume.pdf';
+            a.click();
+            URL.revokeObjectURL(url);
+        }).catch(function(e) {
+            errEl.textContent = e.message || 'Failed to generate resume. Please try again.';
+            errEl.style.display = 'block';
+        }).finally(function() {
+            btn.disabled = false;
+            btn.innerHTML = 'Generate Resume PDF <span aria-hidden="true">↓</span>';
+        });
+    });
+})();
+</script>
+{% endblock %}

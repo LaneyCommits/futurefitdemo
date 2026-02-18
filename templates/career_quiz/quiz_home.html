@@ -1,6 +1,7 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Career Quiz – FutureFit{% endblock %}
-{% block body_class %}quiz-page-wrap{% endblock %}
+{% block body_class %}quiz-page-wrap quiz-choice-page{% endblock %}
 
 {% block content %}
 <section class="block block--hero block--hero-with-bg quiz-hero">
@@ -14,23 +15,27 @@
 <section class="block quiz-choices-section">
     <div class="block-inner">
         <h2 class="quiz-choices-heading reveal">How much time do you have?</h2>
-        <div class="quiz-choice-cards">
-            <a href="{% url 'career_quiz_home' %}?length=short" class="quiz-choice-card reveal">
-                <div class="quiz-choice-icon">⏱</div>
-                <h3 class="quiz-choice-title">Short quiz</h3>
-                <p class="quiz-choice-time">~3 minutes · 10 questions</p>
-                <p class="quiz-choice-desc">A fast snapshot of your career interests. Great if you're curious but short on time.</p>
-                <span class="quiz-choice-cta">Start short quiz <span class="btn-arrow" aria-hidden="true">→</span></span>
-            </a>
-            <a href="{% url 'career_quiz_home' %}?length=full" class="quiz-choice-card quiz-choice-card--featured reveal reveal-delay-1">
-                <div class="quiz-choice-badge">Recommended</div>
-                <div class="quiz-choice-icon">📋</div>
-                <h3 class="quiz-choice-title">Full quiz</h3>
-                <p class="quiz-choice-time">~6–7 minutes · 25 questions</p>
-                <p class="quiz-choice-desc">More accurate, research-backed results. Covers personality, teamwork, and job preferences for a fuller picture.</p>
-                <span class="quiz-choice-cta">Start full quiz <span class="btn-arrow" aria-hidden="true">→</span></span>
-            </a>
+
+        <div class="quiz-length-selector" id="quiz-length-selector">
+            <div class="quiz-length-cards-interactive">
+                <a href="{% url 'career_quiz_home' %}?length=short" class="quiz-length-card reveal" data-length="short">
+                    <div class="quiz-length-card-icon">⚡</div>
+                    <h3 class="quiz-length-card-title">Short quiz</h3>
+                    <p class="quiz-length-card-meta">~3 min · 10 questions</p>
+                    <p class="quiz-length-card-desc">A fast snapshot of your career interests. Great if you're curious but short on time.</p>
+                    <span class="quiz-length-card-cta">Start short quiz <span class="btn-arrow" aria-hidden="true">→</span></span>
+                </a>
+                <a href="{% url 'career_quiz_home' %}?length=full" class="quiz-length-card quiz-length-card--featured reveal reveal-delay-1 active" data-length="full">
+                    <div class="quiz-length-badge">Recommended</div>
+                    <div class="quiz-length-card-icon">📋</div>
+                    <h3 class="quiz-length-card-title">Full quiz</h3>
+                    <p class="quiz-length-card-meta">~6–7 min · 25 questions</p>
+                    <p class="quiz-length-card-desc">More accurate, research-backed results. Covers personality, teamwork, and job preferences for a fuller picture.</p>
+                    <span class="quiz-length-card-cta">Start full quiz <span class="btn-arrow" aria-hidden="true">→</span></span>
+                </a>
+            </div>
         </div>
     </div>
 </section>
+<script src="{% static 'js/quiz-choice.js' %}"></script>
 {% endblock %}

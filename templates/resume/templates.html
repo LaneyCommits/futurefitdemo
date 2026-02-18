@@ -22,7 +22,11 @@
         <div class="resume-major-grid" id="resume-major-grid">
             {% for major in majors %}
             <a href="{% url 'resume_template_detail' major.key %}" class="resume-major-card reveal{% if forloop.counter <= 6 %} reveal-delay-{{ forloop.counter0 }}{% endif %}" data-keywords="{{ major.label|lower }} {{ major.focus|lower }}">
+                {% if major.image %}
+                <img src="{{ major.image }}" alt="" class="resume-major-image" loading="lazy">
+                {% else %}
                 <span class="resume-major-icon">{{ major.icon }}</span>
+                {% endif %}
                 <h3 class="resume-major-label">{{ major.label }}</h3>
                 <p class="resume-major-focus">{{ major.focus }}</p>
                 <span class="resume-major-cta">View template →</span>

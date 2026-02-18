@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %}Explore Majors & Careers – FutureFit{% endblock %}
 {% block body_class %}quiz-page-wrap{% endblock %}
+{% block body_attrs %}data-quiz-total="{{ questions|length }}"{% endblock %}
 
 {% block content %}
 <section class="block block--hero block--hero-with-bg quiz-hero quiz-hero--compact">
@@ -42,20 +43,5 @@
         </form>
     </div>
 </section>
-<script>
-(function() {
-  var total = {{ questions|length }};
-  var form = document.getElementById('quiz-form');
-  var fill = document.getElementById('quiz-progress-fill');
-  var text = document.getElementById('quiz-progress-text');
-  if (form && fill && text) {
-    form.addEventListener('change', function() {
-      var answered = form.querySelectorAll('input[type="radio"]:checked').length;
-      var pct = Math.round((answered / total) * 100);
-      fill.style.width = pct + '%';
-      text.textContent = answered + ' of ' + total;
-    });
-  }
-})();
-</script>
+<script src="{% static 'js/quiz.js' %}"></script>
 {% endblock %}

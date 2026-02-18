@@ -11,7 +11,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-<body class="{% block body_class %}{% endblock %}">
+<body class="{% block body_class %}{% endblock %}" {% block body_attrs %}{% endblock %}>
     <header class="site-header">
         <div class="header-inner">
             <div class="brand">

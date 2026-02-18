@@ -22,16 +22,27 @@
     <div class="block-inner">
         <h2 class="block-title block-title--light reveal" style="text-align:center; margin-bottom: 0.5rem;">What would you like to do?</h2>
         <p class="block-desc block-desc--light reveal" style="text-align:center; margin-bottom: 2.5rem;">Whether you're starting fresh or polishing what you have, we'll help you stand out.</p>
-        <div class="resume-options-grid">
-            <a href="{% url 'resume_templates' %}" class="resume-option-card reveal">
-                <span class="resume-option-icon">📝</span>
+        <div class="resume-options-grid resume-options-grid--3">
+            <a href="{% url 'resume_generate' %}" class="resume-option-card reveal">
+                <span class="resume-option-icon">✨</span>
+                <h3 class="resume-option-title">AI-generated resume</h3>
+                <p class="resume-option-desc">Answer a few questions about the role and your background. Our AI creates a tailored resume and delivers it as a PDF.</p>
+                <span class="resume-option-cta">Get started →</span>
+            </a>
+            <a href="{% url 'resume_templates' %}" class="resume-option-card reveal reveal-delay-1">
+                <span class="resume-option-icon resume-option-icon--plus" aria-hidden="true">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="14" y="4" width="4" height="24" rx="2" fill="currentColor"/>
+                        <rect x="4" y="14" width="24" height="4" rx="2" fill="currentColor"/>
+                    </svg>
+                </span>
                 <h3 class="resume-option-title">Create a new resume</h3>
                 <p class="resume-option-desc">Pick a template tailored to your major, fill in your details, and download a polished, professional resume as a PDF.</p>
                 <span class="resume-option-cta">Browse templates →</span>
             </a>
             <a href="{% url 'resume_ai_tools' %}" class="resume-option-card reveal reveal-delay-1">
-                <span class="resume-option-icon">🎯</span>
-                <h3 class="resume-option-title">Tailor your resume to job listings</h3>
+                <span class="resume-option-icon">📊</span>
+                <h3 class="resume-option-title">Perform Resume Gap Analysis</h3>
                 <p class="resume-option-desc">Paste your resume and a job posting. Get a match score, missing keywords, and actionable suggestions to improve your fit — powered by AI gap analysis. Plus enhance bullets, summaries, and more.</p>
                 <span class="resume-option-cta">Run gap analysis →</span>
             </a>
@@ -47,7 +58,11 @@
         <div class="resume-major-grid">
             {% for major in majors %}
             <a href="{% url 'resume_template_detail' major.key %}" class="resume-major-card reveal{% if forloop.counter <= 6 %} reveal-delay-{{ forloop.counter0 }}{% endif %}">
+                {% if major.image %}
+                <img src="{{ major.image }}" alt="" class="resume-major-image" loading="lazy">
+                {% else %}
                 <span class="resume-major-icon">{{ major.icon }}</span>
+                {% endif %}
                 <h3 class="resume-major-label">{{ major.label }}</h3>
                 <p class="resume-major-focus">{{ major.focus }}</p>
                 <span class="resume-major-cta">View template →</span>

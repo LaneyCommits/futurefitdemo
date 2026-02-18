@@ -14,8 +14,6 @@
 
 <section class="block resume-ai-section">
     <div class="block-inner">
-        <div id="aiKeySetup" class="reveal" style="max-width: 600px;"></div>
-
         <!-- Gap analysis input -->
         <div class="gap-analysis-card reveal">
             <h2 class="gap-analysis-heading">Compare your resume to a job posting</h2>
@@ -24,6 +22,13 @@
                 <div class="ai-tailor-col">
                     <label class="ai-label">Your resume</label>
                     <textarea class="ai-textarea ai-textarea-lg" rows="10" placeholder="Paste your full resume text here..." id="gapResume"></textarea>
+                    <div class="ai-resume-upload-row">
+                        <label class="btn btn-secondary ai-upload-btn" for="gapResumePdf">
+                            <span class="ai-upload-icon">📄</span> Upload PDF
+                        </label>
+                        <input type="file" id="gapResumePdf" accept=".pdf" style="display:none;">
+                        <span class="ai-resume-source" id="gapResumeSource"></span>
+                    </div>
                 </div>
                 <div class="ai-tailor-col">
                     <label class="ai-label">Job description</label>
@@ -65,14 +70,12 @@
             <div class="gap-cta-bar">
                 <p class="gap-cta-text">Ready to improve your resume? Use the tools below to implement these suggestions.</p>
             </div>
-        </div>
-
-        <!-- Other AI tools -->
-        <div class="reveal" style="max-width: 600px; margin-top: 2rem;">
-            <h2 class="gap-tools-heading">More AI tools</h2>
-            <div id="aiBulletTool"></div>
-            <div id="aiSummaryTool" style="margin-top: 0.75rem;"></div>
-            <div id="aiSkillsTool" style="margin-top: 0.75rem;"></div>
+            <div class="gap-ai-tools">
+                <h3 class="gap-section-title">AI tools to strengthen your resume</h3>
+                <div id="aiBulletTool"></div>
+                <div id="aiSummaryTool" style="margin-top: 1rem;"></div>
+                <div id="aiSkillsTool" style="margin-top: 1rem;"></div>
+            </div>
         </div>
     </div>
 </section>
@@ -105,8 +108,10 @@
 
         ResumeAI.analyzeGap(resume, job)
             .then(function (data) {
+                resumeTextForTools = resume;
                 renderGapResults(data);
                 document.getElementById('gapResults').style.display = 'block';
+                injectAITools();
                 document.getElementById('gapResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
             })
             .catch(function (e) {
@@ -172,17 +177,51 @@
         requestAnimationFrame(frame);
     }
 
-    ResumeAI.checkServer().then(function(serverOk) {
-        var keyEl = document.getElementById('aiKeySetup');
-        if (serverOk) {
-            keyEl.appendChild(ResumeAI.createServerBadge());
-        } else {
-            keyEl.appendChild(ResumeAI.createKeySetup());
+    var resumeTextForTools = '';
+    var pdfInput = document.getElementById('gapResumePdf');
+    var resumeTextarea = document.getElementById('gapResume');
+    var sourceLabel = document.getElementById('gapResumeSource');
+
+    if (pdfInput) {
+        pdfInput.addEventListener('change', function() {
+            var file = this.files[0];
+            if (!file) return;
+            sourceLabel.textContent = 'Extracting text...';
+            sourceLabel.style.color = 'var(--text-muted)';
+            var formData = new FormData();
+            formData.append('file', file);
+            fetch('/resume/api/ai/extract-pdf/', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || '' }
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.error) throw new Error(data.error);
+                resumeTextarea.value = data.text;
+                sourceLabel.textContent = file.name + ' ✓';
+                sourceLabel.style.color = 'var(--sage)';
+            })
+            .catch(function(e) {
+                sourceLabel.textContent = e.message || 'Failed to extract';
+                sourceLabel.style.color = '#C8766A';
+            })
+            .finally(function() { pdfInput.value = ''; });
+        });
+    }
+
+    function injectAITools() {
+        var bulletEl = document.getElementById('aiBulletTool');
+        var summaryEl = document.getElementById('aiSummaryTool');
+        var skillsEl = document.getElementById('aiSkillsTool');
+        if (bulletEl && !bulletEl.hasChildNodes()) {
+            bulletEl.appendChild(ResumeAI.createBulletEnhancer('your major'));
+            summaryEl.appendChild(ResumeAI.createSummaryGenerator('your major'));
+            skillsEl.appendChild(ResumeAI.createSkillsSuggester('your major'));
         }
-        document.getElementById('aiBulletTool').appendChild(ResumeAI.createBulletEnhancer('your major'));
-        document.getElementById('aiSummaryTool').appendChild(ResumeAI.createSummaryGenerator('your major'));
-        document.getElementById('aiSkillsTool').appendChild(ResumeAI.createSkillsSuggester('your major'));
-    });
+    }
+
+    ResumeAI.checkServer();
 })();
 </script>
 {% endblock %}
