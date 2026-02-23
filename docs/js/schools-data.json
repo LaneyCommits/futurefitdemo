@@ -1161,7 +1161,7 @@
     ],
     "highlight": "Strong business and media programs with vibrant campus life",
     "url": "https://sdsu.edu",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Snapdragon_Stadium_interior-Night_panorama_view_1.jpg/960px-Snapdragon_Stadium_interior-Night_panorama_view_1.jpg"
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Aerial_view_looking_toward_San_Diego_State_University_01.jpg/960px-Aerial_view_looking_toward_San_Diego_State_University_01.jpg"
   },
   {
     "id": "pittsburgh",
@@ -1222,5 +1222,579 @@
     "highlight": "Major research university in a vibrant metro area",
     "url": "https://umn.edu",
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/University_of_Minnesota_Twin_Cities_-_East_Bank_Campus_%2848659306808%29.jpg/960px-University_of_Minnesota_Twin_Cities_-_East_Bank_Campus_%2848659306808%29.jpg"
+  },
+  {
+    "id": "harvard",
+    "name": "Harvard University",
+    "city": "Cambridge",
+    "state": "MA",
+    "type": "private",
+    "size": "large",
+    "tuition": 56823,
+    "tuition_in": 56823,
+    "acceptance_rate": 3,
+    "strong_majors": [
+      "law",
+      "business",
+      "health_sciences",
+      "social_sciences",
+      "humanities"
+    ],
+    "highlight": "Ivy League institution with world-renowned programs across disciplines",
+    "url": "https://harvard.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Harvard_Yard_from_Mass_Ave.jpg/960px-Harvard_Yard_from_Mass_Ave.jpg"
+  },
+  {
+    "id": "yale",
+    "name": "Yale University",
+    "city": "New Haven",
+    "state": "CT",
+    "type": "private",
+    "size": "medium",
+    "tuition": 59950,
+    "tuition_in": 59950,
+    "acceptance_rate": 5,
+    "strong_majors": [
+      "law",
+      "humanities",
+      "arts_design",
+      "health_sciences",
+      "social_sciences"
+    ],
+    "highlight": "Elite liberal arts and professional education",
+    "url": "https://yale.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Yale_University_art_gallery.jpg/960px-Yale_University_art_gallery.jpg"
+  },
+  {
+    "id": "princeton",
+    "name": "Princeton University",
+    "city": "Princeton",
+    "state": "NJ",
+    "type": "private",
+    "size": "medium",
+    "tuition": 59171,
+    "tuition_in": 59171,
+    "acceptance_rate": 4,
+    "strong_majors": [
+      "engineering",
+      "humanities",
+      "social_sciences",
+      "computer_science"
+    ],
+    "highlight": "No-loan financial aid and strong undergraduate focus",
+    "url": "https://princeton.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Nassau_Hall_Princeton_University.jpg/960px-Nassau_Hall_Princeton_University.jpg"
+  },
+  {
+    "id": "columbia",
+    "name": "Columbia University",
+    "city": "New York",
+    "state": "NY",
+    "type": "private",
+    "size": "large",
+    "tuition": 63626,
+    "tuition_in": 63626,
+    "acceptance_rate": 4,
+    "strong_majors": [
+      "law",
+      "business",
+      "communications",
+      "engineering",
+      "humanities"
+    ],
+    "highlight": "Core curriculum in the heart of NYC",
+    "url": "https://columbia.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Low_Library%2C_Columbia_University%2C_New_York_City.jpg/960px-Low_Library%2C_Columbia_University%2C_New_York_City.jpg"
+  },
+  {
+    "id": "brown",
+    "name": "Brown University",
+    "city": "Providence",
+    "state": "RI",
+    "type": "private",
+    "size": "medium",
+    "tuition": 62404,
+    "tuition_in": 62404,
+    "acceptance_rate": 5,
+    "strong_majors": [
+      "health_sciences",
+      "humanities",
+      "social_sciences",
+      "computer_science"
+    ],
+    "highlight": "Open curriculum with flexible degree requirements",
+    "url": "https://brown.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Brown_University_-_View_from_Thayer_Street.jpg/960px-Brown_University_-_View_from_Thayer_Street.jpg"
+  },
+  {
+    "id": "dartmouth",
+    "name": "Dartmouth College",
+    "city": "Hanover",
+    "state": "NH",
+    "type": "private",
+    "size": "small",
+    "tuition": 60870,
+    "tuition_in": 60870,
+    "acceptance_rate": 6,
+    "strong_majors": [
+      "business",
+      "engineering",
+      "humanities",
+      "social_sciences"
+    ],
+    "highlight": "Ivy League with strong undergraduate focus and alumni network",
+    "url": "https://dartmouth.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Dartmouth_College_campus.jpg/960px-Dartmouth_College_campus.jpg"
+  },
+  {
+    "id": "duke",
+    "name": "Duke University",
+    "city": "Durham",
+    "state": "NC",
+    "type": "private",
+    "size": "large",
+    "tuition": 62888,
+    "tuition_in": 62888,
+    "acceptance_rate": 6,
+    "strong_majors": [
+      "health_sciences",
+      "law",
+      "business",
+      "engineering",
+      "social_sciences"
+    ],
+    "highlight": "Top research university with strong basketball tradition",
+    "url": "https://duke.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Duke_Chapel_from_quad.jpg/960px-Duke_Chapel_from_quad.jpg"
+  },
+  {
+    "id": "nd",
+    "name": "University of Notre Dame",
+    "city": "Notre Dame",
+    "state": "IN",
+    "type": "private",
+    "size": "medium",
+    "tuition": 60201,
+    "tuition_in": 60201,
+    "acceptance_rate": 13,
+    "strong_majors": [
+      "business",
+      "engineering",
+      "humanities",
+      "law"
+    ],
+    "highlight": "Catholic university with top business and engineering programs",
+    "url": "https://nd.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/University_of_Notre_Dame_Main_Building.jpg/960px-University_of_Notre_Dame_Main_Building.jpg"
+  },
+  {
+    "id": "ucla",
+    "name": "University of California, Los Angeles",
+    "city": "Los Angeles",
+    "state": "CA",
+    "type": "public",
+    "size": "large",
+    "tuition": 14312,
+    "tuition_in": 14312,
+    "acceptance_rate": 9,
+    "strong_majors": [
+      "business",
+      "arts_design",
+      "health_sciences",
+      "engineering",
+      "communications"
+    ],
+    "highlight": "Top public university in LA with strong film and performing arts",
+    "url": "https://ucla.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/UCLA_campus.jpg/960px-UCLA_campus.jpg"
+  },
+  {
+    "id": "ucdavis",
+    "name": "University of California, Davis",
+    "city": "Davis",
+    "state": "CA",
+    "type": "public",
+    "size": "large",
+    "tuition": 14312,
+    "tuition_in": 14312,
+    "acceptance_rate": 37,
+    "strong_majors": [
+      "agriculture",
+      "environmental",
+      "health_sciences",
+      "engineering"
+    ],
+    "highlight": "Top veterinary and agriculture programs",
+    "url": "https://ucdavis.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/UC_Davis_Shields_Library.jpg/960px-UC_Davis_Shields_Library.jpg"
+  },
+  {
+    "id": "ucirvine",
+    "name": "University of California, Irvine",
+    "city": "Irvine",
+    "state": "CA",
+    "type": "public",
+    "size": "large",
+    "tuition": 14312,
+    "tuition_in": 14312,
+    "acceptance_rate": 21,
+    "strong_majors": [
+      "computer_science",
+      "engineering",
+      "health_sciences",
+      "business"
+    ],
+    "highlight": "Strong STEM and pre-med in Orange County",
+    "url": "https://uci.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/UCI_School_of_Biological_Sciences.jpg/960px-UCI_School_of_Biological_Sciences.jpg"
+  },
+  {
+    "id": "ucsb",
+    "name": "University of California, Santa Barbara",
+    "city": "Santa Barbara",
+    "state": "CA",
+    "type": "public",
+    "size": "large",
+    "tuition": 14312,
+    "tuition_in": 14312,
+    "acceptance_rate": 26,
+    "strong_majors": [
+      "environmental",
+      "engineering",
+      "communications",
+      "social_sciences"
+    ],
+    "highlight": "Beach-side campus with strong research",
+    "url": "https://ucsb.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/UCSB_Storke_Tower.jpg/960px-UCSB_Storke_Tower.jpg"
+  },
+  {
+    "id": "bu",
+    "name": "Boston University",
+    "city": "Boston",
+    "state": "MA",
+    "type": "private",
+    "size": "large",
+    "tuition": 61550,
+    "tuition_in": 61550,
+    "acceptance_rate": 14,
+    "strong_majors": [
+      "communications",
+      "health_sciences",
+      "business",
+      "law",
+      "engineering"
+    ],
+    "highlight": "Urban campus along Commonwealth Avenue",
+    "url": "https://bu.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Boston_University_College_of_Arts_and_Sciences.jpg/960px-Boston_University_College_of_Arts_and_Sciences.jpg"
+  },
+  {
+    "id": "northeastern",
+    "name": "Northeastern University",
+    "city": "Boston",
+    "state": "MA",
+    "type": "private",
+    "size": "large",
+    "tuition": 60450,
+    "tuition_in": 60450,
+    "acceptance_rate": 7,
+    "strong_majors": [
+      "engineering",
+      "business",
+      "computer_science",
+      "health_sciences"
+    ],
+    "highlight": "Co-op program integrates work experience into degree",
+    "url": "https://northeastern.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Northeastern_University_International_Village.jpg/960px-Northeastern_University_International_Village.jpg"
+  },
+  {
+    "id": "umiami",
+    "name": "University of Miami",
+    "city": "Coral Gables",
+    "state": "FL",
+    "type": "private",
+    "size": "medium",
+    "tuition": 57666,
+    "tuition_in": 57666,
+    "acceptance_rate": 19,
+    "strong_majors": [
+      "health_sciences",
+      "business",
+      "law",
+      "communications",
+      "hospitality"
+    ],
+    "highlight": "Strong marine science and tropical medicine in South Florida",
+    "url": "https://miami.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/University_of_Miami_Otto_G._Richter_Library.jpg/960px-University_of_Miami_Otto_G._Richter_Library.jpg"
+  },
+  {
+    "id": "fsu",
+    "name": "Florida State University",
+    "city": "Tallahassee",
+    "state": "FL",
+    "type": "public",
+    "size": "large",
+    "tuition": 6363,
+    "tuition_in": 6363,
+    "acceptance_rate": 25,
+    "strong_majors": [
+      "business",
+      "law",
+      "education",
+      "arts_design",
+      "sports_recreation"
+    ],
+    "highlight": "Top film school and strong criminology",
+    "url": "https://fsu.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Westcott_Building_and_fountain_at_Florida_State_University.jpg/960px-Westcott_Building_and_fountain_at_Florida_State_University.jpg"
+  },
+  {
+    "id": "arizona",
+    "name": "University of Arizona",
+    "city": "Tucson",
+    "state": "AZ",
+    "type": "public",
+    "size": "large",
+    "tuition": 12400,
+    "tuition_in": 12400,
+    "acceptance_rate": 85,
+    "strong_majors": [
+      "environmental",
+      "engineering",
+      "business",
+      "health_sciences"
+    ],
+    "highlight": "Top astronomy and optics programs",
+    "url": "https://arizona.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Old_Main%2C_University_of_Arizona_%283442867531%29.jpg/960px-Old_Main%2C_University_of_Arizona_%283442867531%29.jpg"
+  },
+  {
+    "id": "rutgers",
+    "name": "Rutgers University",
+    "city": "New Brunswick",
+    "state": "NJ",
+    "type": "public",
+    "size": "large",
+    "tuition": 15992,
+    "tuition_in": 15992,
+    "acceptance_rate": 66,
+    "strong_majors": [
+      "engineering",
+      "business",
+      "health_sciences",
+      "communications",
+      "social_sciences"
+    ],
+    "highlight": "Flagship public research university of New Jersey",
+    "url": "https://rutgers.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Rutgers_University_Old_Queens.jpg/960px-Rutgers_University_Old_Queens.jpg"
+  },
+  {
+    "id": "stonybrook",
+    "name": "Stony Brook University",
+    "city": "Stony Brook",
+    "state": "NY",
+    "type": "public",
+    "size": "large",
+    "tuition": 10560,
+    "tuition_in": 10560,
+    "acceptance_rate": 48,
+    "strong_majors": [
+      "health_sciences",
+      "engineering",
+      "computer_science",
+      "environmental"
+    ],
+    "highlight": "Strong research and medical school on Long Island",
+    "url": "https://stonybrook.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Stony_Brook_University_Union.jpg/960px-Stony_Brook_University_Union.jpg"
+  },
+  {
+    "id": "syracuse",
+    "name": "Syracuse University",
+    "city": "Syracuse",
+    "state": "NY",
+    "type": "private",
+    "size": "large",
+    "tuition": 57482,
+    "tuition_in": 57482,
+    "acceptance_rate": 52,
+    "strong_majors": [
+      "communications",
+      "arts_design",
+      "business",
+      "architecture",
+      "sports_recreation"
+    ],
+    "highlight": "Top communications and Newhouse School",
+    "url": "https://syracuse.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Crouse_College%2C_Syracuse_University.jpg/960px-Crouse_College%2C_Syracuse_University.jpg"
+  },
+  {
+    "id": "temple",
+    "name": "Temple University",
+    "city": "Philadelphia",
+    "state": "PA",
+    "type": "public",
+    "size": "large",
+    "tuition": 17522,
+    "tuition_in": 17522,
+    "acceptance_rate": 72,
+    "strong_majors": [
+      "communications",
+      "health_sciences",
+      "business",
+      "law",
+      "arts_design"
+    ],
+    "highlight": "Urban campus with strong media and film programs",
+    "url": "https://temple.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Temple_University_College_of_Liberal_Arts.jpg/960px-Temple_University_College_of_Liberal_Arts.jpg"
+  },
+  {
+    "id": "uoregon",
+    "name": "University of Oregon",
+    "city": "Eugene",
+    "state": "OR",
+    "type": "public",
+    "size": "large",
+    "tuition": 13431,
+    "tuition_in": 13431,
+    "acceptance_rate": 86,
+    "strong_majors": [
+      "communications",
+      "education",
+      "business",
+      "sports_recreation",
+      "arts_design"
+    ],
+    "highlight": "Strong journalism and Nike connections",
+    "url": "https://uoregon.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Erb_Memorial_Union_-_University_of_Oregon_-_Eugene%2C_Oregon_-_DSC09661.jpg/960px-Erb_Memorial_Union_-_University_of_Oregon_-_Eugene%2C_Oregon_-_DSC09661.jpg"
+  },
+  {
+    "id": "utah",
+    "name": "University of Utah",
+    "city": "Salt Lake City",
+    "state": "UT",
+    "type": "public",
+    "size": "large",
+    "tuition": 9027,
+    "tuition_in": 9027,
+    "acceptance_rate": 95,
+    "strong_majors": [
+      "health_sciences",
+      "engineering",
+      "computer_science",
+      "business"
+    ],
+    "highlight": "Strong medical and gaming programs",
+    "url": "https://utah.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/U_-_University_of_Utah_-_DSC02422.JPG/960px-U_-_University_of_Utah_-_DSC02422.JPG"
+  },
+  {
+    "id": "baylor",
+    "name": "Baylor University",
+    "city": "Waco",
+    "state": "TX",
+    "type": "private",
+    "size": "large",
+    "tuition": 52262,
+    "tuition_in": 52262,
+    "acceptance_rate": 46,
+    "strong_majors": [
+      "health_sciences",
+      "business",
+      "law",
+      "education"
+    ],
+    "highlight": "Christian university with top nursing and law",
+    "url": "https://baylor.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Pat_Neff_Hall%2C_Baylor_University.jpg/960px-Pat_Neff_Hall%2C_Baylor_University.jpg"
+  },
+  {
+    "id": "howard",
+    "name": "Howard University",
+    "city": "Washington",
+    "state": "DC",
+    "type": "private",
+    "size": "medium",
+    "tuition": 28616,
+    "tuition_in": 28616,
+    "acceptance_rate": 35,
+    "strong_majors": [
+      "health_sciences",
+      "law",
+      "business",
+      "communications",
+      "social_sciences"
+    ],
+    "highlight": "Historic HBCU with top law and medical schools",
+    "url": "https://howard.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Howard_University_Student_Center.jpg/960px-Howard_University_Student_Center.jpg"
+  },
+  {
+    "id": "colorado_state",
+    "name": "Colorado State University",
+    "city": "Fort Collins",
+    "state": "CO",
+    "type": "public",
+    "size": "large",
+    "tuition": 12837,
+    "tuition_in": 12837,
+    "acceptance_rate": 91,
+    "strong_majors": [
+      "agriculture",
+      "environmental",
+      "engineering",
+      "health_sciences"
+    ],
+    "highlight": "Strong veterinary and atmospheric science",
+    "url": "https://colostate.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Colorado_State_University_Lagoon%2C_Rec_Center%2C_and_Intramural_Fields.jpg/960px-Colorado_State_University_Lagoon%2C_Rec_Center%2C_and_Intramural_Fields.jpg"
+  },
+  {
+    "id": "kansas_state",
+    "name": "Kansas State University",
+    "city": "Manhattan",
+    "state": "KS",
+    "type": "public",
+    "size": "large",
+    "tuition": 10520,
+    "tuition_in": 10520,
+    "acceptance_rate": 96,
+    "strong_majors": [
+      "agriculture",
+      "engineering",
+      "business",
+      "education"
+    ],
+    "highlight": "Top agriculture and vet med programs",
+    "url": "https://k-state.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/KSU_Anderson_Hall.jpg/960px-KSU_Anderson_Hall.jpg"
+  },
+  {
+    "id": "georgia_state",
+    "name": "Georgia State University",
+    "city": "Atlanta",
+    "state": "GA",
+    "type": "public",
+    "size": "large",
+    "tuition": 9234,
+    "tuition_in": 9234,
+    "acceptance_rate": 69,
+    "strong_majors": [
+      "business",
+      "law",
+      "health_sciences",
+      "computer_science",
+      "communications"
+    ],
+    "highlight": "Diverse urban university with strong business school",
+    "url": "https://gsu.edu",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Georgia_State_University_-_Student_Center_West%2C_Atlanta%2C_GA_%2840508643683%29.jpg/960px-Georgia_State_University_-_Student_Center_West%2C_Atlanta%2C_GA_%2840508643683%29.jpg"
   }
 ]
