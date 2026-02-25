@@ -67,6 +67,30 @@ In `.env`:
 GEMINI_API_KEY=your-key-from-aistudio-google-com
 ```
 
+## Docker
+
+To run FutureFit with Docker:
+
+### 1. Build and start
+
+```bash
+docker compose up --build
+```
+
+### 2. Open the app
+
+Visit [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in your browser.
+
+### 3. (Optional) AI resume tools — Gemini API key
+
+Create a `.env` file in the project root with your Gemini API key. The container mounts the project directory, so the app will load `.env` automatically:
+
+```
+GEMINI_API_KEY=your-key-from-aistudio-google-com
+```
+
+Get a key from [Google AI Studio](https://aistudio.google.com/apikey).
+
 ## Run on GitHub Pages (static site)
 
 FutureFit includes a **static version** in the `docs/` folder that runs entirely in the browser—no server needed. To host it on GitHub Pages:
@@ -97,6 +121,8 @@ FutureFit/
 ├── scripts/            # export_quiz_json.py for static site data
 ├── manage.py
 ├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
 └── README.md
 ```
 
