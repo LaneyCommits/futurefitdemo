@@ -1,3 +1,4 @@
+"""Career quiz app URLs: home, choose path, take quiz, explore, results."""
 from django.urls import path
 from . import views
 

@@ -1,3 +1,4 @@
+"""Schools/colleges app URLs: school finder."""
 from django.urls import path
 from . import views
 

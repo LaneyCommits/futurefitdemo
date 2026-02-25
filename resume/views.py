@@ -1,3 +1,11 @@
+"""
+Resume & Writing app views.
+
+Sections:
+  - Page views: home, templates (resume/cover letter/admissions essay), tips, AI tools, generate
+  - API: template HTML, cover letter HTML, PDF generation
+  - AI API: Gemini-backed endpoints for gap analysis, enhancement, review, etc.
+"""
 import io
 import json
 import logging
@@ -14,6 +22,10 @@ from google import genai
 
 from .resume_data import RESUME_TEMPLATES, RESUME_TIPS, COVER_LETTER_TEMPLATES
 
+
+# ---------------------------------------------------------------------------
+# Page views
+# ---------------------------------------------------------------------------
 
 def resume_home_view(request):
     majors = [
@@ -62,6 +74,10 @@ def resume_generate_view(request):
     """AI Resume Generator form page."""
     return render(request, 'resume/generate.html')
 
+
+# ---------------------------------------------------------------------------
+# API: template/cover-letter HTML, PDF generation
+# ---------------------------------------------------------------------------
 
 def resume_template_html_view(request, major_key):
     """Return template HTML for a major (for inline loading on templates page)."""

@@ -1,4 +1,19 @@
-/* FutureFit – navy, sage, off-white, teal accent. */
+/*
+ * FutureFit – main stylesheet
+ *
+ * Sections (search for these headers):
+ *   1. CSS variables & base reset
+ *   2. Layout: header, nav, main, footer
+ *   3. Home page blocks
+ *   4. Buttons & forms
+ *   5. Career quiz
+ *   6. Resume / document types
+ *   7. Resume templates & academic writing layout
+ *   8. Schools / colleges
+ *   9. Footer
+ */
+
+/* 1. CSS variables & base reset */
 :root {
   --navy: #1F2A44;
   --sage: #7FAF9D;
@@ -57,8 +72,7 @@ body.is-scrolled .main-content {
   box-shadow: 0 -2px 24px rgba(31, 42, 68, 0.06);
 }
 
-/* Header */
-/* Navbar */
+/* 2. Layout: header & nav */
 .site-header {
   position: sticky;
   top: 0;
@@ -181,57 +195,6 @@ body.is-scrolled .site-header {
 }
 @media (max-width: 600px) {
   .btn-header { padding: 0.5rem 1rem; font-size: 0.82rem; }
-}
-
-/* Nav dropdown: Academic Writing */
-.nav-dropdown {
-  position: relative;
-}
-.nav-dropdown-trigger {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-}
-.nav-dropdown-chevron {
-  font-size: 0.65rem;
-  margin-left: 0.2rem;
-  opacity: 0.8;
-}
-.nav-dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  margin-top: 0.25rem;
-  min-width: 180px;
-  background: var(--surface);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-hover);
-  border: 1px solid var(--border);
-  padding: 0.35rem 0;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-4px);
-  transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
-  z-index: 200;
-}
-.nav-dropdown-menu.is-open {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-.nav-dropdown-item {
-  display: block;
-  padding: 0.5rem 1rem;
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: color 0.2s, background 0.2s;
-}
-.nav-dropdown-item:hover {
-  color: var(--navy);
-  background: rgba(31, 42, 68, 0.05);
 }
 
 /* Home: full-width block layout */

@@ -1,3 +1,4 @@
+"""Resume analysis app URLs: home (gap analysis, AI tools)."""
 from django.urls import path
 from . import views
 

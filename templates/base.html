@@ -23,16 +23,7 @@
             <nav class="nav">
                 <a href="{% url 'home' %}" class="nav-link">Home</a>
                 <a href="{% url 'career_quiz_about' %}" class="nav-link">About</a>
-                <div class="nav-dropdown" id="academicWritingDropdown">
-                    <button type="button" class="nav-link nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true" aria-controls="academicWritingMenu" id="academicWritingTrigger">
-                        Academic Writing <span class="nav-dropdown-chevron" aria-hidden="true">▾</span>
-                    </button>
-                    <div class="nav-dropdown-menu" id="academicWritingMenu" role="menu" aria-labelledby="academicWritingTrigger">
-                        <a href="{% url 'resume_cover_letters' %}" class="nav-dropdown-item" role="menuitem">Cover Letters</a>
-                        <a href="{% url 'resume_admissions_essays' %}" class="nav-dropdown-item" role="menuitem">Admissions Essays</a>
-                        <a href="{% url 'resume_home' %}" class="nav-dropdown-item" role="menuitem">Resume</a>
-                    </div>
-                </div>
+                <a href="{% url 'resume_home' %}" class="nav-link">Resume &amp; Writing</a>
                 <a href="{% url 'schools_home' %}" class="nav-link">Colleges</a>
                 <a href="{% url 'career_quiz_home' %}" class="btn btn-header"><span class="btn-header-full">Take the quiz</span><span class="btn-header-short">Quiz</span></a>
             </nav>
@@ -73,23 +64,5 @@
         </div>
     </footer>
     <script src="{% static 'js/dimension.js' %}"></script>
-    <script>
-    (function() {
-        var trigger = document.getElementById('academicWritingTrigger');
-        var menu = document.getElementById('academicWritingMenu');
-        if (!trigger || !menu) return;
-        trigger.addEventListener('click', function(e) {
-            e.stopPropagation();
-            var open = trigger.getAttribute('aria-expanded') === 'true';
-            trigger.setAttribute('aria-expanded', !open);
-            menu.classList.toggle('is-open', !open);
-        });
-        document.addEventListener('click', function() {
-            trigger.setAttribute('aria-expanded', 'false');
-            menu.classList.remove('is-open');
-        });
-        menu.addEventListener('click', function(e) { e.stopPropagation(); });
-    })();
-    </script>
 </body>
 </html>

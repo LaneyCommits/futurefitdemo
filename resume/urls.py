@@ -1,6 +1,17 @@
+"""
+Resume & Writing app URLs.
+
+Sections:
+  - Document types: resume, cover letters, admissions essays (templates)
+  - Pages: home, tips, AI tools, generate
+  - API: template/cover-letter HTML, PDF generation, AI endpoints
+"""
 from django.urls import path
 from . import views
 
+# ---------------------------------------------------------------------------
+# Document type pages (Resume, Cover Letters, Admissions Essays)
+# ---------------------------------------------------------------------------
 urlpatterns = [
     path('', views.resume_home_view, name='resume_home'),
     path('templates/', views.resume_templates_view, name='resume_templates'),
@@ -10,11 +21,11 @@ urlpatterns = [
     path('tips/', views.resume_tips_view, name='resume_tips'),
     path('ai-tools/', views.resume_ai_tools_view, name='resume_ai_tools'),
     path('generate/', views.resume_generate_view, name='resume_generate'),
+    # API: template/cover-letter HTML, PDF
     path('api/pdf/', views.resume_pdf_view, name='resume_pdf'),
     path('api/template/<str:major_key>/', views.resume_template_html_view, name='resume_template_html'),
     path('api/cover-letter/<str:major_key>/', views.resume_cover_letter_html_view, name='resume_cover_letter_html'),
     path('api/generate-pdf/', views.resume_generate_pdf_view, name='resume_generate_pdf'),
-
     # AI API endpoints
     path('api/ai/status/', views.ai_status_view, name='resume_ai_status'),
     path('api/ai/extract-pdf/', views.ai_extract_pdf_view, name='resume_ai_extract_pdf'),
