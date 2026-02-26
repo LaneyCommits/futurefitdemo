@@ -8,6 +8,38 @@
 {% endblock %}
 
 {% block content %}
+<!-- Hero -->
+<section class="block block--hero block--hero-with-bg resume-hero resume-hero--compact">
+    <div class="hero-shapes" aria-hidden="true">
+        <div class="hero-shape hero-shape--orb hero-shape-1"></div>
+        <div class="hero-shape hero-shape--orb hero-shape-2"></div>
+        <div class="hero-shape hero-shape--orb hero-shape-3"></div>
+        <div class="hero-shape hero-shape--blob hero-shape-4"></div>
+        <div class="hero-shape hero-shape--prism hero-shape-5"></div>
+        <div class="hero-shape hero-shape--prism hero-shape-6"></div>
+        <div class="hero-shape hero-shape--glow hero-shape-7"></div>
+        <div class="hero-shape hero-shape--glow hero-shape-8"></div>
+    </div>
+    <div class="hero-particles hero-particles--behind" aria-hidden="true">
+        <span class="hero-particle hero-particle--s" style="--x: 9%; --y: 16%; --d: 0"></span>
+        <span class="hero-particle hero-particle--m" style="--x: 86%; --y: 24%; --d: 0.9"></span>
+        <span class="hero-particle hero-particle--s" style="--x: 14%; --y: 46%; --d: 1.6"></span>
+        <span class="hero-particle hero-particle--l" style="--x: 76%; --y: 52%; --d: 0.2"></span>
+        <span class="hero-particle hero-particle--accent" style="--x: 26%; --y: 32%; --d: 0.4"></span>
+        <span class="hero-particle hero-particle--accent hero-particle--s" style="--x: 70%; --y: 44%; --d: 1.5"></span>
+    </div>
+    <div class="block-inner">
+        <p class="hero-badge">{{ majors|length }} majors · free downloads</p>
+        <h1 class="block-hero-title">Resume Templates</h1>
+        <p class="block-hero-sub">Pick a major from the sidebar to load a template. Edit in place, use AI to polish, and download as PDF.</p>
+    </div>
+    <div class="hero-particles hero-particles--front" aria-hidden="true">
+        <span class="hero-particle hero-particle--m" style="--x: 28%; --y: 20%; --d: 0.6"></span>
+        <span class="hero-particle hero-particle--s" style="--x: 68%; --y: 38%; --d: 1.0"></span>
+        <span class="hero-particle hero-particle--accent hero-particle--s" style="--x: 52%; --y: 82%; --d: 0.7"></span>
+    </div>
+</section>
+
 <div class="academic-writing-layout" data-doc-type="{{ doc_type|default:'resume' }}">
     <!-- Left sidebar: Word+Canva style -->
     <aside class="academic-sidebar" id="academicSidebar">
@@ -104,10 +136,6 @@
     <!-- Main content area -->
     <main class="academic-main">
         <div class="academic-main-inner">
-            <header class="academic-main-header">
-                <h1 class="academic-main-title">What will you design today?</h1>
-            </header>
-
             <div class="academic-toolbar-wrapper" style="position:relative">
             <div class="academic-toolbar" id="academicToolbar">
                 <button type="button" class="academic-toolbar-ai" id="futureBotTrigger" title="FutureBot — AI writing assistant">

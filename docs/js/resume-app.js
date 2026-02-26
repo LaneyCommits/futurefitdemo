@@ -17,6 +17,12 @@
     return DATA;
   }
 
+  const HERO_DECOR = {
+    shapes: '<div class="hero-shapes" aria-hidden="true"><div class="hero-shape hero-shape--orb hero-shape-1"></div><div class="hero-shape hero-shape--orb hero-shape-2"></div><div class="hero-shape hero-shape--orb hero-shape-3"></div><div class="hero-shape hero-shape--blob hero-shape-4"></div><div class="hero-shape hero-shape--prism hero-shape-5"></div><div class="hero-shape hero-shape--prism hero-shape-6"></div><div class="hero-shape hero-shape--glow hero-shape-7"></div><div class="hero-shape hero-shape--glow hero-shape-8"></div></div>',
+    particlesBehind: '<div class="hero-particles hero-particles--behind" aria-hidden="true"><span class="hero-particle hero-particle--s" style="--x: 9%; --y: 16%; --d: 0"></span><span class="hero-particle hero-particle--m" style="--x: 86%; --y: 24%; --d: 0.9"></span><span class="hero-particle hero-particle--s" style="--x: 14%; --y: 46%; --d: 1.6"></span><span class="hero-particle hero-particle--l" style="--x: 76%; --y: 52%; --d: 0.2"></span><span class="hero-particle hero-particle--accent" style="--x: 26%; --y: 32%; --d: 0.4"></span><span class="hero-particle hero-particle--accent hero-particle--s" style="--x: 70%; --y: 44%; --d: 1.5"></span></div>',
+    particlesFront: '<div class="hero-particles hero-particles--front" aria-hidden="true"><span class="hero-particle hero-particle--m" style="--x: 28%; --y: 20%; --d: 0.6"></span><span class="hero-particle hero-particle--s" style="--x: 68%; --y: 38%; --d: 1.0"></span><span class="hero-particle hero-particle--accent hero-particle--s" style="--x: 52%; --y: 82%; --d: 0.7"></span></div>'
+  };
+
   function majorCardHTML(key, t, idx) {
     var delayClass = (typeof idx === 'number' && idx < 6) ? ' reveal-delay-' + idx : '';
     return `<a href="resume-template.html?major=${key}" class="resume-major-card reveal${delayClass}" data-keywords="${t.label.toLowerCase()} ${t.focus.toLowerCase()}">
@@ -35,6 +41,8 @@
 
     el.innerHTML = `
     <section class="block block--hero block--hero-with-bg resume-hero">
+      ${HERO_DECOR.shapes}
+      ${HERO_DECOR.particlesBehind}
       <div class="block-inner">
         <p class="hero-badge">Free for students</p>
         <h1 class="block-hero-title">Build a resume that gets you hired</h1>
@@ -44,6 +52,7 @@
           <a href="resume-tips.html" class="btn btn-hero-secondary">Resume tips <span class="btn-arrow btn-arrow--outline" aria-hidden="true">▶</span></a>
         </div>
       </div>
+      ${HERO_DECOR.particlesFront}
     </section>
     <section class="block block--dark">
       <div class="block-inner">
@@ -94,11 +103,14 @@
 
     el.innerHTML = `
     <section class="block block--hero block--hero-with-bg resume-hero resume-hero--compact">
+      ${HERO_DECOR.shapes}
+      ${HERO_DECOR.particlesBehind}
       <div class="block-inner">
         <p class="hero-badge">${count} majors · free downloads</p>
         <h1 class="block-hero-title">Resume Templates by Major</h1>
         <p class="block-hero-sub">Every field has different expectations. Pick your major to get a template with the right sections, formatting, and sample content — ready to download as a PDF.</p>
       </div>
+      ${HERO_DECOR.particlesFront}
     </section>
     <section class="block resume-templates-section">
       <div class="block-inner">
@@ -180,11 +192,14 @@
 
     el.innerHTML = `
     <section class="block block--hero block--hero-with-bg resume-hero resume-hero--compact">
+      ${HERO_DECOR.shapes}
+      ${HERO_DECOR.particlesBehind}
       <div class="block-inner">
         <p class="hero-badge">${t.label} · editable template</p>
         <h1 class="block-hero-title">${t.icon} ${t.label} Resume</h1>
         <p class="block-hero-sub">${t.focus} — tailored format and sample content for ${t.label} students.</p>
       </div>
+      ${HERO_DECOR.particlesFront}
     </section>
     <section class="block resume-detail-section">
       <div class="block-inner">
@@ -426,11 +441,14 @@
 
     el.innerHTML = `
     <section class="block block--hero block--hero-with-bg resume-hero resume-hero--compact">
+      ${HERO_DECOR.shapes}
+      ${HERO_DECOR.particlesBehind}
       <div class="block-inner">
         <p class="hero-badge">${tips.length} expert tips</p>
         <h1 class="block-hero-title">Resume Tips & Best Practices</h1>
         <p class="block-hero-sub">Expert advice to help you write a resume that stands out. Whether you're starting from scratch or polishing a draft, these tips will help.</p>
       </div>
+      ${HERO_DECOR.particlesFront}
     </section>
     <section class="block resume-tips-section">
       <div class="block-inner">
@@ -483,11 +501,14 @@
   window.renderResumeAITools = async function (el) {
     el.innerHTML = `
     <section class="block block--hero block--hero-with-bg resume-hero resume-hero--compact">
+      ${HERO_DECOR.shapes}
+      ${HERO_DECOR.particlesBehind}
       <div class="block-inner">
         <p class="hero-badge">AI-powered · free</p>
         <h1 class="block-hero-title">Resume Gap Analysis</h1>
         <p class="block-hero-sub">See how your resume stacks up against a real job posting. Get an AI-powered match score, find out what's missing, and learn exactly what to add.</p>
       </div>
+      ${HERO_DECOR.particlesFront}
     </section>
     <section class="block resume-ai-section">
       <div class="block-inner">

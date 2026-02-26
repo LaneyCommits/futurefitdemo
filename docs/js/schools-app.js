@@ -61,13 +61,20 @@
       return '<option value="' + c.key + '" data-low="' + c.low + '" data-high="' + c.high + '">' + c.label + '</option>';
     }).join('');
 
+    var heroShapes = '<div class="hero-shapes" aria-hidden="true"><div class="hero-shape hero-shape--orb hero-shape-1"></div><div class="hero-shape hero-shape--orb hero-shape-2"></div><div class="hero-shape hero-shape--orb hero-shape-3"></div><div class="hero-shape hero-shape--blob hero-shape-4"></div><div class="hero-shape hero-shape--prism hero-shape-5"></div><div class="hero-shape hero-shape--prism hero-shape-6"></div><div class="hero-shape hero-shape--glow hero-shape-7"></div><div class="hero-shape hero-shape--glow hero-shape-8"></div></div>';
+    var heroParticlesBehind = '<div class="hero-particles hero-particles--behind" aria-hidden="true"><span class="hero-particle hero-particle--s" style="--x: 9%; --y: 16%; --d: 0"></span><span class="hero-particle hero-particle--m" style="--x: 86%; --y: 24%; --d: 0.9"></span><span class="hero-particle hero-particle--s" style="--x: 14%; --y: 46%; --d: 1.6"></span><span class="hero-particle hero-particle--l" style="--x: 76%; --y: 52%; --d: 0.2"></span><span class="hero-particle hero-particle--accent" style="--x: 26%; --y: 32%; --d: 0.4"></span><span class="hero-particle hero-particle--accent hero-particle--s" style="--x: 70%; --y: 44%; --d: 1.5"></span></div>';
+    var heroParticlesFront = '<div class="hero-particles hero-particles--front" aria-hidden="true"><span class="hero-particle hero-particle--m" style="--x: 28%; --y: 20%; --d: 0.6"></span><span class="hero-particle hero-particle--s" style="--x: 68%; --y: 38%; --d: 1.0"></span><span class="hero-particle hero-particle--accent hero-particle--s" style="--x: 52%; --y: 82%; --d: 0.7"></span></div>';
+
     el.innerHTML = `
     <section class="block block--hero block--hero-with-bg schools-hero">
+      ${heroShapes}
+      ${heroParticlesBehind}
       <div class="block-inner">
         <p class="hero-badge">${SCHOOLS.length} schools · 16 majors · free</p>
         <h1 class="block-hero-title">Find the right school for you</h1>
         <p class="block-hero-sub">Filter by major, location, cost, and school type to find colleges that fit your goals — not just what's trending.</p>
       </div>
+      ${heroParticlesFront}
     </section>
     <section class="block schools-content-section">
       <div class="block-inner">
@@ -123,9 +130,11 @@
       return '$' + n;
     }
 
+    var LIGHT_PILL_MAJORS = { business: 1, health_sciences: 1, education: 1, computer_science: 1, communications: 1, law: 1 };
     function majorPills(majors) {
       return majors.map(function(m) {
-        return '<span class="school-major-pill">' + (MAJOR_LABELS[m] || m) + '</span>';
+        var lightClass = LIGHT_PILL_MAJORS[m] ? ' school-major-pill--light' : '';
+        return '<span class="school-major-pill' + lightClass + '">' + (MAJOR_LABELS[m] || m) + '</span>';
       }).join('');
     }
 

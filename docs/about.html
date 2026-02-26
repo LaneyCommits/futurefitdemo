@@ -14,9 +14,9 @@
   <header class="site-header">
     <div class="header-inner">
       <div class="brand">
-        <a href="index.html" class="logo">FutureFit</a>
-        <span class="brand-divider" aria-hidden="true"></span>
-        <p class="site-tagline">You don't have to know yet</p>
+        <a href="index.html" class="logo">
+          <img src="images/header-logo.png" alt="FutureFit" class="logo-img" width="140" height="36">
+        </a>
       </div>
       <nav class="nav">
         <a href="index.html" class="nav-link">Home</a>
@@ -29,12 +29,39 @@
   </header>
   <main class="main-content about-page">
     <!-- Hero -->
-    <section class="about-hero">
-      <div class="about-hero-inner">
+    <section class="block block--hero block--hero-with-bg about-hero about-hero--unified">
+      <div class="hero-shapes" aria-hidden="true">
+        <div class="hero-shape hero-shape--orb hero-shape-1"></div>
+        <div class="hero-shape hero-shape--orb hero-shape-2"></div>
+        <div class="hero-shape hero-shape--orb hero-shape-3"></div>
+        <div class="hero-shape hero-shape--blob hero-shape-4"></div>
+        <div class="hero-shape hero-shape--prism hero-shape-5"></div>
+        <div class="hero-shape hero-shape--prism hero-shape-6"></div>
+        <div class="hero-shape hero-shape--glow hero-shape-7"></div>
+        <div class="hero-shape hero-shape--glow hero-shape-8"></div>
+      </div>
+      <div class="hero-particles hero-particles--behind" aria-hidden="true">
+        <span class="hero-particle hero-particle--s" style="--x: 10%; --y: 18%; --d: 0"></span>
+        <span class="hero-particle hero-particle--m" style="--x: 88%; --y: 25%; --d: 0.7"></span>
+        <span class="hero-particle hero-particle--s" style="--x: 15%; --y: 52%; --d: 1.4"></span>
+        <span class="hero-particle hero-particle--l" style="--x: 80%; --y: 58%; --d: 0.4"></span>
+        <span class="hero-particle hero-particle--s" style="--x: 22%; --y: 82%; --d: 1.9"></span>
+        <span class="hero-particle hero-particle--m" style="--x: 90%; --y: 75%; --d: 1.1"></span>
+        <span class="hero-particle hero-particle--accent" style="--x: 28%; --y: 35%; --d: 0.3"></span>
+        <span class="hero-particle hero-particle--accent hero-particle--s" style="--x: 68%; --y: 48%; --d: 1.6"></span>
+      </div>
+      <div class="block-inner about-hero-inner">
         <p class="hero-badge">No sign-up required</p>
-        <h1 class="about-hero-title">Find careers that actually fit you</h1>
-        <p class="about-hero-sub">The Career Discovery Quiz matches you to majors and careers based on your interests and personality — not just what everyone else is doing. It takes a few minutes, it's free, and you might be surprised by what you find.</p>
-        <a href="quiz.html" class="btn btn-primary btn-hero-primary" style="margin-top:0.5rem;">Take the quiz <span class="btn-arrow" aria-hidden="true">→</span></a>
+        <h1 class="block-hero-title">Find careers that actually fit you</h1>
+        <p class="block-hero-sub">The Career Discovery Quiz matches you to majors and careers based on your interests and personality — not just what everyone else is doing. It takes a few minutes, it's free, and you might be surprised by what you find.</p>
+        <div class="block-hero-buttons">
+          <a href="quiz.html" class="btn btn-primary btn-hero-primary">Take the quiz <span class="btn-arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="hero-particles hero-particles--front" aria-hidden="true">
+        <span class="hero-particle hero-particle--m" style="--x: 35%; --y: 22%; --d: 0.5"></span>
+        <span class="hero-particle hero-particle--s" style="--x: 72%; --y: 42%; --d: 1.2"></span>
+        <span class="hero-particle hero-particle--accent hero-particle--s" style="--x: 55%; --y: 78%; --d: 0.8"></span>
       </div>
     </section>
 
@@ -119,7 +146,6 @@
     <div class="footer-inner">
       <div class="footer-brand">
         <p class="footer-logo">FutureFit</p>
-        <p class="footer-tagline">You don't have to know yet.</p>
         <p class="footer-desc">A free career exploration tool built for college students who are still figuring it out — and that's completely okay.</p>
       </div>
       <div class="footer-links">
