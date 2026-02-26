@@ -124,14 +124,32 @@
     const detailPages = { resume: 'resume-template', cover_letter: 'resume-cover-letter', admissions_essay: 'resume-admissions-essay' };
     const detailPage = detailPages[docType] + '.html';
 
+    const useInlineEditor = docType === 'resume';
     const majorLinks = Object.entries(templates).map(([k, t]) => {
       const thumb = t.image ? `<img src="${t.image}" alt="" class="academic-major-thumb" loading="lazy">` : `<span class="academic-major-icon">${t.icon}</span>`;
-      return `<a href="${detailPage}?major=${k}" class="academic-major-link" data-keywords="${(t.label + ' ' + t.focus).toLowerCase()}">${thumb}<span class="academic-major-label">${t.label}</span></a>`;
+      const tag = useInlineEditor ? 'button' : 'a';
+      const attrs = useInlineEditor
+        ? `type="button" class="academic-major-link" data-major-key="${k}" data-keywords="${(t.label + ' ' + t.focus).toLowerCase()}"`
+        : `href="${detailPage}?major=${k}" class="academic-major-link" data-keywords="${(t.label + ' ' + t.focus).toLowerCase()}"`;
+      return `<${tag} ${attrs}>${thumb}<span class="academic-major-label">${t.label}</span></${tag}>`;
     }).join('');
 
+    const powerVerbsHTML = `
+        <div class="academic-tips-verbs">
+          <h4 class="academic-tips-verbs-title">Power action verbs</h4>
+          <p class="academic-tips-verbs-intro">Start your bullet points with these strong verbs.</p>
+          <div class="academic-tips-verb-groups">
+            <div class="academic-tips-verb-group"><strong>Leadership</strong><span>Led, Managed, Directed, Supervised, Coordinated, Spearheaded, Mentored, Delegated</span></div>
+            <div class="academic-tips-verb-group"><strong>Achievement</strong><span>Achieved, Exceeded, Improved, Increased, Reduced, Streamlined, Resolved, Delivered</span></div>
+            <div class="academic-tips-verb-group"><strong>Creation</strong><span>Designed, Developed, Created, Built, Launched, Established, Implemented, Initiated</span></div>
+            <div class="academic-tips-verb-group"><strong>Analysis</strong><span>Analyzed, Researched, Evaluated, Assessed, Investigated, Identified, Calculated, Forecasted</span></div>
+            <div class="academic-tips-verb-group"><strong>Communication</strong><span>Presented, Authored, Edited, Negotiated, Collaborated, Advocated, Facilitated, Persuaded</span></div>
+            <div class="academic-tips-verb-group"><strong>Technical</strong><span>Programmed, Engineered, Automated, Configured, Debugged, Optimized, Deployed, Integrated</span></div>
+          </div>
+        </div>`;
     const tipsHTML = tips.slice(0, 5).map((tip, i) =>
       `<div class="academic-tips-item"><span class="academic-tips-num">${i + 1}</span><div><strong class="academic-tips-title">${tip.title}</strong><p class="academic-tips-desc">${tip.desc}</p></div></div>`
-    ).join('') + `<a href="resume-tips.html" class="academic-tips-more">View full tips page →</a>`;
+    ).join('') + powerVerbsHTML + `<a href="resume-tips.html" class="academic-tips-more">View full tips page →</a>`;
 
     const resumeActive = docType === 'resume' ? ' is-active' : '';
     const coverActive = docType === 'cover_letter' ? ' is-active' : '';
@@ -157,9 +175,9 @@
           <div class="academic-sidebar-section">
             <p class="academic-sidebar-label">Document types</p>
             <nav class="academic-doc-nav">
-              <a href="resume-templates.html" class="academic-doc-link${resumeActive}">Resume</a>
               <a href="resume-cover-letters.html" class="academic-doc-link${coverActive}">Cover Letters</a>
               <a href="resume-admissions-essays.html" class="academic-doc-link${essayActive}">Admissions Essays</a>
+              <a href="resume-templates.html" class="academic-doc-link${resumeActive}">Resume</a>
             </nav>
           </div>
           <div class="academic-sidebar-section academic-majors-section">
@@ -177,13 +195,114 @@
             </details>
           </div>
         </div>
+        <button type="button" class="academic-sidebar-collapse" id="academicSidebarCollapse" title="Collapse sidebar" aria-label="Collapse sidebar">◀</button>
       </aside>
+      <button type="button" class="academic-sidebar-expand" id="academicSidebarExpand" title="Expand sidebar" aria-label="Show sidebar" style="display:none">▶</button>
       <main class="academic-main">
         <div class="academic-main-inner">
-          <div class="academic-toolbar-placeholder"></div>
-          <div class="academic-editor-placeholder">
-            <p class="academic-editor-msg">Pick a major from the sidebar to load a template.</p>
-            <p class="academic-editor-msg-sub">Click any major above to open the editor with a tailored template for your field.</p>
+          <div class="academic-toolbar-wrapper" style="position:relative">
+            <div class="academic-toolbar" id="academicToolbar">
+              <button type="button" class="academic-toolbar-ai" id="futureBotTrigger" title="FutureBot — AI writing assistant">
+                <span class="academic-toolbar-ai-icon" aria-hidden="true">✦</span> FutureBot
+              </button>
+              <span class="academic-toolbar-divider"></span>
+              <span class="academic-toolbar-group">
+                <button type="button" class="academic-toolbar-btn academic-toolbar-undo" data-action="undo" title="Undo">↶</button>
+                <button type="button" class="academic-toolbar-btn academic-toolbar-redo" data-action="redo" title="Redo">↷</button>
+              </span>
+              <span class="academic-toolbar-divider"></span>
+              <span class="academic-toolbar-group">
+                <button type="button" class="academic-toolbar-btn" data-cmd="formatBlock" data-value="h1" title="Heading 1">H1</button>
+                <button type="button" class="academic-toolbar-btn" data-cmd="formatBlock" data-value="h2" title="Heading 2">H2</button>
+                <button type="button" class="academic-toolbar-btn" data-cmd="formatBlock" data-value="h3" title="Heading 3">H3</button>
+              </span>
+              <span class="academic-toolbar-divider"></span>
+              <span class="academic-toolbar-group">
+                <span class="academic-toolbar-label">Font</span>
+                <select class="academic-toolbar-select" id="academicToolbarFont" title="Font">
+                  <option value="">—</option>
+                  <option value="Arial, Helvetica, sans-serif">Arial</option>
+                  <option value="'Times New Roman', Times, serif">Times New Roman</option>
+                  <option value="Georgia, serif">Georgia</option>
+                </select>
+                <span class="academic-toolbar-label">Size</span>
+                <select class="academic-toolbar-select academic-toolbar-size" id="academicToolbarSize" title="Size">
+                  <option value="">Size</option>
+                  <option value="1">10pt</option>
+                  <option value="2">12pt</option>
+                  <option value="3">14pt</option>
+                  <option value="4">18pt</option>
+                  <option value="5">24pt</option>
+                </select>
+              </span>
+              <span class="academic-toolbar-divider"></span>
+              <span class="academic-toolbar-group">
+                <button type="button" class="academic-toolbar-btn" data-cmd="bold" title="Bold"><strong>B</strong></button>
+                <button type="button" class="academic-toolbar-btn" data-cmd="italic" title="Italic"><em>I</em></button>
+                <button type="button" class="academic-toolbar-btn" data-cmd="underline" title="Underline">U</button>
+                <button type="button" class="academic-toolbar-btn" data-cmd="strikeThrough" title="Strikethrough">S̶</button>
+                <button type="button" class="academic-toolbar-btn" data-cmd="subscript" title="Subscript">X₂</button>
+                <button type="button" class="academic-toolbar-btn" data-cmd="superscript" title="Superscript">X²</button>
+              </span>
+              <span class="academic-toolbar-divider"></span>
+              <span class="academic-toolbar-group">
+                <button type="button" class="academic-toolbar-btn" data-cmd="link" title="Insert link">⎘</button>
+                <button type="button" class="academic-toolbar-btn" data-cmd="insertUnorderedList" title="Bullet list">• List</button>
+                <button type="button" class="academic-toolbar-btn" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+              </span>
+              <span class="academic-toolbar-divider"></span>
+              <span class="academic-toolbar-group">
+                <button type="button" class="academic-toolbar-btn" data-cmd="justifyLeft" title="Align left">≡ ←</button>
+                <button type="button" class="academic-toolbar-btn" data-cmd="justifyCenter" title="Align center">≡ ↔</button>
+                <button type="button" class="academic-toolbar-btn" data-cmd="justifyRight" title="Align right">≡ →</button>
+              </span>
+              <span class="academic-toolbar-divider"></span>
+              <span class="academic-toolbar-group">
+                <button type="button" class="academic-toolbar-btn" data-cmd="indent" title="Indent">→</button>
+                <button type="button" class="academic-toolbar-btn" data-cmd="outdent" title="Outdent">←</button>
+                <button type="button" class="academic-toolbar-btn" data-cmd="removeFormat" title="Clear formatting">✕</button>
+              </span>
+              <div class="academic-toolbar-actions">
+                <button type="button" class="academic-toolbar-download" id="academicDownloadPdf" title="Print or Save as PDF">
+                  <span aria-hidden="true">↓</span> Print / Save as PDF
+                </button>
+              </div>
+            </div>
+            <div class="futurebot-popup futurebot-popup--academic futurebot-popup--draggable" id="futureBotPopup" role="dialog" aria-labelledby="futureBotTitle" aria-hidden="true" style="display:none;">
+              <div class="futurebot-popup-inner">
+                <div class="futurebot-header futurebot-drag-handle" id="futureBotDragHandle" title="Drag to move">
+                  <h3 class="futurebot-title" id="futureBotTitle"><span class="futurebot-sparkle" aria-hidden="true">✦</span> FutureBot</h3>
+                  <button type="button" class="futurebot-close" id="futureBotClose" title="Close" aria-label="Close">&times;</button>
+                </div>
+                <p class="futurebot-prompt">Describe your writing task</p>
+                <div class="futurebot-input-row">
+                  <input type="text" class="futurebot-input" id="futureBotInput" placeholder="e.g. Write a professional summary for a software engineering internship" autocomplete="off">
+                  <button type="button" class="futurebot-generate-btn" id="futureBotGenerate" title="Generate">Generate</button>
+                </div>
+                <div class="futurebot-suggestions">
+                  <button type="button" class="futurebot-suggestion" data-task="Case Study">Case Study</button>
+                  <button type="button" class="futurebot-suggestion" data-task="Business Proposal">Business Proposal</button>
+                  <button type="button" class="futurebot-suggestion" data-task="Resume Summary">Resume Summary</button>
+                  <button type="button" class="futurebot-suggestion" data-task="Cover Letter">Cover Letter</button>
+                </div>
+                <p class="futurebot-status futurebot-status--static" style="display:block;margin-top:0.5rem">AI writing is available on the full FutureFit site. Use the template editor here, then visit FutureFit to polish with AI.</p>
+                <p class="futurebot-status" id="futureBotStatusInline" aria-live="polite" style="display:none;"></p>
+                <div class="futurebot-output-wrap" id="futureBotOutputWrap" style="display:none;">
+                  <div class="futurebot-output" id="futureBotOutput"></div>
+                  <button type="button" class="futurebot-insert-btn" id="futureBotInsertBtn" title="Insert into document">Insert into document</button>
+                </div>
+              </div>
+              <div class="futurebot-resize-handle" id="futureBotResizeHandle" title="Drag to resize"></div>
+            </div>
+          </div>
+          <div class="academic-document-wrap">
+            <div class="academic-document-paper" id="academicDocumentPaper">
+              <div class="resume-paper" id="academicCanvas">
+                <div class="rp-editor" id="rpEditor" contenteditable="true" data-placeholder="Pick a major from the sidebar to load a template, or click anywhere to start typing.">
+                  <p><br></p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>
@@ -203,10 +322,186 @@
       });
     }
 
+    // Sidebar collapse / expand
+    var sidebar = document.getElementById('academicSidebar');
+    var sidebarCollapse = document.getElementById('academicSidebarCollapse');
+    var sidebarExpand = document.getElementById('academicSidebarExpand');
+    if (sidebar && sidebarCollapse && sidebarExpand) {
+      sidebarCollapse.addEventListener('click', function() {
+        sidebar.classList.add('is-collapsed');
+        sidebarExpand.style.display = '';
+      });
+      sidebarExpand.addEventListener('click', function() {
+        sidebar.classList.remove('is-collapsed');
+        sidebarExpand.style.display = 'none';
+      });
+    }
+
+    // Main content: Quill editor, toolbar, major buttons, FutureBot, Download
+    initAcademicMainContent(el, { docType: docType, templates: templates, useInlineEditor: useInlineEditor });
+
     requestAnimationFrame(function() {
       if (typeof initReveal === 'function') initReveal();
     });
   };
+
+  function buildResumeTemplateHTML(template, majorKey) {
+    var label = template.label;
+    var focus = (template.focus || '').toLowerCase();
+    var sections = template.sections || [];
+    var sampleBullets = template.sample_bullets || [];
+    function sectionContent(section) {
+      if (section === 'Summary') {
+        return '<p>Results-driven ' + label + ' student with experience in ' + focus + '. Passionate about making an impact through practical skills and a strong work ethic. Seeking an entry-level position to apply classroom knowledge in a professional setting.</p>';
+      }
+      if (section === 'Education' || section === 'Education & Training') {
+        return '<p><strong>Bachelor of Science in ' + label + '</strong><br>Your University · Expected May 2026<br>GPA: 3.X/4.0 · Relevant Coursework: [Add your courses]</p>';
+      }
+      if (['Technical Skills', 'Skills', 'Tools & Software', 'Skills & Tools', 'Skills & Equipment'].indexOf(section) !== -1) {
+        return '<p>Add your relevant skills, tools, and software here. Separate technical skills from soft skills for clarity.</p>';
+      }
+      if (['Certifications', 'Certifications & Licenses', 'Licenses & Certifications'].indexOf(section) !== -1) {
+        return '<p>List relevant certifications, licenses, and professional training. Include dates earned and issuing organization.</p>';
+      }
+      if (['Portfolio', 'Portfolio & Projects'].indexOf(section) !== -1) {
+        return '<p>Link to your online portfolio (e.g., Behance, Dribbble, GitHub, personal website). List 2–3 key projects with brief descriptions of your role and impact.</p>';
+      }
+      var bullets = sampleBullets.map(function(b) { return '<li>' + b + '</li>'; }).join('');
+      return '<ul>' + bullets + '</ul>';
+    }
+    var contact = majorKey === 'computer_science'
+      ? 'email@example.com · (555) 123-4567 · City, State · linkedin.com/in/yourname · github.com/yourname'
+      : 'email@example.com · (555) 123-4567 · City, State · linkedin.com/in/yourname';
+    var parts = ['<h1>Your Name</h1>', '<p>' + contact + '</p>'];
+    sections.forEach(function(s) {
+      parts.push('<h2>' + s + '</h2>');
+      parts.push(sectionContent(s));
+    });
+    return parts.join('');
+  }
+
+  function initAcademicMainContent(container, opts) {
+    var docType = opts.docType || 'resume';
+    var templates = opts.templates || {};
+    var useInlineEditor = opts.useInlineEditor;
+    var editor = document.getElementById('rpEditor');
+    var paper = document.getElementById('academicDocumentPaper');
+    var toolbar = document.getElementById('academicToolbar');
+    var majorsList = document.getElementById('academicMajorsList');
+
+    var quillInstance = null;
+
+    function getFocusedQuill() {
+      if (typeof Quill === 'undefined') return null;
+      var active = document.activeElement;
+      if (!active) return null;
+      var qlEditor = active.closest && active.closest('.ql-editor');
+      if (!qlEditor) return null;
+      return Quill.find(qlEditor) || quillInstance;
+    }
+
+    function focusEditable() {
+      var ce = container.querySelector('#academicDocumentPaper [contenteditable="true"], #academicDocumentPaper .ql-editor');
+      if (ce) ce.focus();
+    }
+
+    if (useInlineEditor && majorsList) {
+      majorsList.querySelectorAll('.academic-major-link[data-major-key]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var key = this.getAttribute('data-major-key');
+          if (!key || !templates[key]) return;
+          majorsList.querySelectorAll('.academic-major-link').forEach(function(b) { b.classList.remove('is-selected'); });
+          this.classList.add('is-selected');
+          var html = buildResumeTemplateHTML(templates[key], key);
+          if (paper) paper.setAttribute('data-template-label', templates[key].label);
+          if (typeof Quill !== 'undefined' && editor) {
+            var q = Quill.find(editor) || quillInstance;
+            if (q && q.clipboard) {
+              try {
+                var delta = q.clipboard.convert(html);
+                q.setContents(delta, 'user');
+              } catch (e) {
+                q.clipboard.dangerouslyPasteHTML(0, html, 'user');
+              }
+            } else {
+              var qlEditor = editor.querySelector('.ql-editor');
+              if (qlEditor) qlEditor.innerHTML = html;
+              else if (editor.innerHTML !== undefined) editor.innerHTML = html;
+            }
+          } else if (editor) {
+            var qlEditor = editor.querySelector('.ql-editor');
+            if (qlEditor) qlEditor.innerHTML = html;
+            else if (editor.innerHTML !== undefined) editor.innerHTML = html;
+          }
+        });
+      });
+    }
+
+    if (typeof Quill !== 'undefined' && editor && !editor.querySelector('.ql-container')) {
+      var placeholder = editor.getAttribute('data-placeholder') || 'Pick a major from the sidebar to load a template, or click anywhere to start typing.';
+      quillInstance = new Quill(editor, {
+        theme: 'snow',
+        placeholder: placeholder,
+        modules: { toolbar: false, history: { userOnly: true } }
+      });
+      editor.removeAttribute('contenteditable');
+    }
+
+    if (toolbar) {
+      toolbar.querySelectorAll('.academic-toolbar-btn[data-cmd]').forEach(function(btn) {
+        btn.addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          focusEditable();
+          var cmd = this.getAttribute('data-cmd');
+          var val = this.getAttribute('data-value') || null;
+          var q = getFocusedQuill();
+          if (q) {
+            var m = { bold: 'bold', italic: 'italic', underline: 'underline', strikeThrough: 'strike',
+              subscript: ['script', 'sub'], superscript: ['script', 'super'],
+              insertUnorderedList: ['list', 'bullet'], insertOrderedList: ['list', 'ordered'],
+              justifyLeft: ['align', false], justifyCenter: ['align', 'center'], justifyRight: ['align', 'right'],
+              indent: ['indent', '+1'], outdent: ['indent', '-1'], removeFormat: 'clean' }[cmd];
+            if (cmd === 'formatBlock' && val) q.format('header', val === 'h1' ? 1 : val === 'h2' ? 2 : val === 'h3' ? 3 : false);
+            else if (cmd === 'link') { var url = prompt('Enter URL:'); if (url) q.format('link', url); }
+            else if (m === 'clean') q.format('clean');
+            else if (Array.isArray(m)) q.format(m[0], m[1]);
+            else if (m) q.format(cmd, val || !q.getFormat()[cmd]);
+          } else {
+            document.execCommand(cmd, false, val || null);
+          }
+        });
+      });
+      toolbar.querySelectorAll('.academic-toolbar-undo').forEach(function(btn) {
+        btn.addEventListener('click', function(e) { e.preventDefault(); var q = getFocusedQuill(); if (q && q.history && q.history.undo) q.history.undo(); });
+      });
+      toolbar.querySelectorAll('.academic-toolbar-redo').forEach(function(btn) {
+        btn.addEventListener('click', function(e) { e.preventDefault(); var q = getFocusedQuill(); if (q && q.history && q.history.redo) q.history.redo(); });
+      });
+      var fontSelect = document.getElementById('academicToolbarFont');
+      var sizeSelect = document.getElementById('academicToolbarSize');
+      if (fontSelect) fontSelect.addEventListener('change', function() { var q = getFocusedQuill(); if (q && this.value) q.format('font', this.value); });
+      if (sizeSelect) sizeSelect.addEventListener('change', function() { var q = getFocusedQuill(); if (q && this.value) q.format('size', this.value); });
+    }
+
+    var futureBotTrigger = document.getElementById('futureBotTrigger');
+    var futureBotPopup = document.getElementById('futureBotPopup');
+    var futureBotClose = document.getElementById('futureBotClose');
+    if (futureBotTrigger && futureBotPopup) {
+      futureBotTrigger.addEventListener('click', function() {
+        futureBotPopup.style.display = 'block';
+        futureBotPopup.setAttribute('aria-hidden', 'false');
+      });
+      if (futureBotClose) futureBotClose.addEventListener('click', function() {
+        futureBotPopup.style.display = 'none';
+        futureBotPopup.setAttribute('aria-hidden', 'true');
+      });
+    }
+
+    var downloadBtn = document.getElementById('academicDownloadPdf');
+    if (downloadBtn) {
+      downloadBtn.addEventListener('click', function() { window.print(); });
+    }
+  }
 
   /* ---- Resume Templates list (grid layout, legacy) ---- */
   window.renderResumeTemplates = async function (el) {
