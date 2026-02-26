@@ -1,4 +1,19 @@
-/* FutureFit – dark theme. */
+/*
+ * FutureFit – main stylesheet
+ *
+ * Sections (search for these headers):
+ *   1. CSS variables & base reset
+ *   2. Layout: header, nav, main, footer
+ *   3. Home page blocks
+ *   4. Buttons & forms
+ *   5. Career quiz
+ *   6. Resume / document types
+ *   7. Resume templates & academic writing layout
+ *   8. Schools / colleges
+ *   9. Footer
+ */
+
+/* 1. CSS variables & base reset — dark theme */
 :root {
   --navy: #071A2B;
   --primary-btn: #28D7FF;
@@ -59,19 +74,23 @@ body {
   .main-content { padding: 1.5rem 1rem; }
 }
 body.is-scrolled .main-content {
-  box-shadow: 0 -2px 24px rgba(31, 42, 68, 0.06);
+  box-shadow: 0 -2px 24px rgba(0, 0, 0, 0.2);
 }
 
-/* Header — always dark blue, no scroll-based color change */
-.site-header,
-body .site-header {
+/* 2. Layout: header & nav */
+.site-header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(10, 22, 40, 0.98) !important;
+  background: rgba(10, 22, 40, 0.9);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+body.is-scrolled .site-header {
+  background: rgba(10, 22, 40, 0.95);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
 }
 .header-inner {
@@ -310,14 +329,17 @@ body .site-header {
   50% { transform: translate(-5px, 8px) rotate(-2deg); }
   75% { transform: translate(12px, 5px) rotate(2deg); }
 }
-.hero-shape-5 { transform: rotate(-25deg); animation: heroShapeDriftPrism 12s ease-in-out infinite; animation-delay: 3s; }
-.hero-shape-6 { transform: rotate(15deg); animation: heroShapeDriftPrism2 14s ease-in-out infinite; animation-delay: 5s; }
+.hero-shape-5 { transform: rotate(-25deg); }
+.hero-shape-5 { animation: heroShapeDriftPrism 12s ease-in-out infinite; animation-delay: 3s; }
+.hero-shape-6 { transform: rotate(15deg); }
+.hero-shape-6 { animation: heroShapeDriftPrism 14s ease-in-out infinite; animation-delay: 5s; }
 @keyframes heroShapeDriftPrism {
   0%, 100% { transform: translate(0, 0) rotate(-25deg); }
   25% { transform: translate(8px, -12px) rotate(-22deg); }
   50% { transform: translate(-5px, 8px) rotate(-28deg); }
   75% { transform: translate(12px, 5px) rotate(-23deg); }
 }
+.hero-shape-6 { animation-name: heroShapeDriftPrism2; }
 @keyframes heroShapeDriftPrism2 {
   0%, 100% { transform: translate(0, 0) rotate(15deg); }
   25% { transform: translate(-6px, 10px) rotate(18deg); }
@@ -325,7 +347,6 @@ body .site-header {
   75% { transform: translate(-8px, -8px) rotate(16deg); }
 }
 
-/* Hero floating icons — some behind, some in front of text */
 /* Hero ambient particles — gentle drift, discovery/journey feel */
 .hero-particles {
   position: absolute;
@@ -368,7 +389,7 @@ body .site-header {
 .block--hero-with-bg .btn-hero-primary {
   background: var(--primary-btn);
   color: var(--navy);
-  box-shadow: 0 4px 20px rgba(7, 26, 43, 0.12);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 .block--hero-with-bg .btn-hero-primary:hover {
   background: var(--primary-btn-hover);
@@ -1971,12 +1992,13 @@ body .site-header {
   display: flex;
   min-height: 0;
   background: var(--surface);
+  padding-top: 1.5rem;
 }
 .academic-sidebar {
   width: 280px;
   max-width: 280px;
   flex-shrink: 0;
-  background: #f5f5f5;
+  background: var(--surface-elevated);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -2001,7 +2023,7 @@ body .site-header {
   margin: 0;
   border: none;
   border-left: 1px solid var(--border);
-  background: #f5f5f5;
+  background: var(--surface-elevated);
   color: var(--text-muted);
   font-size: 0.8rem;
   cursor: pointer;
@@ -2011,11 +2033,11 @@ body .site-header {
   justify-content: center;
   transition: background 0.2s, color 0.2s;
   z-index: 10;
-  box-shadow: 0 2px 8px rgba(31, 42, 68, 0.12);
+  box-shadow: var(--shadow);
 }
 .academic-sidebar-collapse:hover {
-  background: rgba(31, 42, 68, 0.08);
-  color: var(--navy);
+  background: rgba(40, 215, 255, 0.12);
+  color: var(--primary-btn);
 }
 .academic-sidebar.is-collapsed .academic-sidebar-collapse {
   display: none;
@@ -2028,7 +2050,7 @@ body .site-header {
   padding: 0;
   border: none;
   border-right: 1px solid var(--border);
-  background: #f5f5f5;
+  background: var(--surface-elevated);
   color: var(--text-muted);
   font-size: 0.75rem;
   cursor: pointer;
@@ -2040,8 +2062,8 @@ body .site-header {
   align-self: center;
 }
 .academic-sidebar-expand:hover {
-  background: rgba(79, 163, 165, 0.15);
-  color: var(--teal-accent);
+  background: rgba(40, 215, 255, 0.12);
+  color: var(--primary-btn);
 }
 .academic-sidebar-inner {
   padding: 1.25rem;
@@ -2070,12 +2092,12 @@ body .site-header {
   transition: color 0.2s, background 0.2s;
 }
 .academic-nav-item:hover {
-  color: var(--navy);
-  background: rgba(31, 42, 68, 0.06);
+  color: var(--text);
+  background: rgba(40, 215, 255, 0.08);
 }
 .academic-nav-item.is-active {
-  color: var(--teal-accent);
-  background: rgba(79, 163, 165, 0.1);
+  color: var(--primary-btn);
+  background: rgba(40, 215, 255, 0.12);
 }
 .academic-nav-icon {
   font-size: 1rem;
@@ -2107,15 +2129,15 @@ body .site-header {
 }
 .academic-ai-input:focus {
   outline: none;
-  border-color: var(--teal-accent);
+  border-color: var(--primary-btn);
 }
 .academic-ai-submit {
   width: 36px;
   height: 36px;
   border: none;
   border-radius: 50%;
-  background: var(--teal-accent);
-  color: #fff;
+  background: var(--primary-btn);
+  color: var(--navy);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -2123,7 +2145,7 @@ body .site-header {
   transition: background 0.2s, transform 0.15s;
 }
 .academic-ai-submit:hover {
-  background: var(--accent-hover);
+  background: var(--primary-btn-hover);
   transform: scale(1.05);
 }
 .academic-generate-btn {
@@ -2132,18 +2154,18 @@ body .site-header {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.65rem 1rem;
-  border: 1px solid var(--teal-accent);
+  border: 1px solid var(--primary-btn);
   border-radius: 10px;
-  background: rgba(79, 163, 165, 0.08);
-  color: var(--teal-accent);
+  background: rgba(40, 215, 255, 0.1);
+  color: var(--primary-btn);
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
 .academic-generate-btn:hover {
-  background: var(--teal-accent);
-  color: #fff;
+  background: var(--primary-btn);
+  color: var(--navy);
 }
 .academic-generate-icon {
   font-size: 0.9rem;
@@ -2162,13 +2184,13 @@ body .site-header {
   transition: color 0.2s, background 0.2s;
 }
 .academic-doc-link:hover {
-  color: var(--navy);
-  background: rgba(31, 42, 68, 0.05);
+  color: var(--text);
+  background: rgba(40, 215, 255, 0.08);
 }
 .academic-doc-link.is-active {
-  color: var(--teal-accent);
+  color: var(--primary-btn);
   font-weight: 600;
-  background: rgba(79, 163, 165, 0.1);
+  background: rgba(40, 215, 255, 0.12);
 }
 .academic-majors-section { flex: 1; overflow: hidden; }
 .academic-majors-list {
@@ -2195,12 +2217,12 @@ body .site-header {
   transition: background 0.2s, color 0.2s;
 }
 .academic-major-link:hover {
-  background: rgba(31, 42, 68, 0.06);
-  color: var(--teal-accent);
+  background: rgba(40, 215, 255, 0.08);
+  color: var(--primary-btn);
 }
 .academic-major-link.is-selected {
-  background: rgba(79, 163, 165, 0.12);
-  color: var(--teal-accent);
+  background: rgba(40, 215, 255, 0.15);
+  color: var(--primary-btn);
 }
 .academic-major-icon {
   font-size: 1.2rem;
@@ -2209,7 +2231,7 @@ body .site-header {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(79, 163, 165, 0.12);
+  background: rgba(40, 215, 255, 0.1);
   border-radius: 8px;
   flex-shrink: 0;
 }
@@ -2241,12 +2263,12 @@ body .site-header {
   justify-content: space-between;
   padding: 0.5rem 0;
   font-weight: 600;
-  color: var(--navy);
+  color: var(--text);
   transition: color 0.2s;
 }
 .academic-tips-dropdown-trigger::-webkit-details-marker { display: none; }
 .academic-tips-dropdown-trigger::marker { display: none; }
-.academic-tips-dropdown-trigger:hover { color: var(--teal-accent); }
+.academic-tips-dropdown-trigger:hover { color: var(--primary-btn); }
 .academic-tips-chevron {
   font-size: 0.65rem;
   opacity: 0.7;
@@ -2265,7 +2287,7 @@ body .site-header {
 }
 .academic-tips-verbs-title {
   font-size: 0.85rem;
-  color: var(--navy);
+  color: var(--text);
   margin: 0 0 0.25rem;
   font-weight: 700;
 }
@@ -2290,7 +2312,7 @@ body .site-header {
   gap: 0.1rem;
 }
 .academic-tips-verb-group strong {
-  color: var(--teal-accent);
+  color: var(--primary-btn);
   font-size: 0.7rem;
 }
 .academic-tips-verb-group span {
@@ -2301,7 +2323,7 @@ body .site-header {
   display: flex;
   gap: 0.5rem;
   padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(31, 42, 68, 0.06);
+  border-bottom: 1px solid var(--border);
 }
 .academic-tips-item:last-of-type { border-bottom: none; }
 .academic-tips-num {
@@ -2311,8 +2333,8 @@ body .site-header {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(79, 163, 165, 0.15);
-  color: var(--teal-accent);
+  background: rgba(40, 215, 255, 0.15);
+  color: var(--primary-btn);
   font-size: 0.7rem;
   font-weight: 700;
   border-radius: 50%;
@@ -2321,7 +2343,7 @@ body .site-header {
   font-size: 0.82rem;
   display: block;
   margin-bottom: 0.2rem;
-  color: var(--navy);
+  color: var(--text);
 }
 .academic-tips-desc {
   font-size: 0.78rem;
@@ -2333,40 +2355,12 @@ body .site-header {
   display: block;
   margin-top: 0.75rem;
   font-size: 0.82rem;
-  color: var(--teal-accent);
+  color: var(--primary-btn);
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s;
 }
-.academic-tips-more:hover { color: var(--accent-hover); }
-
-.academic-toolbar-placeholder {
-  flex-shrink: 0;
-  min-height: 2.5rem;
-}
-.academic-editor-placeholder {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 3rem 2rem;
-  background: var(--bg-panel, rgba(255,255,255,0.03));
-  border-radius: var(--radius-md);
-  min-height: 280px;
-}
-.academic-editor-msg {
-  font-size: 1.1rem;
-  color: var(--text-muted);
-  margin: 0 0 0.5rem;
-}
-.academic-editor-msg-sub {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  opacity: 0.8;
-  margin: 0;
-}
+.academic-tips-more:hover { color: var(--primary-btn-hover); }
 
 .academic-main {
   flex: 1;
@@ -2394,7 +2388,7 @@ body .site-header {
   font-family: var(--font-display);
   font-size: clamp(1.75rem, 3.5vw, 2.25rem);
   font-weight: 700;
-  color: var(--navy);
+  color: var(--text);
   margin: 0 0 0.5rem;
 }
 .academic-main-sub {
@@ -2411,33 +2405,34 @@ body .site-header {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: #f9f9f9;
+  background: var(--surface-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   margin-bottom: 1.5rem;
+  color: var(--text);
 }
 .academic-toolbar-ai {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   padding: 0.45rem 0.9rem;
-  background: linear-gradient(135deg, var(--teal-accent) 0%, var(--sage) 100%);
-  color: #fff;
+  background: var(--primary-btn);
+  color: var(--navy);
   border: none;
   border-radius: 8px;
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.15s;
+  transition: background 0.2s, transform 0.15s;
 }
 .academic-toolbar-ai:hover {
-  opacity: 0.95;
+  background: var(--primary-btn-hover);
   transform: translateY(-1px);
 }
 .academic-toolbar-divider {
   width: 1px;
   height: 1.4rem;
-  background: var(--border);
+  background: rgba(255, 255, 255, 0.15);
 }
 .academic-toolbar-group {
   display: flex;
@@ -2450,20 +2445,22 @@ body .site-header {
   border: none;
   background: transparent;
   font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--text);
   cursor: pointer;
   border-radius: 6px;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 .academic-toolbar-btn:hover {
-  background: rgba(31, 42, 68, 0.08);
+  background: rgba(40, 215, 255, 0.15);
 }
 .academic-toolbar-btn.is-active {
-  background: rgba(79, 163, 165, 0.2);
-  color: var(--teal-accent);
+  background: rgba(40, 215, 255, 0.2);
+  color: var(--primary-btn);
 }
 .academic-toolbar-label {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--text);
   font-weight: 600;
   margin-right: 0.35rem;
 }
@@ -2472,8 +2469,8 @@ body .site-header {
   border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 0.82rem;
-  font-family: inherit;
-  background: var(--surface);
+  font-family: var(--font-sans);
+  background: var(--bg);
   color: var(--text);
 }
 .academic-search-wrap {
@@ -2495,7 +2492,7 @@ body .site-header {
 
 /* Academic document canvas — paper/writing area (US Letter 8.5" × 11") */
 .academic-document-wrap {
-  background: #b8b8b8;
+  background: var(--bg);
   padding: 2rem;
   border-radius: var(--radius-sm);
   flex: 1;
@@ -2515,8 +2512,8 @@ body .site-header {
   padding: 0.75in 1in;
   font-size: 12pt;
   line-height: 1.6;
-  color: var(--text);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1), 0 8px 24px rgba(0,0,0,0.12);
+  color: #1a1a2e;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
   flex-shrink: 0;
   overflow: hidden;
   display: flex;
@@ -2621,8 +2618,8 @@ body .site-header {
 }
 .academic-toolbar-download {
   padding: 0.45rem 0.9rem;
-  background: var(--teal-accent);
-  color: #fff;
+  background: var(--primary-btn);
+  color: var(--navy);
   border: none;
   border-radius: 8px;
   font-size: 0.85rem;
@@ -2631,7 +2628,7 @@ body .site-header {
   transition: background 0.2s;
 }
 .academic-toolbar-download:hover {
-  background: var(--accent-hover);
+  background: var(--primary-btn-hover);
 }
 .academic-toolbar-download:disabled {
   opacity: 0.8;
@@ -2963,18 +2960,6 @@ body .site-header {
 /* Resume AI generate form */
 .resume-generate-section {
   padding: 2rem 0 3rem;
-}
-.resume-generate-code {
-  display: block;
-  padding: 1rem 1.25rem;
-  font-family: ui-monospace, monospace;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  background: rgba(10, 22, 40, 0.6);
-  color: var(--text);
-  border-radius: var(--radius);
-  overflow-x: auto;
-  margin: 1rem 0;
 }
 .resume-generate-form {
   max-width: 720px;
@@ -3446,7 +3431,7 @@ body .site-header {
   padding: 0.85rem 1rem;
   max-width: 380px;
   border-bottom: 3px solid transparent;
-  border-image: linear-gradient(90deg, var(--teal-accent), var(--sage)) 1;
+  border-image: linear-gradient(90deg, var(--primary-btn), var(--primary-btn-hover)) 1;
 }
 .futurebot-header {
   display: flex;
@@ -3458,14 +3443,14 @@ body .site-header {
   font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--text);
   margin: 0;
   display: flex;
   align-items: center;
   gap: 0.3rem;
 }
 .futurebot-sparkle {
-  color: var(--teal-accent);
+  color: var(--primary-btn);
   font-size: 0.85rem;
 }
 .futurebot-close {
@@ -3479,7 +3464,7 @@ body .site-header {
   transition: color 0.2s;
 }
 .futurebot-close:hover {
-  color: var(--navy);
+  color: var(--text);
 }
 .futurebot-prompt {
   font-size: 0.8rem;
@@ -3499,20 +3484,22 @@ body .site-header {
   border-radius: var(--radius-sm);
   font-size: 0.85rem;
   font-family: inherit;
+  background: var(--bg);
+  color: var(--text);
 }
 .futurebot-input:focus {
   outline: none;
-  border-color: var(--teal-accent);
-  box-shadow: 0 0 0 2px rgba(79, 163, 165, 0.2);
+  border-color: var(--primary-btn);
+  box-shadow: 0 0 0 2px rgba(40, 215, 255, 0.2);
 }
 .futurebot-input::placeholder {
-  color: #999;
+  color: var(--text-muted);
 }
 .futurebot-generate-btn {
   flex-shrink: 0;
   padding: 0.45rem 0.75rem;
-  background: var(--teal-accent);
-  color: #fff;
+  background: var(--primary-btn);
+  color: var(--navy);
   border: none;
   border-radius: var(--radius-sm);
   font-size: 0.82rem;
@@ -3521,7 +3508,7 @@ body .site-header {
   transition: background 0.2s;
 }
 .futurebot-generate-btn:hover {
-  background: var(--accent-hover);
+  background: var(--primary-btn-hover);
 }
 .futurebot-suggestions {
   display: flex;
@@ -3530,18 +3517,18 @@ body .site-header {
 }
 .futurebot-suggestion {
   padding: 0.3rem 0.6rem;
-  background: rgba(79, 163, 165, 0.1);
-  border: 1px solid rgba(79, 163, 165, 0.3);
+  background: rgba(40, 215, 255, 0.1);
+  border: 1px solid rgba(40, 215, 255, 0.3);
   border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 500;
-  color: var(--navy);
+  color: var(--text);
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
 }
 .futurebot-suggestion:hover {
-  background: rgba(79, 163, 165, 0.2);
-  border-color: var(--teal-accent);
+  background: rgba(40, 215, 255, 0.2);
+  border-color: var(--primary-btn);
 }
 .futurebot-status {
   font-size: 0.78rem;
@@ -3574,18 +3561,18 @@ body .site-header {
   display: block;
   width: 100%;
   padding: 0.4rem 0.6rem;
-  background: rgba(79, 163, 165, 0.15);
-  border: 1px solid var(--teal-accent);
+  background: rgba(40, 215, 255, 0.12);
+  border: 1px solid var(--primary-btn);
   border-radius: var(--radius-sm);
   font-size: 0.78rem;
   font-weight: 600;
-  color: var(--teal-accent);
+  color: var(--primary-btn);
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
 .futurebot-insert-btn:hover {
-  background: var(--teal-accent);
-  color: #fff;
+  background: var(--primary-btn);
+  color: var(--navy);
 }
 .futurebot-popup--academic {
   position: absolute;
@@ -4576,12 +4563,44 @@ body.page-schools {
   box-shadow: var(--shadow-hover);
   border-color: var(--sage);
 }
+.school-card-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  background: var(--bg);
+}
 .school-card-image {
   width: 100%;
   height: 180px;
   object-fit: cover;
   display: block;
-  background: var(--bg);
+}
+.school-card-image-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 22, 40, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.school-card-image-loading.is-loading {
+  opacity: 1;
+  pointer-events: auto;
+}
+.school-card-image-loading::after {
+  content: "";
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(79, 163, 165, 0.3);
+  border-top-color: var(--teal-accent);
+  border-radius: 50%;
+  animation: school-card-spin 0.7s linear infinite;
+}
+@keyframes school-card-spin {
+  to { transform: rotate(360deg); }
 }
 .school-card-body {
   padding: 1.25rem 1.5rem 1.5rem;
@@ -4767,6 +4786,7 @@ body.page-schools {
   .schools-results-count { font-size: 0.85rem; }
   .schools-clear-btn { font-size: 0.78rem; }
   .schools-grid { grid-template-columns: 1fr; gap: 0.85rem; }
+  .school-card-image-wrap,
   .school-card-image { height: 140px; }
   .school-card-body { padding: 0.9rem 1rem 1.1rem; }
   .school-card-top { gap: 0.35rem; margin-bottom: 0.5rem; }
