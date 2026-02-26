@@ -292,12 +292,14 @@
 
       function generatePdf() {
         html2pdf().set({
-          margin: [0.4, 0.5, 0.4, 0.5],
+          margin: 1,
           filename: majorKey + '-resume-futurefit.pdf',
           image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        }).from(preview.querySelector('.resume-paper')).save().then(resetBtn).catch(function(err) {
+          html2canvas: { scale: 1, width: 600, height: 500, scrollY: 0 },
+          jsPDF: { unit: 'in', orientation: 'portrait' }
+        }).from(
+          document.querySelector('.resume-paper')
+        ).save().then(resetBtn).catch(function(err) {
           console.error('PDF generation error:', err);
           alert('There was an error generating the PDF. Please try again.');
           resetBtn();
@@ -307,14 +309,19 @@
       if (typeof html2pdf !== 'undefined') {
         generatePdf();
       } else {
+        alert("Could not load PDF library. Please check your internet connection and try again.");
+        resetBtn();
+        
+        /*
         const script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-        script.onload = generatePdf;
+        //script.onload = generatePdf;
         script.onerror = function () {
           alert('Could not load PDF library. Please check your internet connection and try again.');
           resetBtn();
         };
         document.head.appendChild(script);
+        */
       }
     });
 
