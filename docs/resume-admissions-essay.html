@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admissions Essay – FutureFit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page-resume">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <a href="index.html" class="logo">
+          <img src="images/header-logo.png" alt="FutureFit" class="logo-img" width="140" height="36">
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="resume.html" class="nav-link nav-link--active">Resume &amp; Writing</a>
+        <a href="schools.html" class="nav-link">Colleges</a>
+        <a href="quiz.html" class="btn btn-header"><span class="btn-header-full">Take the quiz</span><span class="btn-header-short">Quiz</span></a>
+      </nav>
+    </div>
+  </header>
+  <main class="main-content" id="resume-app"></main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <p class="footer-logo">FutureFit</p>
+        <p class="footer-desc">A free career exploration tool built for college students who are still figuring it out — and that's completely okay.</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <p class="footer-col-title">Explore</p>
+          <ul class="footer-col-list">
+            <li><a href="quiz.html">Career quiz</a></li>
+            <li><a href="about.html">How it works</a></li>
+            <li><a href="resume.html">Resume builder</a></li>
+            <li><a href="schools.html">Find colleges</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Resume tools</p>
+          <ul class="footer-col-list">
+            <li><a href="resume-templates.html">Templates</a></li>
+            <li><a href="resume-tips.html">Tips &amp; advice</a></li>
+            <li><a href="resume-ai-tools.html">AI gap analysis</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Built for students. Always free. No sign-up required.</p>
+    </div>
+  </footer>
+  <script src="js/dimension.js"></script>
+  <script src="js/resume-app.js"></script>
+  <script>renderAdmissionsEssayDetail(document.getElementById('resume-app'));</script>
+</body>
+</html>

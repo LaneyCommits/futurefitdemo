@@ -3754,6 +3754,14 @@ body .site-header {
   line-height: 1.55;
   max-width: 100%;
 }
+.resume-paper.rp-doc p {
+  margin: 0 0 0.75rem;
+}
+.resume-paper.rp-doc p[contenteditable="true"]:focus {
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
 .rp-header {
   text-align: center;
   border-bottom: 2px solid var(--navy);

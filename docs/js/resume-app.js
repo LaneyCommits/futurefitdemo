@@ -106,20 +106,36 @@
   };
 
   /* ---- Academic Writing Templates (sidebar layout, matches Django) ---- */
-  window.renderAcademicWritingTemplates = async function (el) {
+  /* opts: { docType: 'resume'|'cover_letter'|'admissions_essay' } */
+  window.renderAcademicWritingTemplates = async function (el, opts) {
+    opts = opts || {};
+    const docType = opts.docType || 'resume';
     const data = await loadData();
     const templates = data.templates;
     const tips = data.tips || [];
     const count = Object.keys(templates).length;
 
+    const titles = { resume: 'Resume Templates', cover_letter: 'Cover Letter Templates', admissions_essay: 'Admissions Essay Templates' };
+    const subtitles = {
+      resume: 'Pick a major from the sidebar to load a template. Edit in place, use AI to polish, and download as PDF.',
+      cover_letter: 'Pick a major to load a cover letter template tailored to your field. Edit, customize, and download.',
+      admissions_essay: 'Pick a major to load an admissions essay template. Tell your story and stand out in applications.'
+    };
+    const detailPages = { resume: 'resume-template', cover_letter: 'resume-cover-letter', admissions_essay: 'resume-admissions-essay' };
+    const detailPage = detailPages[docType] + '.html';
+
     const majorLinks = Object.entries(templates).map(([k, t]) => {
       const thumb = t.image ? `<img src="${t.image}" alt="" class="academic-major-thumb" loading="lazy">` : `<span class="academic-major-icon">${t.icon}</span>`;
-      return `<a href="resume-template.html?major=${k}" class="academic-major-link" data-keywords="${(t.label + ' ' + t.focus).toLowerCase()}">${thumb}<span class="academic-major-label">${t.label}</span></a>`;
+      return `<a href="${detailPage}?major=${k}" class="academic-major-link" data-keywords="${(t.label + ' ' + t.focus).toLowerCase()}">${thumb}<span class="academic-major-label">${t.label}</span></a>`;
     }).join('');
 
     const tipsHTML = tips.slice(0, 5).map((tip, i) =>
       `<div class="academic-tips-item"><span class="academic-tips-num">${i + 1}</span><div><strong class="academic-tips-title">${tip.title}</strong><p class="academic-tips-desc">${tip.desc}</p></div></div>`
     ).join('') + `<a href="resume-tips.html" class="academic-tips-more">View full tips page →</a>`;
+
+    const resumeActive = docType === 'resume' ? ' is-active' : '';
+    const coverActive = docType === 'cover_letter' ? ' is-active' : '';
+    const essayActive = docType === 'admissions_essay' ? ' is-active' : '';
 
     el.innerHTML = `
     <section class="block block--hero block--hero-with-bg resume-hero resume-hero--compact">
@@ -127,12 +143,12 @@
       ${HERO_DECOR.particlesBehind}
       <div class="block-inner">
         <p class="hero-badge">${count} majors · free downloads</p>
-        <h1 class="block-hero-title">Resume Templates</h1>
-        <p class="block-hero-sub">Pick a major from the sidebar to load a template. Edit in place, use AI to polish, and download as PDF.</p>
+        <h1 class="block-hero-title">${titles[docType]}</h1>
+        <p class="block-hero-sub">${subtitles[docType]}</p>
       </div>
       ${HERO_DECOR.particlesFront}
     </section>
-    <div class="academic-writing-layout" data-doc-type="resume">
+    <div class="academic-writing-layout" data-doc-type="${docType}">
       <aside class="academic-sidebar" id="academicSidebar">
         <div class="academic-sidebar-inner">
           <div class="academic-sidebar-nav">
@@ -141,9 +157,9 @@
           <div class="academic-sidebar-section">
             <p class="academic-sidebar-label">Document types</p>
             <nav class="academic-doc-nav">
-              <a href="resume-templates.html" class="academic-doc-link is-active">Resume</a>
-              <a href="resume-templates.html" class="academic-doc-link">Cover Letters</a>
-              <a href="resume-templates.html" class="academic-doc-link">Admissions Essays</a>
+              <a href="resume-templates.html" class="academic-doc-link${resumeActive}">Resume</a>
+              <a href="resume-cover-letters.html" class="academic-doc-link${coverActive}">Cover Letters</a>
+              <a href="resume-admissions-essays.html" class="academic-doc-link${essayActive}">Admissions Essays</a>
             </nav>
           </div>
           <div class="academic-sidebar-section academic-majors-section">
@@ -527,6 +543,92 @@
     requestAnimationFrame(function() {
       if (typeof initReveal === 'function') initReveal();
     });
+  };
+
+  function _coverLetterHtml(t) {
+    const focus = (t.focus || '').toLowerCase();
+    const bullet = (t.sample_bullets && t.sample_bullets[0]) || 'Highlight relevant experience and skills.';
+    return '<p contenteditable="true">Your Name<br>email@example.com · (555) 123-4567 · linkedin.com/in/yourname</p>' +
+      '<p contenteditable="true">[Date]</p>' +
+      '<p contenteditable="true">Hiring Manager<br>Company Name<br>123 Business Ave<br>City, State 12345</p>' +
+      '<p contenteditable="true">Dear Hiring Manager,</p>' +
+      '<p contenteditable="true">I am writing to express my interest in the [Position Title] opportunity at [Company Name]. As a ' + t.label + ' student with a focus on ' + focus + ', I am eager to contribute to your team.</p>' +
+      '<p contenteditable="true">' + bullet + ' I am confident that my background and skills would add value to [Company Name].</p>' +
+      '<p contenteditable="true">I would welcome the opportunity to discuss how my background aligns with your needs. Thank you for considering my application.</p>' +
+      '<p contenteditable="true">Sincerely,<br>Your Name</p>';
+  }
+
+  function _admissionsEssayHtml(t) {
+    const focus = (t.focus || '').toLowerCase();
+    return '<p contenteditable="true"><strong>Tell your story.</strong> Why are you pursuing ' + t.label + '? What experiences, people, or moments shaped your interest in ' + focus + '?</p>' +
+      '<p contenteditable="true">[First paragraph: Hook the reader. Share a specific story or moment that sparked your interest.]</p>' +
+      '<p contenteditable="true">[Second paragraph: Your academic journey. Relevant coursework, projects, or research that deepened your commitment.]</p>' +
+      '<p contenteditable="true">[Third paragraph: Your goals. What do you hope to achieve? How does this program fit your vision?]</p>' +
+      '<p contenteditable="true">[Closing: A memorable final thought that ties your narrative together.]</p>';
+  }
+
+  window.renderCoverLetterDetail = async function (el) {
+    const params = new URLSearchParams(window.location.search);
+    const majorKey = params.get('major');
+    const data = await loadData();
+    const t = data.templates[majorKey];
+    if (!t) {
+      el.innerHTML = '<p style="text-align:center;padding:3rem;">Template not found. <a href="resume-cover-letters.html">Browse all cover letters</a></p>';
+      return;
+    }
+    const letterHtml = _coverLetterHtml(t);
+    el.innerHTML = `
+    <section class="block block--hero block--hero-with-bg resume-hero resume-hero--compact">
+      ${HERO_DECOR.shapes}
+      ${HERO_DECOR.particlesBehind}
+      <div class="block-inner">
+        <p class="hero-badge">${t.label} · editable</p>
+        <h1 class="block-hero-title">${t.icon} ${t.label} Cover Letter</h1>
+        <p class="block-hero-sub">${t.focus}</p>
+      </div>
+      ${HERO_DECOR.particlesFront}
+    </section>
+    <section class="block resume-detail-section">
+      <div class="block-inner">
+        <div class="resume-preview-wrap reveal">
+          <div class="resume-preview"><div class="resume-paper rp-doc">${letterHtml}</div></div>
+          <p class="resume-back-link" style="margin-top:1rem;"><a href="resume-cover-letters.html">← Back to cover letters</a></p>
+        </div>
+      </div>
+    </section>`;
+    requestAnimationFrame(function() { if (typeof initReveal === 'function') initReveal(); });
+  };
+
+  window.renderAdmissionsEssayDetail = async function (el) {
+    const params = new URLSearchParams(window.location.search);
+    const majorKey = params.get('major');
+    const data = await loadData();
+    const t = data.templates[majorKey];
+    if (!t) {
+      el.innerHTML = '<p style="text-align:center;padding:3rem;">Template not found. <a href="resume-admissions-essays.html">Browse all admissions essays</a></p>';
+      return;
+    }
+    const essayHtml = _admissionsEssayHtml(t);
+    el.innerHTML = `
+    <section class="block block--hero block--hero-with-bg resume-hero resume-hero--compact">
+      ${HERO_DECOR.shapes}
+      ${HERO_DECOR.particlesBehind}
+      <div class="block-inner">
+        <p class="hero-badge">${t.label} · editable</p>
+        <h1 class="block-hero-title">${t.icon} ${t.label} Admissions Essay</h1>
+        <p class="block-hero-sub">${t.focus} — tell your story.</p>
+      </div>
+      ${HERO_DECOR.particlesFront}
+    </section>
+    <section class="block resume-detail-section">
+      <div class="block-inner">
+        <div class="resume-preview-wrap reveal">
+          <div class="resume-preview"><div class="resume-paper rp-doc">${essayHtml}</div></div>
+          <p class="resume-back-link" style="margin-top:1rem;"><a href="resume-admissions-essays.html">← Back to admissions essays</a></p>
+        </div>
+      </div>
+    </section>`;
+    requestAnimationFrame(function() { if (typeof initReveal === 'function') initReveal(); });
   };
 
   /* ---- Resume Tips ---- */
