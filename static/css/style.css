@@ -877,9 +877,17 @@ body.is-scrolled .site-header {
   width: 100%;
 }
 
-/* About hero — unified with block--hero-with-bg */
+/* About hero — unified with block--hero-with-bg, smaller height */
 .about-hero.about-hero--unified {
   text-align: center;
+  padding: 3rem 1.5rem 2.5rem;
+  min-height: auto;
+}
+@media (max-width: 768px) {
+  .about-hero.about-hero--unified { padding: 2.5rem 1.5rem 2rem; }
+}
+@media (max-width: 600px) {
+  .about-hero.about-hero--unified { padding: 2rem 1rem 1.5rem; }
 }
 .about-hero.about-hero--unified::before,
 .about-hero.about-hero--unified::after {
@@ -4183,7 +4191,7 @@ body.is-scrolled .site-header {
   font-family: var(--font-display);
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--text);
   margin: 0 0 0.35rem;
 }
 .gap-analysis-desc {

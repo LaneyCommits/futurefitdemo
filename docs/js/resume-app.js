@@ -823,9 +823,7 @@
     if (typeof ResumeAI !== 'undefined') {
       ResumeAI.checkServer().then(function(serverOk) {
         var keyEl = document.getElementById('aiKeySetup');
-        if (serverOk) {
-          keyEl.appendChild(ResumeAI.createServerBadge());
-        } else {
+        if (!serverOk) {
           keyEl.appendChild(ResumeAI.createKeySetup());
         }
         const aiTools = document.getElementById('aiTools');
@@ -1201,9 +1199,7 @@
     if (typeof ResumeAI !== 'undefined') {
       ResumeAI.checkServer().then(function(serverOk) {
         var keyEl = document.getElementById('aiKeySetup');
-        if (serverOk) {
-          keyEl.appendChild(ResumeAI.createServerBadge());
-        } else {
+        if (!serverOk) {
           keyEl.appendChild(ResumeAI.createKeySetup());
         }
         document.getElementById('aiBulletTool').appendChild(ResumeAI.createBulletEnhancer('your major'));
