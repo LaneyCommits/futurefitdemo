@@ -23,6 +23,9 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1', 'yes')
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', os.getenv("site_url")]
 
+CSRF_TRUSTED_ORIGINS = [os.getenv("site_url")]
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
