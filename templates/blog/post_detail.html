@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}{{ post.title }} · Additional Resources{% endblock %}
+{% block title %}{{ post.title }} · Resources{% endblock %}
 {% block body_class %}page-blog-detail{% endblock %}
 
 {% block content %}
 <section class="block block--cream">
     <div class="block-inner block-inner--narrow">
-        <p class="hero-badge">Additional Resources</p>
+        <p class="hero-badge">Resources</p>
         <h1 class="block-title">{{ post.title }}</h1>
         <p class="feature-card-meta">{{ post.created_at|date:"F j, Y" }}</p>
         <div class="blog-post-body">

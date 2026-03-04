@@ -170,6 +170,7 @@
                 </div>
                 <div class="resume-preview-actions">
                     <button class="btn btn-primary resume-action-btn" id="downloadPdfBtn" title="Download as PDF"><span aria-hidden="true">↓</span> PDF</button>
+                    <button class="btn btn-teal resume-action-btn" id="saveDocBtn" title="Save to my documents"><span aria-hidden="true">💾</span> Save</button>
                     <button class="btn btn-teal resume-action-btn" id="enhanceBtn" title="Enhance with AI"><span aria-hidden="true">✨</span> Enhance</button>
                     <button class="btn btn-teal resume-action-btn" id="reviewBtn" title="Review my resume"><span aria-hidden="true">✦</span> Review</button>
                     <button class="btn btn-secondary resume-action-btn" id="resetBtn" title="Reset template">Reset</button>
@@ -231,9 +232,32 @@
 
     var preview = document.getElementById('resumePreview');
     var downloadBtn = document.getElementById('downloadPdfBtn');
+    var saveDocBtn = document.getElementById('saveDocBtn');
     var resetBtnEl = document.getElementById('resetBtn');
     var originalHTML = preview.innerHTML;
     var quillInstances = [];
+    var userIsAuthenticated = {{ user_is_authenticated|yesno:"true,false" }};
+    var loadId = "{{ load_id|default:'' }}";
+    var savedDocId = null;
+
+    function getCsrfToken() {
+        var name = 'csrftoken';
+        var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? match[2] : null;
+    }
+    function getPaperHTML() {
+        var paper = preview.querySelector('.resume-paper');
+        if (!paper) return '';
+        if (quillInstances.length > 0) {
+            var clone = paper.cloneNode(true);
+            clone.querySelectorAll('.rp-content').forEach(function(el) {
+                var ql = el.querySelector('.ql-editor');
+                if (ql) el.innerHTML = ql.innerHTML;
+            });
+            return clone.innerHTML;
+        }
+        return paper.innerHTML;
+    }
 
     function initQuillOnContent(el) {
         if (!el || el.querySelector('.ql-container')) return null;
@@ -266,6 +290,22 @@
     }
 
     if (typeof Quill !== 'undefined') initAllQuills();
+
+    if (loadId && userIsAuthenticated) {
+        fetch('/resume/api/load-document/' + loadId + '/', { method: 'GET', headers: { 'Accept': 'application/json' } })
+            .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
+            .then(function(data) {
+                var paper = preview.querySelector('.resume-paper');
+                if (paper && data.content) {
+                    quillInstances = [];
+                    paper.innerHTML = data.content;
+                    if (typeof Quill !== 'undefined') initAllQuills();
+                    savedDocId = parseInt(loadId, 10) || null;
+                    if (saveDocBtn) saveDocBtn.innerHTML = '<span aria-hidden="true">💾</span> Update';
+                }
+            })
+            .catch(function() {});
+    }
 
     function restoreBtn() {
         downloadBtn.innerHTML = '<span aria-hidden="true">↓</span> PDF';
@@ -357,6 +397,50 @@
             fallbackJsPdf();
         });
     });
+
+    if (saveDocBtn) {
+        saveDocBtn.addEventListener('click', function() {
+            if (!userIsAuthenticated) {
+                var next = encodeURIComponent(window.location.href);
+                window.location.href = '{% url "login" %}?next=' + next;
+                return;
+            }
+            var paper = preview.querySelector('.resume-paper');
+            if (!paper) return;
+            var title = '{{ template.label|escapejs }} Resume';
+            var majorKey = '{{ major_key|escapejs }}';
+            var content = getPaperHTML();
+            var payload = { title: title, major_key: majorKey, doc_type: 'resume', content: content };
+            if (savedDocId) payload.id = savedDocId;
+            var headers = { 'Content-Type': 'application/json' };
+            var csrf = getCsrfToken();
+            if (csrf) headers['X-CSRFToken'] = csrf;
+            saveDocBtn.disabled = true;
+            saveDocBtn.textContent = 'Saving...';
+            fetch('{% url "resume_save_document" %}', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(payload)
+            }).then(function(r) { return r.json().then(function(data) { return { ok: r.ok, data: data }; }); })
+              .then(function(result) {
+                saveDocBtn.disabled = false;
+                if (result.ok) {
+                    savedDocId = result.data.id;
+                    saveDocBtn.innerHTML = '<span aria-hidden="true">💾</span> Update';
+                    saveDocBtn.textContent = 'Saved!';
+                    setTimeout(function() { saveDocBtn.innerHTML = '<span aria-hidden="true">💾</span> Update'; }, 1500);
+                } else {
+                    saveDocBtn.innerHTML = '<span aria-hidden="true">💾</span> Save';
+                    if (result.data && result.data.error) alert(result.data.error); else alert('Save failed.');
+                }
+              })
+              .catch(function() {
+                saveDocBtn.disabled = false;
+                saveDocBtn.innerHTML = '<span aria-hidden="true">💾</span> Save';
+                alert('Save failed. Please try again.');
+              });
+        });
+    }
 
     resetBtnEl.addEventListener('click', function() {
         if (confirm('Reset the template? Your edits will be lost.')) {

@@ -1,5 +1,6 @@
 import json
 from django.shortcuts import render, redirect
+from .models import QuizResult
 from .quiz_data import (
     get_questions,
     get_majors,
@@ -11,6 +12,24 @@ from .quiz_data import (
     get_suggested_majors,
     get_explore_summary_paragraph,
 )
+
+
+def _save_quiz_result_for_user(user, scores_with_names, suggestions, is_explore=False):
+    """Build pill labels from top categories and top careers; save/update QuizResult for user."""
+    labels = []
+    # Top 3 category names (scores_with_names: (cat_key, score, display_name, desc))
+    for _c, _score, name, _d in (scores_with_names or [])[:3]:
+        if name:
+            labels.append(name)
+    # Top 3 career titles (suggestions are dicts with 'title')
+    for s in (suggestions or [])[:3]:
+        title = s.get('title') if isinstance(s, dict) else getattr(s, 'title', None)
+        if title and title not in labels:
+            labels.append(title)
+    QuizResult.objects.update_or_create(
+        user=user,
+        defaults={'pill_labels': labels, 'is_explore': is_explore},
+    )
 
 
 def quiz_home_view(request):
@@ -34,9 +53,9 @@ def choose_path_view(request):
     })
 
 
-def about_view(request):
-    """About FutureFit — company info, mission, what we offer."""
-    return render(request, 'career_quiz/quiz_about.html')
+def about_redirect_view(request):
+    """About page removed: redirect to home where mission lives."""
+    return redirect('home')
 
 
 def major_selection_view(request):
@@ -113,6 +132,10 @@ def quiz_results_view(request):
         major_label=major_info['label'] if major_info else None,
     )
     scores_json = json.dumps([{'name': name, 'score': score} for _c, score, name, _d in scores_with_names])
+    if request.user.is_authenticated:
+        _save_quiz_result_for_user(
+            request.user, scores_with_names, suggestions, is_explore=False,
+        )
     return render(request, 'career_quiz/quiz_results.html', {
         'suggestions': suggestions,
         'scores': scores_with_names,
@@ -178,6 +201,10 @@ def _render_explore_results(selected, request):
     suggestions = get_top_careers(score_tuples, major_key=None, max_careers=6)
     explore_summary = get_explore_summary_paragraph(scores_with_names, suggested_majors)
     scores_json = json.dumps([{'name': name, 'score': score} for _c, score, name, _d in scores_with_names])
+    if request.user.is_authenticated:
+        _save_quiz_result_for_user(
+            request.user, scores_with_names, suggestions, is_explore=True,
+        )
     return render(request, 'career_quiz/explore_results.html', {
         'suggested_majors': suggested_majors,
         'scores': scores_with_names,

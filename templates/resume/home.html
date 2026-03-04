@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Resume Builder – FutureFit{% endblock %}
+{% block title %}Create – FutureFit{% endblock %}
 {% block body_class %}page-resume{% endblock %}
 
 {% block content %}
@@ -39,6 +39,9 @@
         <div class="block-hero-buttons">
             <a href="{% url 'resume_templates' %}" class="btn btn-primary btn-hero-primary">Browse templates <span class="btn-arrow" aria-hidden="true">→</span></a>
             <a href="{% url 'resume_tips' %}" class="btn btn-hero-secondary">Resume tips <span class="btn-arrow btn-arrow--outline" aria-hidden="true">▶</span></a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'resume_my_saved' %}" class="btn btn-hero-tertiary">My saved <span class="btn-arrow btn-arrow--outline" aria-hidden="true">→</span></a>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -72,28 +75,6 @@
                 <p class="resume-option-desc">Paste your resume and a job posting. Get a match score, missing keywords, and actionable suggestions to improve your fit — powered by AI gap analysis. Plus enhance bullets, summaries, and more.</p>
                 <span class="resume-option-cta">Run gap analysis →</span>
             </a>
-        </div>
-    </div>
-</section>
-
-<!-- Major cards grid -->
-<section class="block block--features">
-    <div class="block-inner">
-        <h2 class="block-title reveal" style="text-align:center; margin-bottom: 0.5rem;">Templates for every major</h2>
-        <p class="block-desc reveal" style="text-align:center; margin-bottom: 2.5rem;">Each template is formatted for your field with the right sections, action verbs, and sample content.</p>
-        <div class="resume-major-grid">
-            {% for major in majors %}
-            <a href="{% url 'resume_template_detail' major.key %}" class="resume-major-card reveal{% if forloop.counter <= 6 %} reveal-delay-{{ forloop.counter0 }}{% endif %}">
-                {% if major.image %}
-                <img src="{{ major.image }}" alt="" class="resume-major-image" loading="lazy">
-                {% else %}
-                <span class="resume-major-icon">{{ major.icon }}</span>
-                {% endif %}
-                <h3 class="resume-major-label">{{ major.label }}</h3>
-                <p class="resume-major-focus">{{ major.focus }}</p>
-                <span class="resume-major-cta">View template →</span>
-            </a>
-            {% endfor %}
         </div>
     </div>
 </section>

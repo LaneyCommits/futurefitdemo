@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Create account – FutureFit{% endblock %}
+{% block body_class %}page-auth page-resume{% endblock %}
+
+{% block content %}
+<section class="block block--hero block--hero-with-bg auth-page-hero">
+    <div class="hero-shapes" aria-hidden="true">
+        <div class="hero-shape hero-shape--orb hero-shape-1"></div>
+        <div class="hero-shape hero-shape--orb hero-shape-2"></div>
+        <div class="hero-shape hero-shape--blob hero-shape-4"></div>
+        <div class="hero-shape hero-shape--prism hero-shape-5"></div>
+        <div class="hero-shape hero-shape--glow hero-shape-7"></div>
+        <div class="hero-shape hero-shape--glow hero-shape-8"></div>
+    </div>
+    <div class="hero-particles hero-particles--behind" aria-hidden="true">
+        <span class="hero-particle hero-particle--s" style="--x: 8%; --y: 15%; --d: 0"></span>
+        <span class="hero-particle hero-particle--m" style="--x: 85%; --y: 22%; --d: 0.8"></span>
+        <span class="hero-particle hero-particle--s" style="--x: 12%; --y: 48%; --d: 1.5"></span>
+        <span class="hero-particle hero-particle--l" style="--x: 78%; --y: 55%; --d: 0.3"></span>
+        <span class="hero-particle hero-particle--accent" style="--x: 22%; --y: 28%; --d: 0.2"></span>
+        <span class="hero-particle hero-particle--accent hero-particle--s" style="--x: 72%; --y: 42%; --d: 1.4"></span>
+    </div>
+    <div class="hero-particles hero-particles--front" aria-hidden="true">
+        <span class="hero-particle hero-particle--m" style="--x: 25%; --y: 18%; --d: 0.4"></span>
+        <span class="hero-particle hero-particle--s" style="--x: 75%; --y: 38%; --d: 1.1"></span>
+        <span class="hero-particle hero-particle--accent hero-particle--s" style="--x: 50%; --y: 85%; --d: 0.9"></span>
+    </div>
+    <div class="auth-page-inner">
+        <div class="auth-form-card">
+            <p class="hero-badge">Get started</p>
+            <h1 class="block-hero-title">Create your account</h1>
+            <p class="block-hero-sub">Save your resumes and writings and access them anytime.</p>
+            <form method="post" action="{% url 'signup' %}" class="auth-form">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                <div class="auth-error">{{ form.non_field_errors }}</div>
+                {% endif %}
+                <div class="form-row">
+                    <label for="id_username">Username</label>
+                    <input type="text" name="username" id="id_username" class="form-input" maxlength="20" required autofocus autocomplete="username" placeholder="Letters, numbers, _ and . only (max 20)" value="{{ form.username.value|default:'' }}">
+                    {% if form.username.errors %}<span class="auth-field-error">{{ form.username.errors.0 }}</span>{% endif %}
+                    {% if form.username.help_text %}<span class="form-hint">{{ form.username.help_text }}</span>{% endif %}
+                </div>
+                <div class="form-row">
+                    <label for="id_email">Email</label>
+                    <input type="email" name="email" id="id_email" class="form-input" required autocomplete="email" placeholder="you@example.com" value="{{ form.email.value|default:'' }}">
+                    {% if form.email.errors %}<span class="auth-field-error">{{ form.email.errors.0 }}</span>{% endif %}
+                    {% if form.email.help_text %}<span class="form-hint">{{ form.email.help_text }}</span>{% endif %}
+                </div>
+                <div class="form-row">
+                    <label for="id_password1">Password</label>
+                    <input type="password" name="password1" id="id_password1" class="form-input" required autocomplete="new-password" placeholder="Choose a password">
+                    {% if form.password1.errors %}<span class="auth-field-error">{{ form.password1.errors.0 }}</span>{% endif %}
+                    {% if form.password1.help_text %}<span class="form-hint">{{ form.password1.help_text }}</span>{% endif %}
+                </div>
+                <div class="form-row">
+                    <label for="id_password2">Confirm password</label>
+                    <input type="password" name="password2" id="id_password2" class="form-input" required autocomplete="new-password" placeholder="Confirm your password">
+                    {% if form.password2.errors %}<span class="auth-field-error">{{ form.password2.errors.0 }}</span>{% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:1rem;">Create account</button>
+                <p class="auth-switch">Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

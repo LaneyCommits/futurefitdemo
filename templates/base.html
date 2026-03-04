@@ -26,12 +26,35 @@
                 <span class="hamburger-line"></span>
             </button>
             <nav class="nav" id="main-nav">
-                <a href="{% url 'home' %}" class="nav-link">Home</a>
-                <a href="{% url 'career_quiz_about' %}" class="nav-link">About</a>
-                <a href="{% url 'resume_home' %}" class="nav-link">Resume &amp; Writing</a>
+                <div class="nav-dropdown">
+                    <a href="{% url 'resume_home' %}" class="nav-link nav-link--create" aria-haspopup="true" aria-expanded="false" id="create-dropdown-trigger">Create</a>
+                    <ul class="nav-dropdown-menu" aria-label="Create submenu">
+                        <li><a href="{% url 'resume_home' %}" class="nav-dropdown-link">Resume</a></li>
+                        <li><a href="{% url 'resume_cover_letters' %}" class="nav-dropdown-link">Cover letters</a></li>
+                        <li><a href="{% url 'resume_admissions_essays' %}" class="nav-dropdown-link">Admissions essays</a></li>
+                    </ul>
+                </div>
                 <a href="{% url 'schools_home' %}" class="nav-link">Colleges</a>
-                <a href="{% url 'blog_index' %}" class="nav-link">Additional Resources</a>
+                <a href="{% url 'blog_index' %}" class="nav-link">Resources</a>
+                <a href="{% url 'chat_home' %}" class="nav-link">Chat</a>
                 <a href="{% url 'career_quiz_home' %}" class="btn btn-header"><span class="btn-header-full">Take the quiz</span><span class="btn-header-short">Quiz</span></a>
+                {% if user.is_authenticated and user_profile %}
+                <a href="{% url 'profile' %}" class="nav-profile-icon" aria-label="Profile">
+                    {% if user_profile.avatar %}
+                    <img src="{{ user_profile.avatar.url }}" alt="" class="nav-profile-avatar">
+                    {% else %}
+                    <span class="nav-profile-initial">{{ user.username|slice:":1"|upper }}</span>
+                    {% endif %}
+                </a>
+                {% elif user.is_authenticated %}
+                <a href="{% url 'verify_email_sent' %}" class="nav-profile-icon nav-profile-icon--guest" aria-label="Verify your email">
+                    <span class="nav-profile-guest-icon" aria-hidden="true">👤</span>
+                </a>
+                {% else %}
+                <a href="{% url 'signup' %}" class="nav-profile-icon nav-profile-icon--guest" aria-label="Sign up">
+                    <span class="nav-profile-guest-icon" aria-hidden="true">👤</span>
+                </a>
+                {% endif %}
             </nav>
         </div>
     </header>
@@ -49,12 +72,12 @@
                     <p class="footer-col-title">Explore</p>
                     <ul class="footer-col-list">
                         <li><a href="{% url 'career_quiz_home' %}">Career quiz</a></li>
-                        <li><a href="{% url 'resume_home' %}">Resume builder</a></li>
+                        <li><a href="{% url 'resume_home' %}">Create</a></li>
                         <li><a href="{% url 'schools_home' %}">Find colleges</a></li>
                     </ul>
                 </div>
                 <div>
-                    <p class="footer-col-title">Resume tools</p>
+                    <p class="footer-col-title">Create</p>
                     <ul class="footer-col-list">
                         <li><a href="{% url 'resume_templates' %}">Templates</a></li>
                         <li><a href="{% url 'resume_tips' %}">Tips &amp; advice</a></li>
@@ -64,7 +87,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>Built for students. Always free. No sign-up required.</p>
+            <p>Built for students. Always free.</p>
         </div>
     </footer>
     <script src="{% static 'js/dimension.js' %}"></script>
@@ -79,7 +102,7 @@
                 nav.classList.toggle('nav--open');
                 document.body.classList.toggle('nav-open');
             });
-            nav.querySelectorAll('.nav-link, .btn-header').forEach(link => {
+            nav.querySelectorAll('.nav-link, .btn-header, .nav-profile-icon, .nav-dropdown-link').forEach(link => {
                 link.addEventListener('click', () => {
                     toggle.setAttribute('aria-expanded', 'false');
                     nav.classList.remove('nav--open');

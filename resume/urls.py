@@ -21,6 +21,9 @@ urlpatterns = [
     path('tips/', views.resume_tips_view, name='resume_tips'),
     path('ai-tools/', views.resume_ai_tools_view, name='resume_ai_tools'),
     path('generate/', views.resume_generate_view, name='resume_generate'),
+    path('my-saved/', views.my_saved_view, name='resume_my_saved'),
+    path('api/save-document/', views.save_document_view, name='resume_save_document'),
+    path('api/load-document/<int:pk>/', views.load_document_view, name='resume_load_document'),
     # API: template/cover-letter HTML, PDF
     path('api/pdf/', views.resume_pdf_view, name='resume_pdf'),
     path('api/template/<str:major_key>/', views.resume_template_html_view, name='resume_template_html'),

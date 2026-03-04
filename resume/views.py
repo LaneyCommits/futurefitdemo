@@ -13,14 +13,15 @@ import os
 import re
 
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 logger = logging.getLogger(__name__)
 from django.http import Http404, HttpResponse, JsonResponse
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_exempt
-from google import genai
 
 from .resume_data import RESUME_TEMPLATES, RESUME_TIPS, COVER_LETTER_TEMPLATES
+from .models import SavedDocument
 
 
 # ---------------------------------------------------------------------------
@@ -54,9 +55,12 @@ def resume_template_detail_view(request, major_key):
     template_data = RESUME_TEMPLATES.get(major_key)
     if not template_data:
         raise Http404("Resume template not found for this major.")
+    load_id = request.GET.get('load')
     return render(request, 'resume/template_detail.html', {
         'major_key': major_key,
         'template': template_data,
+        'user_is_authenticated': request.user.is_authenticated,
+        'load_id': load_id,
     })
 
 
@@ -73,6 +77,71 @@ def resume_ai_tools_view(request):
 def resume_generate_view(request):
     """AI Resume Generator form page."""
     return render(request, 'resume/generate.html')
+
+
+@login_required
+def my_saved_view(request):
+    """List current user's saved documents."""
+    documents = SavedDocument.objects.filter(user=request.user).order_by('-updated_at')
+    return render(request, 'resume/my_saved.html', {'documents': documents})
+
+
+@login_required
+@require_POST
+def save_document_view(request):
+    """Create or update a saved document. Expects JSON: title, major_key, doc_type, content; optional id for update."""
+    try:
+        data = json.loads(request.body) if request.body else {}
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    title = (data.get('title') or '').strip() or 'Untitled'
+    major_key = (data.get('major_key') or '').strip() or None
+    doc_type = data.get('doc_type', 'resume')
+    if doc_type not in dict(SavedDocument.DOC_TYPE_CHOICES):
+        doc_type = 'resume'
+    content = data.get('content', '')
+    doc_id = data.get('id')
+    if doc_id is not None:
+        try:
+            doc = SavedDocument.objects.get(pk=doc_id, user=request.user)
+            doc.title = title
+            doc.major_key = major_key
+            doc.doc_type = doc_type
+            doc.content = content
+            doc.save()
+        except SavedDocument.DoesNotExist:
+            return JsonResponse({'error': 'Document not found'}, status=404)
+    else:
+        doc = SavedDocument.objects.create(
+            user=request.user,
+            title=title,
+            major_key=major_key,
+            doc_type=doc_type,
+            content=content,
+        )
+    return JsonResponse({
+        'id': doc.id,
+        'title': doc.title,
+        'major_key': doc.major_key or '',
+        'doc_type': doc.doc_type,
+        'updated_at': doc.updated_at.isoformat(),
+    })
+
+
+@login_required
+@require_GET
+def load_document_view(request, pk):
+    """Return a saved document's content (and metadata) for the current user."""
+    try:
+        doc = SavedDocument.objects.get(pk=pk, user=request.user)
+    except SavedDocument.DoesNotExist:
+        return JsonResponse({'error': 'Document not found'}, status=404)
+    return JsonResponse({
+        'content': doc.content,
+        'title': doc.title,
+        'major_key': doc.major_key or '',
+        'doc_type': doc.doc_type,
+    })
 
 
 # ---------------------------------------------------------------------------
@@ -295,7 +364,7 @@ def _html_to_pdf(full_html):
 
 # --------------- AI API endpoints ---------------
 # API key stays in backend only (.env). Auto-detects AI Studio vs Vertex (Google Cloud) key.
-GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.0-flash')
+GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.5-flash')
 _force_vertex_ai = None  # Set to True after first "API keys are not supported" so we use Vertex
 
 
@@ -316,6 +385,11 @@ def _use_vertex_ai():
 
 def _gemini_client(use_vertex=False):
     """Return a genai Client: AI Studio (api_key) or Vertex AI (vertexai=True, api_key)."""
+    try:
+        from google import genai
+    except ImportError:
+        logger.warning("google-genai not installed; AI features disabled. pip install google-genai")
+        return None
     key = _get_gemini_key()
     if not key or key == 'your-gemini-api-key-here':
         return None
