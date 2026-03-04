@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Email verified – FutureFit{% endblock %}
+{% block body_class %}page-auth page-resume{% endblock %}
+
+{% block content %}
+<section class="block block--hero block--hero-with-bg auth-page-hero">
+    <div class="hero-shapes" aria-hidden="true">
+        <div class="hero-shape hero-shape--orb hero-shape-1"></div>
+        <div class="hero-shape hero-shape--orb hero-shape-2"></div>
+        <div class="hero-shape hero-shape--blob hero-shape-4"></div>
+        <div class="hero-shape hero-shape--glow hero-shape-7"></div>
+    </div>
+    <div class="hero-particles hero-particles--behind" aria-hidden="true">
+        <span class="hero-particle hero-particle--s" style="--x: 15%; --y: 20%; --d: 0"></span>
+        <span class="hero-particle hero-particle--m" style="--x: 80%; --y: 30%; --d: 0.8"></span>
+        <span class="hero-particle hero-particle--accent" style="--x: 50%; --y: 70%; --d: 0.3"></span>
+    </div>
+    <div class="auth-page-inner">
+        <div class="auth-form-card">
+            <p class="hero-badge">Verified</p>
+            <h1 class="block-hero-title">Email verified</h1>
+            <p class="block-hero-sub">Your email address is now verified. You’re all set.</p>
+            <p class="auth-switch" style="margin-top:1.5rem;">
+                <a href="{% url 'home' %}" class="btn btn-primary">Go to home</a>
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

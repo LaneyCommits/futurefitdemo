@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Chat – FutureFit{% endblock %}
+{% block body_class %}page-chat{% endblock %}
+
+{% block content %}
+<section class="block chat-page-block">
+    <div class="chat-page-inner">
+        <p class="hero-badge chat-badge">Brainstorm & ask questions</p>
+        <h1 class="block-hero-title">Chat</h1>
+        <p class="block-hero-sub">Ask academic questions, brainstorm ideas, or get help.{% if user.is_authenticated %} Your <a href="{% url 'personalization' %}">personalization</a> shapes how the AI responds.{% else %} <a href="{% url 'login' %}">Sign in</a> to personalize how the AI responds.{% endif %}</p>
+
+        <div class="chat-layout">
+            <aside class="chat-saved-sidebar" id="chat-saved-sidebar">
+                <h2 class="chat-saved-title">Saved chat</h2>
+                <p class="chat-saved-empty" id="chat-saved-empty">No previous conversation. Start a new chat below; when you leave and come back, it will appear here.</p>
+                <button type="button" class="chat-saved-summary-btn" id="chat-saved-summary-btn" style="display: none;">
+                    <span class="chat-saved-summary-text" id="chat-saved-summary-text"></span>
+                </button>
+                <button type="button" class="chat-new-chat-btn" id="chat-new-chat-btn">Start a new chat</button>
+            </aside>
+            <div class="chat-main">
+        <div class="chat-container">
+            <div class="chat-messages" id="chat-messages">
+                <p class="chat-placeholder" id="chat-placeholder">Send a message to start.</p>
+            </div>
+            <form class="chat-form" id="chat-form">
+                {% csrf_token %}
+                <textarea name="content" id="chat-input" class="chat-input" rows="3" placeholder="Type your message…" required></textarea>
+                <button type="submit" class="btn btn-primary chat-send-btn" id="chat-send-btn">Send</button>
+            </form>
+        </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+(function() {
+    const messagesEl = document.getElementById('chat-messages');
+    const placeholderEl = document.getElementById('chat-placeholder');
+    const form = document.getElementById('chat-form');
+    const input = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('chat-send-btn');
+
+    function escapeHtml(text) {
+        var div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    function formatAssistantContent(text) {
+        var escaped = escapeHtml(text);
+        escaped = escaped.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        escaped = escaped.replace(/\n/g, '<br>');
+        return escaped;
+    }
+    function addMessage(role, content) {
+        placeholderEl.style.display = 'none';
+        const div = document.createElement('div');
+        div.className = 'chat-message chat-message--' + role;
+        const roleLabel = document.createElement('span');
+        roleLabel.className = 'chat-message-role';
+        roleLabel.textContent = role === 'user' ? 'You' : 'FutureFit';
+        const contentEl = document.createElement('div');
+        contentEl.className = 'chat-message-content';
+        if (role === 'assistant') {
+            contentEl.innerHTML = formatAssistantContent(content);
+        } else {
+            contentEl.textContent = content;
+        }
+        div.appendChild(roleLabel);
+        div.appendChild(contentEl);
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function addLoadingMessage() {
+        placeholderEl.style.display = 'none';
+        const div = document.createElement('div');
+        div.className = 'chat-message chat-message--assistant chat-message--loading';
+        div.setAttribute('data-loading', 'true');
+        const roleLabel = document.createElement('span');
+        roleLabel.className = 'chat-message-role';
+        roleLabel.textContent = 'FutureFit';
+        const contentEl = document.createElement('div');
+        contentEl.className = 'chat-message-content chat-loading-dots';
+        contentEl.innerHTML = 'Thinking<span class="chat-loading-dot">.</span><span class="chat-loading-dot">.</span><span class="chat-loading-dot">.</span>';
+        div.appendChild(roleLabel);
+        div.appendChild(contentEl);
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        return div;
+    }
+
+    function removeLoadingMessage(loadingEl) {
+        if (loadingEl && loadingEl.parentNode) loadingEl.remove();
+    }
+
+    function setLoading(loading) {
+        sendBtn.disabled = loading;
+        sendBtn.textContent = loading ? '…' : 'Send';
+    }
+
+    const savedEmpty = document.getElementById('chat-saved-empty');
+    const savedSummaryBtn = document.getElementById('chat-saved-summary-btn');
+    const savedSummaryText = document.getElementById('chat-saved-summary-text');
+
+    var savedMessagesList = [];
+
+    function startNewChat() {
+        while (messagesEl.lastChild) messagesEl.removeChild(messagesEl.lastChild);
+        placeholderEl.style.display = 'block';
+        placeholderEl.textContent = 'Send a message to start.';
+        messagesEl.appendChild(placeholderEl);
+    }
+
+    document.getElementById('chat-new-chat-btn').addEventListener('click', startNewChat);
+
+    function loadSavedIntoMain() {
+        while (messagesEl.lastChild) messagesEl.removeChild(messagesEl.lastChild);
+        placeholderEl.style.display = 'none';
+        savedMessagesList.forEach(function(m) {
+            addMessage(m.role, m.content);
+        });
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    // Load: main area stays empty; sidebar shows summary button only
+    fetch('{% url "chat_messages" %}')
+        .then(function(r) { return r.text().then(function(t) { try { return JSON.parse(t); } catch (e) { return {}; } }); })
+        .then(function(data) {
+            var saved = data.savedMessages || [];
+            var summary = (data.savedSummary || '').trim();
+            if (saved.length === 0) {
+                savedEmpty.style.display = 'block';
+                savedSummaryBtn.style.display = 'none';
+                return;
+            }
+            savedEmpty.style.display = 'none';
+            savedMessagesList = saved;
+            savedSummaryText.textContent = summary || 'Previous chat';
+            savedSummaryBtn.style.display = 'flex';
+            savedSummaryBtn.addEventListener('click', loadSavedIntoMain);
+        })
+        .catch(function() {});
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const content = input.value.trim();
+        if (!content) return;
+        addMessage('user', content);
+        input.value = '';
+        setLoading(true);
+        const loadingEl = addLoadingMessage();
+
+        fetch('{% url "chat_send" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({ content: content })
+        })
+        .then(function(r) {
+            return r.text().then(function(text) {
+                var data;
+                try { data = text ? JSON.parse(text) : {}; } catch (e) { data = {}; }
+                if (!r.ok) throw new Error(data.error || r.statusText || 'Server error');
+                return data;
+            });
+        })
+        .then(function(data) {
+            removeLoadingMessage(loadingEl);
+            addMessage('assistant', data.content || 'No response.');
+        })
+        .catch(function(err) {
+            removeLoadingMessage(loadingEl);
+            addMessage('assistant', 'Sorry, something went wrong: ' + (err.message || 'Please try again.'));
+        })
+        .finally(function() {
+            setLoading(false);
+        });
+    });
+})();
+</script>
+{% endblock %}

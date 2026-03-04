@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}My Saved Work – FutureFit{% endblock %}
+{% block body_class %}page-resume{% endblock %}
+
+{% block content %}
+<section class="block block--hero block--hero-with-bg resume-hero resume-hero--compact">
+    <div class="block-inner">
+        <p class="resume-back-top"><a href="{% url 'resume_home' %}" class="btn btn-secondary btn--back">← Back to resume</a></p>
+        <p class="hero-badge">Your work</p>
+        <h1 class="block-hero-title">My saved resumes & writings</h1>
+        <p class="block-hero-sub">Open any document to continue editing. Your work is saved here.</p>
+    </div>
+</section>
+
+<section class="block block--dark">
+    <div class="block-inner">
+        {% if documents %}
+        <div class="saved-docs-grid">
+            {% for doc in documents %}
+            <a href="{% url 'resume_template_detail' doc.major_key|default:'computer_science' %}?load={{ doc.id }}" class="saved-doc-card">
+                <span class="saved-doc-type">{{ doc.get_doc_type_display }}</span>
+                <h3 class="saved-doc-title">{{ doc.title }}</h3>
+                <p class="saved-doc-meta">{% if doc.major_key %}{{ doc.major_key|title }}{% else %}General{% endif %} · Updated {{ doc.updated_at|timesince }} ago</p>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="saved-docs-empty">
+            <p class="saved-docs-empty-icon">📄</p>
+            <p class="saved-docs-empty-title">No saved documents yet</p>
+            <p class="saved-docs-empty-desc">Create a resume or writing and click <strong>Save</strong> to keep it here.</p>
+            <a href="{% url 'resume_templates' %}" class="btn btn-primary">Browse templates</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.saved-docs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+.saved-doc-card {
+    display: block;
+    padding: 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.saved-doc-card:hover {
+    border-color: var(--primary-btn);
+    box-shadow: var(--shadow);
+}
+.saved-doc-type {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--primary-btn);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+.saved-doc-title {
+    font-size: 1.1rem;
+    font-family: var(--font-display);
+    margin: 0 0 0.25rem;
+}
+.saved-doc-meta {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+.saved-docs-empty {
+    text-align: center;
+    padding: 3rem 2rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+.saved-docs-empty-icon {
+    font-size: 3rem;
+    margin: 0 0 1rem;
+    opacity: 0.6;
+}
+.saved-docs-empty-title {
+    font-size: 1.2rem;
+    margin: 0 0 0.5rem;
+}
+.saved-docs-empty-desc {
+    color: var(--text-muted);
+    margin: 0 0 1.5rem;
+}
+</style>
+{% endblock %}

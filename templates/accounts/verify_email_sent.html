@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Check your email – FutureFit{% endblock %}
+{% block body_class %}page-auth page-resume{% endblock %}
+
+{% block content %}
+<section class="block block--hero block--hero-with-bg auth-page-hero">
+    <div class="hero-shapes" aria-hidden="true">
+        <div class="hero-shape hero-shape--orb hero-shape-1"></div>
+        <div class="hero-shape hero-shape--orb hero-shape-2"></div>
+        <div class="hero-shape hero-shape--blob hero-shape-4"></div>
+        <div class="hero-shape hero-shape--glow hero-shape-7"></div>
+    </div>
+    <div class="hero-particles hero-particles--behind" aria-hidden="true">
+        <span class="hero-particle hero-particle--s" style="--x: 15%; --y: 20%; --d: 0"></span>
+        <span class="hero-particle hero-particle--m" style="--x: 80%; --y: 30%; --d: 0.8"></span>
+        <span class="hero-particle hero-particle--accent" style="--x: 50%; --y: 70%; --d: 0.3"></span>
+    </div>
+    <div class="auth-page-inner">
+        <div class="auth-form-card">
+            <p class="hero-badge">Email sent</p>
+            <h1 class="block-hero-title">Check your email</h1>
+            <p class="block-hero-sub">We sent a verification link to your email address. Click the link to verify your account. You can close this page and use the app—verify when you’re ready.</p>
+            <p class="block-hero-sub" style="margin-top:0.75rem; font-size:0.9rem; opacity:0.9;">If you're running locally and didn't get an email, check the terminal where <code>runserver</code> is running—the link is printed there by default. To receive real emails, set SMTP vars in <code>.env</code> (see README).</p>
+            <p class="auth-switch" style="margin-top:1.5rem;">
+                <a href="{% url 'home' %}" class="btn btn-primary">Go to home</a>
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

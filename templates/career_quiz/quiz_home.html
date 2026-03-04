@@ -6,9 +6,10 @@
 {% block content %}
 <section class="block block--hero block--hero-with-bg quiz-hero">
     <div class="block-inner">
-        <p class="hero-badge">3–7 minutes · free · no sign-up</p>
+        <p class="hero-badge">3–7 minutes · free · no sign-up required</p>
         <h1 class="block-hero-title">Career Discovery Quiz</h1>
         <p class="block-hero-sub">Find careers that match your personality, interests, and strengths — not just what's trending. Pick a quiz length to get started.</p>
+        <p class="quiz-hero-save-note">If you sign up for a free account, we'll save your quiz results so you can revisit them anytime.{% if not user.is_authenticated %} <a href="{% url 'signup' %}">Sign up here</a>{% endif %}</p>
     </div>
 </section>
 

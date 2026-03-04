@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Personalization – FutureFit{% endblock %}
+{% block body_class %}page-auth page-personalization{% endblock %}
+
+{% block content %}
+<section class="block block--hero block--hero-with-bg auth-page-hero">
+    <div class="hero-shapes" aria-hidden="true">
+        <div class="hero-shape hero-shape--orb hero-shape-1"></div>
+        <div class="hero-shape hero-shape--blob hero-shape-4"></div>
+        <div class="hero-shape hero-shape--prism hero-shape-5"></div>
+        <div class="hero-shape hero-shape--glow hero-shape-7"></div>
+    </div>
+    <div class="auth-page-inner">
+        <div class="auth-form-card personalization-card">
+            <p class="hero-badge">Personalization</p>
+            <h1 class="block-hero-title">Customize AI responses</h1>
+            <p class="block-hero-sub">Set how the chatbot and AI tools respond to you.</p>
+            <form method="post" action="{% url 'personalization' %}" class="auth-form">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                <div class="auth-error">{{ form.non_field_errors }}</div>
+                {% endif %}
+                <div class="form-row">
+                    <label for="id_base_style">Base style and tone</label>
+                    <select name="base_style" id="id_base_style" class="form-input">
+                        <option value="">Default</option>
+                        <option value="friendly" {% if form.base_style.value == "friendly" %}selected{% endif %}>Friendly</option>
+                        <option value="professional" {% if form.base_style.value == "professional" %}selected{% endif %}>Professional</option>
+                        <option value="concise" {% if form.base_style.value == "concise" %}selected{% endif %}>Concise</option>
+                        <option value="detailed" {% if form.base_style.value == "detailed" %}selected{% endif %}>Detailed</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label for="id_custom_instructions">Custom instructions</label>
+                    <textarea name="custom_instructions" id="id_custom_instructions" class="form-input" rows="4" placeholder="e.g. Write like a real human. Stay professional but casual. Avoid buzzwords and jargon.">{% if form.custom_instructions.value %}{{ form.custom_instructions.value }}{% endif %}</textarea>
+                    <span class="form-hint">Tell the AI how you want it to write (tone, style, what to avoid).</span>
+                    {% if form.custom_instructions.errors %}<span class="auth-field-error">{{ form.custom_instructions.errors.0 }}</span>{% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:1rem;">Save</button>
+            </form>
+            <p class="auth-switch" style="margin-top:1rem;"><a href="{% url 'profile' %}">← Back to profile</a></p>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -94,14 +94,14 @@ body.is-scrolled .site-header {
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
 }
 .header-inner {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0.65rem 1.5rem;
   min-height: 52px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 1rem;
 }
 @media (max-width: 768px) {
@@ -109,6 +109,39 @@ body.is-scrolled .site-header {
 }
 @media (max-width: 600px) {
   .header-inner { padding: 0.65rem 1rem; gap: 0.5rem; }
+}
+
+/* Hamburger toggle button */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 110;
+}
+.hamburger-line {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.nav-toggle[aria-expanded="true"] .hamburger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav-toggle[aria-expanded="true"] .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+.nav-toggle[aria-expanded="true"] .hamburger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
 }
 .brand {
   display: flex;
@@ -150,20 +183,21 @@ body.is-scrolled .site-header {
 .nav {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.75rem;
 }
 .nav-link {
   position: relative;
   color: var(--text-muted);
   text-decoration: none;
   font-weight: 500;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.7rem;
+  font-size: clamp(0.8125rem, 0.6rem + 0.5vw, 1rem);
+  padding: 0.4rem 0.5rem;
   border-radius: 8px;
   transition: color 0.2s ease, background 0.2s ease;
   display: inline-flex;
   align-items: center;
-  min-height: 44px; /* touch target on phone/tablet */
+  min-height: 44px;
+  white-space: nowrap;
 }
 .nav-link:hover {
   color: var(--text);
@@ -176,7 +210,7 @@ body.is-scrolled .site-header {
 }
 .btn-header {
   padding: 0.5rem 1.15rem;
-  font-size: 0.88rem;
+  font-size: clamp(0.72rem, 0.5rem + 0.4vw, 0.82rem);
   background: var(--primary-btn);
   color: var(--navy);
   border-radius: 50px;
@@ -197,17 +231,75 @@ body.is-scrolled .site-header {
   box-shadow: 0 4px 14px rgba(79, 163, 165, 0.35);
 }
 .btn-header-short { display: none; }
+.btn-header-full { display: inline; }
+
+/* Mobile navigation */
+@media (max-width: 900px) {
+  html, body {
+    overflow-x: hidden;
+  }
+  .nav-toggle {
+    display: flex;
+  }
+  .nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    max-width: 85vw;
+    height: 100vh;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 5rem 1.5rem 2rem;
+    background: rgba(10, 22, 40, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
+    z-index: 105;
+    overflow-y: auto;
+    visibility: visible;
+  }
+  .nav:not(.nav--open) {
+    pointer-events: none;
+  }
+  .nav--open {
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+  .nav-link {
+    padding: 1rem 0.5rem;
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .nav-link:last-of-type {
+    border-bottom: none;
+  }
+  .btn-header {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: clamp(0.78rem, 2vw, 0.88rem);
+  }
+  .btn-header-full { display: inline; }
+  .btn-header-short { display: none; }
+  body.nav-open::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+  }
+}
 @media (max-width: 768px) {
   .btn-header {
-    padding: 0.4rem 0.85rem;
-    font-size: 0.78rem;
+    padding: 0.5rem 1rem;
     min-height: 44px;
   }
-  .btn-header-full { display: none; }
-  .btn-header-short { display: inline; }
 }
 @media (max-width: 600px) {
-  .btn-header { padding: 0.5rem 1rem; font-size: 0.82rem; }
+  .btn-header { padding: 0.5rem 1rem; }
 }
 
 /* Home: full-width block layout */
@@ -283,6 +375,18 @@ body.is-scrolled .site-header {
   pointer-events: none;
 }
 .block--hero-with-bg .block-inner { position: relative; z-index: 1; }
+
+/* Resources (blog) page: much smaller hero */
+.blog-hero--compact.block--hero-with-bg {
+  padding: 2rem 1.5rem 2rem;
+  min-height: auto;
+  display: block;
+  align-items: unset;
+  justify-content: unset;
+}
+.blog-hero--compact .hero-badge { font-size: 0.8rem; margin-bottom: 0.4rem; }
+.blog-hero--compact .block-hero-title { font-size: clamp(1.35rem, 3vw, 1.65rem); margin-bottom: 0.35rem; }
+.blog-hero--compact .block-hero-sub { font-size: 0.95rem; }
 
 /* Hero geometric shapes — glass-like orbs, prisms, glowing blobs */
 .hero-shapes {
@@ -594,7 +698,47 @@ body.is-scrolled .site-header {
 .block--schools-cta .block-title { color: var(--text); margin-bottom: 0.5rem; }
 .block--schools-cta .block-desc { color: var(--text-muted); margin-bottom: 1.5rem; }
 .block-inner--narrow { max-width: 560px; margin-left: auto; margin-right: auto; }
+
+/* Article / blog post body: left-aligned, no indentation */
+.page-blog-detail .block--cream .block-inner--narrow { text-align: left; }
+.page-blog-detail .blog-post-body {
+  text-align: left;
+  margin-top: 1rem;
+}
+.page-blog-detail .blog-post-body h2 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.35rem;
+  font-size: 1.1rem;
+}
+.page-blog-detail .blog-post-body h2:first-of-type { margin-top: 0.5rem; }
+.page-blog-detail .blog-post-body p {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
 .block-desc--why { font-size: 1.1rem; line-height: 1.65; margin-bottom: 1.5rem; }
+
+/* Why FutureFit + Find colleges: separate sections stacked one under the other */
+.cta-blocks {
+  display: flex;
+  flex-direction: column;
+}
+.cta-blocks .block--cream,
+.cta-blocks .block--schools-cta {
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .cta-blocks .block--cream,
+  .cta-blocks .block--schools-cta {
+    padding: 3.5rem 1.25rem;
+  }
+}
+@media (max-width: 600px) {
+  .cta-blocks .block--cream,
+  .cta-blocks .block--schools-cta {
+    padding: 3rem 1rem;
+  }
+}
 
 /* Stats bar */
 .stats-bar {
@@ -603,26 +747,21 @@ body.is-scrolled .site-header {
   padding: 1.75rem 1.5rem;
 }
 .stats-bar-inner {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   display: flex;
   justify-content: center;
-  gap: 3rem;
+  gap: 2.5rem;
   flex-wrap: wrap;
 }
 @media (max-width: 768px) {
   .stats-bar-inner {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.25rem 2rem;
-    justify-items: center;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
+    gap: 1.5rem 2rem;
   }
 }
 .stat-item {
   text-align: center;
+  flex-shrink: 0;
 }
 .stat-number {
   display: block;
@@ -638,12 +777,19 @@ body.is-scrolled .site-header {
   letter-spacing: 0.02em;
 }
 @media (max-width: 600px) {
+  .stats-bar { padding: 1.25rem 1rem; }
   .stats-bar-inner {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.25rem 1.5rem;
-    max-width: 320px;
+    gap: 1rem 1.25rem;
   }
-  .stat-number { font-size: 1.5rem; }
+  .stat-number { font-size: 1.35rem; }
+  .stat-label { font-size: 0.72rem; }
+}
+@media (max-width: 420px) {
+  .stats-bar-inner {
+    gap: 0.75rem 1rem;
+  }
+  .stat-number { font-size: 1.15rem; }
+  .stat-label { font-size: 0.65rem; }
 }
 
 /* How it works */
@@ -658,9 +804,6 @@ body.is-scrolled .site-header {
   margin-top: 2.5rem;
   text-align: center;
   counter-reset: howstep;
-}
-@media (max-width: 768px) {
-  .how-steps { grid-template-columns: 1fr; gap: 2.5rem; }
 }
 .how-step {
   position: relative;
@@ -729,73 +872,166 @@ body.is-scrolled .site-header {
   .how-step:last-child .how-connector { display: none; }
 }
 
-/* Feature cards - the blog posts/additional resources*/
+/* How it works: compact side-by-side on smaller screens */
+@media (max-width: 768px) {
+  .block--how {
+    padding: 2.5rem 1rem;
+  }
+  .block--how .block-title { font-size: 1.25rem; }
+  .block--how .block-desc { font-size: 0.875rem; margin-bottom: 0; }
+  .how-steps {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+  .how-step-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+    margin: 0 auto 0.4rem;
+    border-width: 1.5px;
+  }
+  .how-step-num {
+    width: 18px;
+    height: 18px;
+    font-size: 0.65rem;
+    top: -4px;
+    transform: translateX(14px);
+  }
+  .how-step-title {
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+    line-height: 1.25;
+  }
+  .how-step-desc {
+    font-size: 0.7rem;
+    line-height: 1.4;
+    max-width: none;
+  }
+}
+@media (max-width: 480px) {
+  .block--how { padding: 2rem 0.75rem; }
+  .how-steps { gap: 0.35rem; margin-top: 1rem; }
+  .how-step-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+    margin: 0 auto 0.3rem;
+  }
+  .how-step-num { width: 16px; height: 16px; font-size: 0.6rem; transform: translateX(12px); }
+  .how-step-title { font-size: 0.72rem; }
+  .how-step-desc { font-size: 0.65rem; }
+}
+
+/* Feature cards - the blog posts/resources */
 .block--features {
   background: var(--bg);
-  padding: 4rem 1.5rem 5rem;
+  padding: 3rem 1rem 4rem;
 }
 .feature-cards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
   text-align: left;
-}
-@media (max-width: 900px) {
-  .feature-cards { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
-}
-@media (max-width: 600px) {
-  .feature-cards { grid-template-columns: 1fr; gap: 1.25rem; }
 }
 .feature-card {
   background: var(--surface);
   border-radius: var(--radius);
-  padding: 1.75rem;
+  padding: 1rem;
   box-shadow: var(--shadow);
   border: 2px solid var(--border);
+  min-width: 0;
 }
 .feature-card:hover {
-  transform: translateY(-4px) !important;
+  transform: translateY(-2px) !important;
   border-color: var(--teal-accent);
   box-shadow: var(--shadow-hover);
-  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s
-
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
 }
 .feature-card-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  margin-bottom: 0.6rem;
 }
 .feature-card-icon--teal { background: rgba(40, 215, 255, 0.12); }
 .feature-card-icon--sage { background: rgba(40, 215, 255, 0.08); }
 .feature-card-icon--navy { background: rgba(255, 255, 255, 0.06); }
 .feature-card-accent {
   display: block;
-  width: 48px;
-  height: 6px;
+  width: 36px;
+  height: 5px;
   border-radius: 3px;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.75rem;
 }
 .feature-card-accent--teal { background: var(--sage); }
 .feature-card-accent--peach { background: var(--teal-accent); }
 .feature-card-accent--coral { background: var(--primary-btn); }
+
 .feature-card-title, .feature-card-title > * {
+  text-decoration: none;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 0.4rem;
-  text-decoration: none;
+  margin-bottom: 0.25rem;
 }
 .feature-card-desc {
-  font-size: 0.92rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
-  line-height: 1.55;
+  line-height: 1.45;
   margin: 0;
+}
+
+@media (max-width: 768px) {
+  .block--features { padding: 2rem 0.75rem 3rem; }
+  .feature-cards { gap: 0.75rem; }
+  .feature-card { padding: 0.75rem; }
+  .feature-card-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+  }
+  .feature-card-accent { width: 32px; height: 4px; margin-bottom: 0.5rem; }
+  .feature-card-title, .feature-card-title > * { font-size: 0.85rem; }
+  .feature-card-desc { font-size: 0.72rem; line-height: 1.4; }
+}
+/* Phone: 2×2 grid — Career quiz & Resumes on top, AI gap & Find colleges below */
+@media (max-width: 600px) {
+  .feature-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  .feature-card { padding: 0.65rem; }
+  .feature-card-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+  }
+  .feature-card-title, .feature-card-title > * { font-size: 0.8rem; }
+  .feature-card-desc { font-size: 0.68rem; line-height: 1.4; }
+}
+@media (max-width: 480px) {
+  .block--features { padding: 1.5rem 0.5rem 2rem; }
+  .feature-cards { gap: 0.5rem; }
+  .feature-card { padding: 0.5rem; }
+  .feature-card-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+    margin-bottom: 0.35rem;
+    border-radius: 6px;
+  }
+  .feature-card-accent { width: 28px; height: 4px; margin-bottom: 0.35rem; }
+  .feature-card-title, .feature-card-title > * { font-size: 0.75rem; }
+  .feature-card-desc { font-size: 0.65rem; line-height: 1.35; }
 }
 
 /* Scroll reveal animations */
@@ -1423,6 +1659,16 @@ body.is-scrolled .site-header {
 .quiz-hero .block-inner {
   max-width: 640px;
   margin: 0 auto;
+}
+.quiz-hero-save-note {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.quiz-hero-save-note a {
+  color: var(--sage);
+  font-weight: 600;
+  text-underline-offset: 2px;
 }
 
 /* Quiz content sections */
@@ -3936,7 +4182,7 @@ body.is-scrolled .site-header {
   font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--text);
   margin: 0 0 0.5rem;
 }
 .resume-verb-list {
@@ -4427,11 +4673,20 @@ body.page-schools {
 }
 .schools-hero {
   min-height: auto !important;
-  padding: 4.5rem 1.5rem 3.5rem !important;
+  padding: 2.5rem 1.5rem 2rem !important;
+  display: block;
+  align-items: unset;
+  justify-content: unset;
 }
 .schools-hero .block-inner {
   max-width: 640px;
   margin: 0 auto;
+}
+.schools-hero .hero-badge { font-size: 0.8rem; margin-bottom: 0.4rem; }
+.schools-hero .block-hero-title { font-size: clamp(1.35rem, 3vw, 1.65rem); margin-bottom: 0.35rem; }
+.schools-hero .block-hero-sub { font-size: 0.95rem; }
+@media (max-width: 600px) {
+  .schools-hero { padding: 2rem 1rem 1.5rem !important; }
 }
 .schools-content-section {
   padding: 0;

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Profile – FutureFit{% endblock %}
+{% block body_class %}page-auth page-profile{% endblock %}
+
+{% block content %}
+<section class="block block--hero block--hero-with-bg auth-page-hero">
+    <div class="hero-shapes" aria-hidden="true">
+        <div class="hero-shape hero-shape--orb hero-shape-1"></div>
+        <div class="hero-shape hero-shape--blob hero-shape-4"></div>
+        <div class="hero-shape hero-shape--prism hero-shape-5"></div>
+        <div class="hero-shape hero-shape--glow hero-shape-7"></div>
+    </div>
+    <div class="auth-page-inner">
+        <div class="auth-form-card profile-card">
+            <p class="hero-badge">Profile</p>
+            <h1 class="block-hero-title">Your profile</h1>
+            <p class="block-hero-sub">Update your photo and a short bio.</p>
+            <form method="post" action="{% url 'profile' %}" class="auth-form" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                <div class="auth-error">{{ form.non_field_errors }}</div>
+                {% endif %}
+                <div class="form-row profile-avatar-row">
+                    <label>Profile photo</label>
+                    <div class="profile-avatar-wrap">
+                        {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" alt="Your avatar" class="profile-avatar-img">
+                        {% else %}
+                        <div class="profile-avatar-placeholder" aria-hidden="true">{{ user.username|slice:":1"|upper }}</div>
+                        {% endif %}
+                    </div>
+                    <input type="file" name="avatar" id="id_avatar" class="form-input" accept="image/*">
+                    {% if form.avatar.errors %}<span class="auth-field-error">{{ form.avatar.errors.0 }}</span>{% endif %}
+                </div>
+                <div class="form-row">
+                    <label for="id_bio">About you</label>
+                    <textarea name="bio" id="id_bio" class="form-input" rows="4" placeholder="A short description about yourself (optional).">{% if form.bio.value %}{{ form.bio.value }}{% endif %}</textarea>
+                    {% if form.bio.errors %}<span class="auth-field-error">{{ form.bio.errors.0 }}</span>{% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:1rem;">Save profile</button>
+            </form>
+            <p class="auth-switch" style="margin-top:1rem;"><a href="{% url 'personalization' %}">Customize AI responses →</a></p>
+        </div>
+
+        <div class="profile-quiz-section auth-form-card">
+            <h2 class="profile-quiz-heading">Your career profile</h2>
+            {% if quiz_pill_labels %}
+            <div class="profile-quiz-pills">
+                {% for label in quiz_pill_labels %}
+                <span class="profile-quiz-pill">{{ label }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="profile-quiz-empty">Take the career quiz to see your matches here.</p>
+            <a href="{% url 'career_quiz_home' %}" class="profile-quiz-pill profile-quiz-pill--cta">Take the quiz</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
