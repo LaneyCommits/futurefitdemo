@@ -13,6 +13,14 @@
 | **Gap Analysis** | Paste resume + job posting → AI match score, missing keywords, suggestions |
 | **College Finder** | Filter by major, location, cost, school type |
 
+## TODO:
+[ ] Add ability to make futurebot popup larger 
+[ ] Make resume tips section into carousel 
+[ ] Add more colleges 
+[ ] Finish sign-in functionality so users can save resumes
+    [ ] make it so verification emails are actually sent to the user
+[ ] consider adding mbti test 
+
 ## Quick Start
 
 ```bash
