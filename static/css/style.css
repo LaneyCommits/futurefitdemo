@@ -3513,7 +3513,12 @@ body.is-scrolled .site-header {
   border: 2px solid var(--border);
   border-radius: 6px;
   background: var(--surface);
+  color: var(--text);
   transition: border-color 0.2s;
+}
+.resume-generate-fieldset input::placeholder,
+.resume-generate-fieldset textarea::placeholder {
+  color: var(--text-muted);
 }
 .resume-generate-fieldset input:focus,
 .resume-generate-fieldset textarea:focus {
