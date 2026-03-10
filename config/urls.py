@@ -1,5 +1,5 @@
 """
-FutureFit URL configuration.
+ExploringU URL configuration.
 
 Sections:
   - /               Resume analysis (gap analysis, AI tools)

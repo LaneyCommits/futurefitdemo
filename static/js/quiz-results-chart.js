@@ -41,7 +41,7 @@
     s.rawRatio = top5Total > 0 ? s.score / top5Total : 0;
   });
 
-  // FutureFit palette: 5 distinct colors matching site vibe
+  // ExploringU palette: 5 distinct colors matching site vibe
   var COLORS = [
     '#1F2A44',  /* navy */
     '#7FAF9D',  /* sage */

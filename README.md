@@ -1,8 +1,8 @@
-# FutureFit
+# ExploringU
 
 **Campus to career.** Career quiz, resume templates, gap analysis, and college finder—all free for students.
 
-![FutureFit homepage](docs/images/homepage-screenshot.png)
+![ExploringU homepage](docs/images/homepage-screenshot.png)
 
 ## Features
 
@@ -28,7 +28,7 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000).
 ## Local Setup
 
 ```bash
-cd FutureFit
+cd ExploringU
 source venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
@@ -42,7 +42,7 @@ Static preview in `docs/`. Deploy: **Settings → Pages** → source `main` / fo
 ## Structure
 
 ```
-FutureFit/
+ExploringU/
 ├── config/           # Django settings
 ├── resume_analysis/  # Gap analysis
 ├── career_quiz/      # Quiz

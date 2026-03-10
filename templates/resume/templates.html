@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Academic Writing Templates – FutureFit{% endblock %}
+{% block title %}Academic Writing Templates – ExploringU{% endblock %}
 {% block body_class %}page-resume page-academic-writing{% endblock %}
 
 {% block extra_head %}
@@ -564,7 +564,7 @@
         }
       }
       var label = paper.getAttribute('data-template-label');
-      var filename = (label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'academic-document') + '-futurefit.pdf';
+      var filename = (label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'academic-document') + '-exploringu.pdf';
       downloadBtn.disabled = true;
       downloadBtn.innerHTML = '<span class="academic-btn-spinner"></span> Generating...';
       fetch('/resume/api/pdf/', {

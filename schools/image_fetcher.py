@@ -45,7 +45,7 @@ def fetch_wikipedia_image(name, city="", state=""):
 
     try:
         req = urllib.request.Request(
-            url, headers={"User-Agent": "FutureFit/1.0 (campus finder)"}
+            url, headers={"User-Agent": "ExploringU/1.0 (campus finder)"}
         )
         with urllib.request.urlopen(req, timeout=10) as resp:
             data = resp.read().decode()
@@ -73,7 +73,7 @@ def fetch_wikipedia_image(name, city="", state=""):
         )
 
         req2 = urllib.request.Request(
-            img_url, headers={"User-Agent": "FutureFit/1.0 (campus finder)"}
+            img_url, headers={"User-Agent": "ExploringU/1.0 (campus finder)"}
         )
         with urllib.request.urlopen(req2, timeout=10) as resp2:
             data2 = resp2.read().decode()
@@ -102,7 +102,7 @@ def fetch_website_image(website_url):
         req = urllib.request.Request(
             website_url,
             headers={
-                "User-Agent": "Mozilla/5.0 (compatible; FutureFit/1.0; +https://futurefit.edu)",
+                "User-Agent": "Mozilla/5.0 (compatible; ExploringU/1.0; +https://exploringu.edu)",
             },
         )
         with urllib.request.urlopen(req, timeout=10) as resp:

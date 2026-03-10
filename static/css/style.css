@@ -1,5 +1,5 @@
 /*
- * FutureFit – main stylesheet
+ * ExploringU – main stylesheet
  *
  * Sections (search for these headers):
  *   1. CSS variables & base reset
@@ -192,7 +192,7 @@ body.is-scrolled .site-header {
 }
 .logo:hover { opacity: 0.9; }
 .logo-img {
-  height: 140px;
+  height: 200px;
   width: auto;
   display: block;
   object-fit: contain;
@@ -965,7 +965,7 @@ body.is-scrolled .site-header {
 
 .block-desc--why { font-size: 1.1rem; line-height: 1.65; margin-bottom: 1.5rem; }
 
-/* Why FutureFit + Find colleges: separate sections stacked one under the other */
+/* Why ExploringU + Find colleges: separate sections stacked one under the other */
 .cta-blocks {
   display: flex;
   flex-direction: column;

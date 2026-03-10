@@ -1,5 +1,5 @@
 /**
- * FutureFit Resume AI — auto-detects server mode vs client mode.
+ * ExploringU Resume AI — auto-detects server mode vs client mode.
  *
  * Server mode (Django): Calls /resume/api/ai/* endpoints. No API key needed by users.
  * Client mode (GitHub Pages): Falls back to direct Gemini calls with user's own key.
@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  var STORAGE_KEY = 'futurefit_gemini_key';
+  var STORAGE_KEY = 'exploringu_gemini_key';
   var GEMINI_MODEL = 'gemini-2.0-flash';
   var GEMINI_API = 'https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent';
 

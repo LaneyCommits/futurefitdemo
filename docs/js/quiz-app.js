@@ -1,6 +1,6 @@
 /**
  * Quiz app: multi-step flow for GitHub Pages static site.
- * Updated to match the FutureFit design system (gradient hero, modern cards, reveal animations).
+ * Updated to match the ExploringU design system (gradient hero, modern cards, reveal animations).
  */
 (function() {
   var app = document.getElementById('quiz-app');

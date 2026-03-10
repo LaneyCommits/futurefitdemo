@@ -20,12 +20,12 @@ def main():
         print(f"Not found: {src}")
         sys.exit(1)
     img = Image.open(src).convert("RGBA")
-    data = img.getdata()
+    data = list(getattr(img, "get_flattened_data", img.getdata)())
     new_data = []
+    # Treat dark pixels (near black) as transparent so logo blends with dark navbar
     for item in data:
         r, g, b, a = item
-        # Treat dark pixels (near black) as transparent
-        if r < 50 and g < 50 and b < 50:
+        if r < 70 and g < 70 and b < 70:
             new_data.append((r, g, b, 0))
         else:
             new_data.append(item)

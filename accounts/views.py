@@ -35,15 +35,15 @@ def _send_verification_email(request, user, verification):
     verify_url = request.build_absolute_uri(
         reverse('verify_email', kwargs={'key': verification.key})
     )
-    subject = 'Verify your FutureFit email'
+    subject = 'Verify your ExploringU email'
     message = (
         f'Hi {user.username},\n\n'
         f'Please verify your email by clicking the link below:\n\n'
         f'{verify_url}\n\n'
         f'This link is valid for 24 hours. If you didn\'t create an account, you can ignore this email.\n\n'
-        f'— FutureFit'
+        f'— ExploringU'
     )
-    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@futurefit.example.com')
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@exploringu.example.com')
     try:
         send_mail(
             subject,

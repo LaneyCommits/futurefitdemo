@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}{{ template.label }} Resume Template – FutureFit{% endblock %}
+{% block title %}{{ template.label }} Resume Template – ExploringU{% endblock %}
 {% block body_class %}page-resume{% endblock %}
 
 {% block extra_head %}
@@ -326,7 +326,7 @@
             });
             htmlToSend = clone.outerHTML;
         }
-        var filename = ('{{ template.label }}'.toLowerCase().replace(/[^a-z0-9\-\.]/g, '-') || 'resume') + '-futurefit.pdf';
+        var filename = ('{{ template.label }}'.toLowerCase().replace(/[^a-z0-9\-\.]/g, '-') || 'resume') + '-exploringu.pdf';
 
         function fallbackJsPdf() {
             try {

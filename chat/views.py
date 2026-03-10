@@ -14,7 +14,7 @@ SESSION_CHAT_MAX = 20
 def _get_system_prompt(request):
     """Build system prompt from user's profile (custom_instructions, base_style, bio)."""
     parts = [
-        "You are a helpful assistant for FutureFit, a career exploration tool for college students. "
+        "You are a helpful assistant for ExploringU, a career exploration tool for college students. "
         "Help with brainstorming, academic questions, and general questions. Be clear and supportive.",
         "Format your responses for easy reading: start a new line for each distinct topic or point. "
         "Bold every heading or topic by wrapping it in double asterisks, e.g. **Topic name**. "

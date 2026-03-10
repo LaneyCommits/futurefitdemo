@@ -1,5 +1,5 @@
 /**
- * FutureFit Resume AI — server-only. All AI calls go to the Django backend.
+ * ExploringU Resume AI — server-only. All AI calls go to the Django backend.
  * The API key is stored in .env (GEMINI_API_KEY) and never sent to the client.
  */
 (function () {

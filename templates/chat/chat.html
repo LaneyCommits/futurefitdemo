@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Chat – FutureFit{% endblock %}
+{% block title %}Chat – ExploringU{% endblock %}
 {% block body_class %}page-chat{% endblock %}
 
 {% block content %}
@@ -60,7 +60,7 @@
         div.className = 'chat-message chat-message--' + role;
         const roleLabel = document.createElement('span');
         roleLabel.className = 'chat-message-role';
-        roleLabel.textContent = role === 'user' ? 'You' : 'FutureFit';
+        roleLabel.textContent = role === 'user' ? 'You' : 'ExploringU';
         const contentEl = document.createElement('div');
         contentEl.className = 'chat-message-content';
         if (role === 'assistant') {
@@ -81,7 +81,7 @@
         div.setAttribute('data-loading', 'true');
         const roleLabel = document.createElement('span');
         roleLabel.className = 'chat-message-role';
-        roleLabel.textContent = 'FutureFit';
+        roleLabel.textContent = 'ExploringU';
         const contentEl = document.createElement('div');
         contentEl.className = 'chat-message-content chat-loading-dots';
         contentEl.innerHTML = 'Thinking<span class="chat-loading-dot">.</span><span class="chat-loading-dot">.</span><span class="chat-loading-dot">.</span>';

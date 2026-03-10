@@ -285,7 +285,7 @@
                   <button type="button" class="futurebot-suggestion" data-task="Resume Summary">Resume Summary</button>
                   <button type="button" class="futurebot-suggestion" data-task="Cover Letter">Cover Letter</button>
                 </div>
-                <p class="futurebot-status futurebot-status--static" style="display:block;margin-top:0.5rem">AI writing is available on the full FutureFit site. Use the template editor here, then visit FutureFit to polish with AI.</p>
+                <p class="futurebot-status futurebot-status--static" style="display:block;margin-top:0.5rem">AI writing is available on the full ExploringU site. Use the template editor here, then visit ExploringU to polish with AI.</p>
                 <p class="futurebot-status" id="futureBotStatusInline" aria-live="polite" style="display:none;"></p>
                 <div class="futurebot-output-wrap" id="futureBotOutputWrap" style="display:none;">
                   <div class="futurebot-output" id="futureBotOutput"></div>
@@ -691,7 +691,7 @@
       function generatePdf() {
         html2pdf().set({
           margin: 1,
-          filename: majorKey + '-resume-futurefit.pdf',
+          filename: majorKey + '-resume-exploringu.pdf',
           image: { type: 'jpeg', quality: 0.98 },
           html2canvas: { scale: 1, scrollY: 0 },
           jsPDF: { unit: 'in', orientation: 'portrait' }
