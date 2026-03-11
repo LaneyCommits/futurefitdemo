@@ -22,8 +22,6 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-change-me-in-p
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1', 'yes')
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
-if DEBUG:
-    ALLOWED_HOSTS = ['*']  # In development, allow any host so runserver works from any URL
 
 if os.getenv("site_url"):
     ALLOWED_HOSTS.append(os.getenv("site_url").replace("https://", ""))
@@ -42,8 +40,8 @@ INSTALLED_APPS = [
     'resume',
     'schools',
     'blog',
-    'accounts',
-    'chat',
+    'accounts,'
+    'chat'
 ]
 
 MIDDLEWARE = [
@@ -99,6 +97,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
