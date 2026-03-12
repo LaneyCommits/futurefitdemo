@@ -18,8 +18,16 @@
 - [ ] Make resume tips section into carousel 
 - [ ] Add more colleges 
 - [ ] Finish sign-in functionality so users can save resumes
-    - [ ] make it so verification emails are sent to the user
-- [ ] consider adding mbti test 
+    - [ ] optional: make it so verification emails are sent to the user
+    - [ ] add profile pictures
+- [ ] consider adding mbti test
+- [ ] add ability to download resumes/resume templates as docx
+- [ ] add way for AI chat to reference user behavior
+- [ ] add way to search for jobs by major
+    - maybe using serpapi?
+- [ ] change dockerfile to use actual server instead of debug server
+    - possibly using gunicorn
+    - [https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu#step-6-testing-gunicorn-s-ability-to-serve-the-project](https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu#step-6-testing-gunicorn-s-ability-to-serve-the-project)
 
 ## Quick Start
 
