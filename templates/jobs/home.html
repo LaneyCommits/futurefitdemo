@@ -47,7 +47,7 @@
                     <option value="part_time" {% if selected_type == "part_time" %}selected{% endif %}>Part-time</option>
                 </select>
             </div>
-            <div class="jobs-filter-group">
+            <div class="jobs-filter-group jobs-filter-group--state">
                 <label class="jobs-filter-label" for="filter-state">State</label>
                 <input class="jobs-filter-input" id="filter-state" name="state" type="text" maxlength="2" placeholder="Any" value="{{ selected_state }}">
                 <p class="jobs-filter-help">Use a two-letter code like CA, NY, TX.</p>
