@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Jobs & Internships – ExploringU{% endblock %}
+{% block body_class %}page-jobs{% endblock %}
+
+{% block content %}
+<section class="block block--hero block--hero-with-bg jobs-hero">
+    <div class="hero-shapes" aria-hidden="true">
+        <div class="hero-shape hero-shape--orb hero-shape-1"></div>
+        <div class="hero-shape hero-shape--orb hero-shape-2"></div>
+        <div class="hero-shape hero-shape--orb hero-shape-3"></div>
+        <div class="hero-shape hero-shape--blob hero-shape-4"></div>
+        <div class="hero-shape hero-shape--prism hero-shape-5"></div>
+        <div class="hero-shape hero-shape--prism hero-shape-6"></div>
+        <div class="hero-shape hero-shape--glow hero-shape-7"></div>
+        <div class="hero-shape hero-shape--glow hero-shape-8"></div>
+    </div>
+    <div class="block-inner">
+        <p class="hero-badge">US jobs & internships · curated for students</p>
+        <h1 class="block-hero-title">Explore jobs that match your major</h1>
+        <p class="block-hero-sub">Browse example job and internship listings that line up with the same major “pill” categories you see in the quiz, resumes, and colleges pages.</p>
+        <div class="block-hero-buttons">
+            <a href="{% url 'career_quiz_home' %}" class="btn btn-hero-secondary">Take the quiz first <span class="btn-arrow btn-arrow--outline" aria-hidden="true">→</span></a>
+            <a href="{% url 'resume_home' %}" class="btn btn-hero-tertiary">Polish your resume <span class="btn-arrow btn-arrow--outline" aria-hidden="true">→</span></a>
+        </div>
+    </div>
+</section>
+
+<section class="block jobs-content-section">
+    <div class="block-inner">
+        <form class="jobs-filters" method="get">
+            <div class="jobs-filter-group">
+                <label class="jobs-filter-label" for="filter-major">Major</label>
+                <select class="jobs-filter-select" id="filter-major" name="major">
+                    <option value="">All majors</option>
+                    {% for key, label in majors %}
+                    <option value="{{ key }}" {% if key == selected_major %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="jobs-filter-group">
+                <label class="jobs-filter-label" for="filter-type">Type</label>
+                <select class="jobs-filter-select" id="filter-type" name="type">
+                    <option value="">Any type</option>
+                    <option value="internship" {% if selected_type == "internship" %}selected{% endif %}>Internship</option>
+                    <option value="full_time" {% if selected_type == "full_time" %}selected{% endif %}>Full-time</option>
+                    <option value="part_time" {% if selected_type == "part_time" %}selected{% endif %}>Part-time</option>
+                </select>
+            </div>
+            <div class="jobs-filter-group jobs-filter-group--state">
+                <label class="jobs-filter-label" for="filter-state">State</label>
+                <input class="jobs-filter-input" id="filter-state" name="state" type="text" maxlength="2" placeholder="Any" value="{{ selected_state }}">
+                <p class="jobs-filter-help">Use a two-letter code like CA, NY, TX.</p>
+            </div>
+            <div class="jobs-filter-group jobs-filter-group--checkbox">
+                <label class="jobs-filter-checkbox">
+                    <input type="checkbox" name="remote" value="1" {% if remote_only %}checked{% endif %}>
+                    <span>Remote only</span>
+                </label>
+            </div>
+            <div class="jobs-filter-actions">
+                <button type="submit" class="btn btn-primary">Apply filters</button>
+                <a href="{% url 'jobs:jobs_home' %}" class="btn btn-secondary">Clear</a>
+            </div>
+        </form>
+
+        <div class="jobs-results-bar">
+            <span class="jobs-results-count">
+                {% if jobs %}
+                    {{ jobs|length }} job{% if jobs|length != 1 %}s{% endif %} found
+                {% else %}
+                    No jobs found
+                {% endif %}
+            </span>
+        </div>
+
+        <div class="jobs-grid">
+            {% if not jobs %}
+            <p class="jobs-empty">No jobs match these filters yet. Try broadening your search or check back soon.</p>
+            {% else %}
+            {% for job in jobs %}
+            <article class="job-card reveal">
+                <div class="job-card-header">
+                    <h2 class="job-card-title">{{ job.title }}</h2>
+                    <p class="job-card-company">{{ job.company }}</p>
+                </div>
+                <div class="job-card-meta">
+                    <span class="job-pill job-pill--type">
+                        {% if job.employment_type == "internship" %}Internship{% elif job.employment_type == "full_time" %}Full-time{% else %}Part-time{% endif %}
+                    </span>
+                    {% if job.is_remote %}
+                    <span class="job-pill job-pill--remote">Remote</span>
+                    {% endif %}
+                    {% if job.city or job.state %}
+                    <span class="job-location">
+                        {{ job.city }}{% if job.city and job.state %}, {% endif %}{{ job.state }}
+                    </span>
+                    {% endif %}
+                    {% if job.posted_at %}
+                    <span class="job-posted">Posted {{ job.posted_at }}</span>
+                    {% endif %}
+                </div>
+                <p class="job-card-desc">{{ job.description }}</p>
+                <div class="job-card-majors">
+                    {% for major in job.majors.all %}
+                    <span class="job-major-pill">{{ major.label }}</span>
+                    {% endfor %}
+                </div>
+                <div class="job-card-footer">
+                    <a href="{{ job.url }}" target="_blank" rel="noopener" class="job-card-link">View job posting <span class="btn-arrow" aria-hidden="true">→</span></a>
+                    {% if job.source %}
+                    <span class="job-source">{{ job.source }}</span>
+                    {% endif %}
+                </div>
+            </article>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+

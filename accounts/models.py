@@ -11,7 +11,10 @@ class Profile(models.Model):
         on_delete=models.CASCADE,
         related_name='profile',
     )
-    email_verified = models.BooleanField(default=False)
+    email_verified = models.BooleanField(
+        default=False,
+        help_text="Checked when the user has clicked their verification link. Unchecked means they can still log in, but some features may be limited.",
+    )
     avatar = models.ImageField(upload_to='avatars/%Y/%m/', blank=True, null=True)
     bio = models.TextField(blank=True)
     # AI personalization (for chatbot and AI tools)

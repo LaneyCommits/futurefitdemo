@@ -16,6 +16,14 @@
             <p class="hero-badge">Profile</p>
             <h1 class="block-hero-title">Your profile</h1>
             <p class="block-hero-sub">Update your photo and a short bio.</p>
+            <p class="profile-email-status">
+                {% if profile.email_verified %}
+                <span class="profile-status-pill profile-status-pill--verified">Email verified</span>
+                {% else %}
+                <span class="profile-status-pill profile-status-pill--unverified">Email not verified yet</span>
+                <a href="{% url 'verify_email_sent' %}" class="profile-status-link">Resend verification instructions →</a>
+                {% endif %}
+            </p>
             <form method="post" action="{% url 'profile' %}" class="auth-form" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% if form.non_field_errors %}
@@ -41,6 +49,7 @@
                 <button type="submit" class="btn btn-primary" style="width:100%; margin-top:1rem;">Save profile</button>
             </form>
             <p class="auth-switch" style="margin-top:1rem;"><a href="{% url 'personalization' %}">Customize AI responses →</a></p>
+            <p class="auth-switch"><a href="{% url 'logout' %}">Log out of your account →</a></p>
         </div>
 
         <div class="profile-quiz-section auth-form-card">

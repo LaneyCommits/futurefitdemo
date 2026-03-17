@@ -19,14 +19,19 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
 
     def get_success_url(self):
+        """
+        After login, send the user either to their original destination (next)
+        or back to the homepage. Ensure a Profile exists, even if email is not
+        verified yet, so profile-related views/forms always have a place to save.
+        """
+        try:
+            Profile.objects.get_or_create(user=self.request.user)
+        except Exception:
+            # Failing to create a profile should not block login.
+            pass
         next_url = self.request.GET.get('next')
         if next_url:
             return next_url
-        # No profile until email is verified; send unverified users to check-email page
-        try:
-            self.request.user.profile
-        except Profile.DoesNotExist:
-            return reverse_lazy('verify_email_sent')
         return reverse_lazy('home')
 
 
@@ -64,6 +69,8 @@ def signup_view(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            # Create a profile immediately, even before email is verified.
+            Profile.objects.get_or_create(user=user)
             verification = EmailVerification.create_for_user(user)
             _send_verification_email(request, user, verification)
             login(request, user)
@@ -79,9 +86,11 @@ def verify_email_sent_view(request):
 
 
 def verify_email_view(request, key):
-    """Verify email from link; create profile only here (profile is not created until email is verified)."""
+    """Verify email from link; mark the user's profile as verified."""
     verification = get_object_or_404(EmailVerification, key=key)
-    Profile.objects.get_or_create(user=verification.user, defaults={'email_verified': True})
+    profile, _ = Profile.objects.get_or_create(user=verification.user)
+    profile.email_verified = True
+    profile.save(update_fields=['email_verified'])
     verification.delete()
     return redirect('verify_email_done')
 
@@ -97,11 +106,8 @@ class CustomLogoutView(LogoutView):
 
 @login_required
 def profile_view(request):
-    """View and edit profile: avatar, bio. Requires verified email (profile exists)."""
-    try:
-        profile = request.user.profile
-    except Profile.DoesNotExist:
-        return redirect('verify_email_sent')
+    """View and edit profile: avatar, bio. Profile exists even if email is not verified."""
+    profile, _ = Profile.objects.get_or_create(user=request.user)
     quiz_labels = []
     try:
         quiz_labels = request.user.quiz_result.pill_labels or []
@@ -123,11 +129,8 @@ def profile_view(request):
 
 @login_required
 def personalization_view(request):
-    """View and edit AI personalization: base style, custom instructions. Requires verified email."""
-    try:
-        profile = request.user.profile
-    except Profile.DoesNotExist:
-        return redirect('verify_email_sent')
+    """View and edit AI personalization: base style, custom instructions."""
+    profile, _ = Profile.objects.get_or_create(user=request.user)
     if request.method == 'POST':
         form = PersonalizationForm(request.POST, instance=profile)
         if form.is_valid():
