@@ -1,11 +1,30 @@
 """Jobs page: browse the job market filtered by major, type, salary, and sort."""
 import json
 
+from django.db import IntegrityError
 from django.shortcuts import render
 
 from career_quiz.quiz_data import get_majors
 from .services import fetch_jobs
 from .models import JobListingCache
+
+
+def _save_job_cache(query_hash, query_desc, jobs):
+    """
+    Insert or update cache. Handles concurrent GETs that would otherwise
+    both try create() and hit UNIQUE constraint on query_hash.
+    """
+    try:
+        JobListingCache.objects.create(
+            query_hash=query_hash,
+            query_desc=query_desc,
+            results_json=jobs,
+        )
+    except IntegrityError:
+        row = JobListingCache.objects.get(query_hash=query_hash)
+        row.results_json = jobs
+        row.query_desc = query_desc
+        row.save()  # refreshes fetched_at (auto_now) for TTL
 
 
 def jobs_home(request):
@@ -35,30 +54,17 @@ def jobs_home(request):
             salary_min=salary_min, location=location,
             remote='1' if remote_only else '',
         )
-        try:
-            cached = JobListingCache.objects.get(query_hash=cache_hash)
-            if not cached.is_stale:
-                jobs = cached.results_json
-            else:
-                jobs = fetch_jobs(
-                    major_key=major_key, job_type=job_type, sort=sort,
-                    salary_min=salary_min, location=location,
-                    remote_only=remote_only,
-                )
-                cached.results_json = jobs
-                cached.query_desc = f'{major_key} {job_type} {sort}'
-                cached.save()
-        except JobListingCache.DoesNotExist:
+        query_desc = f'{major_key} {job_type} {sort}'
+        cached = JobListingCache.objects.filter(query_hash=cache_hash).first()
+        if cached and not cached.is_stale:
+            jobs = cached.results_json
+        else:
             jobs = fetch_jobs(
                 major_key=major_key, job_type=job_type, sort=sort,
                 salary_min=salary_min, location=location,
                 remote_only=remote_only,
             )
-            JobListingCache.objects.create(
-                query_hash=cache_hash,
-                query_desc=f'{major_key} {job_type} {sort}',
-                results_json=jobs,
-            )
+            _save_job_cache(cache_hash, query_desc, jobs)
 
     return render(request, 'jobs/home.html', {
         'majors': majors,
