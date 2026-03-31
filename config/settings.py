@@ -1,21 +1,15 @@
 """
-Django settings for Project7 project.
+Django settings for ExploringU (FutureFit).
+Production-ready: PostgreSQL via DATABASE_URL, whitenoise static files, gunicorn.
+Falls back to SQLite for local development when DATABASE_URL is not set.
 """
 import os
 from pathlib import Path
- 
-
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load .env from project root (e.g. SECRET_KEY, DEBUG)
 from dotenv import load_dotenv
 load_dotenv(BASE_DIR / '.env')
-
-
-
-
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-change-me-in-production')
 
@@ -23,9 +17,16 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1', 'yes')
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
-if os.getenv("site_url"):
-    ALLOWED_HOSTS.append(os.getenv("site_url").replace("https://", ""))
-    CSRF_TRUSTED_ORIGINS = [os.getenv("site_url")]
+site_url = os.getenv('site_url', '')
+if site_url:
+    host = site_url.replace('https://', '').replace('http://', '').rstrip('/')
+    ALLOWED_HOSTS.append(host)
+    ALLOWED_HOSTS.append(f'.{host}')
+    CSRF_TRUSTED_ORIGINS = [site_url]
+
+extra_hosts = os.getenv('ALLOWED_HOSTS', '')
+if extra_hosts:
+    ALLOWED_HOSTS.extend([h.strip() for h in extra_hosts.split(',') if h.strip()])
 
 
 INSTALLED_APPS = [
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -76,12 +78,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Database: use DATABASE_URL for production (PostgreSQL), fall back to SQLite for local dev
+import dj_database_url
+
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -98,7 +109,11 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
+STORAGES = {
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -110,16 +125,16 @@ LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+# Production security (only when DEBUG is False)
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Email (verification, etc.)
-# Default: console backend prints the verification link to the terminal (no real email sent).
-# To send real emails, set in .env:
-#   EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-#   EMAIL_HOST=smtp.gmail.com
-#   EMAIL_PORT=587
-#   EMAIL_USE_TLS=True
-#   EMAIL_HOST_USER=your@gmail.com
-#   EMAIL_HOST_PASSWORD=your-app-password
-# (Gmail: use an App Password, not your normal password.)
 EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'ExploringU <noreply@exploringu.example.com>')
 EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
@@ -128,7 +143,6 @@ EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'true').lower() in ('true', '1',
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 
-# Avoid failed SMTP (500 on signup) when .env still has example Gmail placeholders.
 if (
     'smtp' in EMAIL_BACKEND.lower()
     and (

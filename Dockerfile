@@ -1,17 +1,19 @@
-FROM python:3.11
-SHELL ["/bin/bash", "-c"]
+FROM python:3.11-slim
+
 WORKDIR /app
 
-# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf-2.0-0 \
+    libffi-dev shared-mime-info \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
-RUN python -m venv venv
-RUN source venv/bin/activate
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
 COPY . .
+
+RUN python manage.py collectstatic --noinput 2>/dev/null || true
 
 EXPOSE 8000
 
-# Run migrations and start the server
-CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120"]
