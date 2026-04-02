@@ -7,5 +7,7 @@ services:
       - .:/app
     environment:
       - DJANGO_DEBUG=True
-      # Match Dockerfile CMD (gunicorn binds to PORT; default 8080 would not match 8000:8000)
-      - PORT=8000
+    # Dev server serves /static/ correctly; production image uses Gunicorn + WhiteNoise
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
