@@ -1,0 +1,51 @@
+# Build and push to DigitalOcean Container Registry on every push to main.
+#
+# Setup (one-time):
+# 1. DigitalOcean → Container Registry → Create registry (if you don't have one).
+# 2. GitHub → Repo → Settings → Secrets and variables → Actions → New repository secret:
+#    Name:  DIGITALOCEAN_ACCESS_TOKEN
+#    Value: A DO API token with "read/write" Registry (and read App if you use deploy hooks).
+# 3. New secret:
+#    Name:  DO_REGISTRY_IMAGE
+#    Value: Full image path WITHOUT tag, e.g.
+#           registry.digitalocean.com/your-registry-name/futurefit
+# 4. DigitalOcean → App Platform → your app → switch source to "Container image"
+#    Image: registry.digitalocean.com/your-registry-name/futurefit:latest
+#    (Enable auto-deploy on image push if offered.)
+
+name: Publish Docker image
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Log in to DigitalOcean Container Registry
+        run: doctl registry login --expiry-seconds 1200
+
+      - name: Build and push image
+        env:
+          IMAGE: ${{ secrets.DO_REGISTRY_IMAGE }}
+        run: |
+          set -euo pipefail
+          if [ -z "${IMAGE:-}" ]; then
+            echo "Set the DO_REGISTRY_IMAGE secret (e.g. registry.digitalocean.com/my-registry/futurefit)"
+            exit 1
+          fi
+          docker build -t "${IMAGE}:latest" -t "${IMAGE}:${GITHUB_SHA}" .
+          docker push "${IMAGE}:latest"
+          docker push "${IMAGE}:${GITHUB_SHA}"

@@ -26,9 +26,22 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 # Public site URL (https://yourdomain.com) — used for SEO canonical URLs, sitemap, and JSON-LD.
 SITE_PUBLIC_URL = (os.environ.get("site_url") or "").strip().rstrip("/")
 
+CSRF_TRUSTED_ORIGINS = []
 if os.getenv("site_url"):
     ALLOWED_HOSTS.append(os.getenv("site_url").replace("https://", "").replace("http://", "").split("/")[0])
-    CSRF_TRUSTED_ORIGINS = [os.getenv("site_url")]
+    CSRF_TRUSTED_ORIGINS.append(os.getenv("site_url").rstrip("/"))
+
+# Extra hosts (comma-separated), e.g. DigitalOcean App Platform or custom domain
+_extra_hosts = os.environ.get("ALLOWED_HOSTS", "")
+if _extra_hosts.strip():
+    ALLOWED_HOSTS.extend([h.strip() for h in _extra_hosts.split(",") if h.strip()])
+
+_extra_csrf = os.environ.get("CSRF_TRUSTED_ORIGINS", "")
+if _extra_csrf.strip():
+    for _o in _extra_csrf.split(","):
+        _o = _o.strip()
+        if _o and _o not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(_o)
 
 # Optional: Google Search Console HTML tag verification (content token only).
 GOOGLE_SITE_VERIFICATION = os.environ.get("GOOGLE_SITE_VERIFICATION", "").strip()
@@ -90,6 +103,13 @@ DATABASES = {
     }
 }
 
+if os.environ.get("DATABASE_URL"):
+    import dj_database_url
+    DATABASES["default"] = dj_database_url.config(
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -105,6 +125,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 
 MEDIA_URL = 'media/'
@@ -144,3 +166,10 @@ if (
     )
 ):
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Production (Docker / DigitalOcean App Platform)
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'true').lower() in ('true', '1', 'yes')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
