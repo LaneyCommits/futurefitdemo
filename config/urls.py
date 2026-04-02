@@ -29,4 +29,9 @@ urlpatterns = [
     path('jobs/', include('jobs.urls')),
 ]
 if settings.DEBUG:
+    # Serves /static/ for any WSGI server (Gunicorn, etc.). runserver also works; without this,
+    # DEBUG=True + Gunicorn yields 404 for CSS because only runserver's wrapper serves static by default.
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+    urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
