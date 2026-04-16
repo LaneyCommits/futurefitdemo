@@ -1,5 +1,5 @@
 """
-WSGI config for Project7 project.
+WSGI config for ExploringU.
 """
 import os
 from django.core.wsgi import get_wsgi_application

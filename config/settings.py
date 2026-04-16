@@ -1,222 +1,163 @@
 """
-Django settings for Project7 project.
+Django settings for Exploring You.
 """
 import os
 from pathlib import Path
- 
 
-
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
-# Load .env from project root (e.g. SECRET_KEY, DEBUG)
-from dotenv import load_dotenv
-load_dotenv(BASE_DIR / '.env')
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY", "django-insecure-change-me-in-production"
+)
+DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() in ("true", "1", "yes")
 
-
-
-
-
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-change-me-in-production')
-
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1', 'yes')
-
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
-
-# Public site URL (https://yourdomain.com) — used for SEO canonical URLs, sitemap, and JSON-LD.
-SITE_PUBLIC_URL = (os.environ.get("site_url") or "").strip().rstrip("/")
-
-CSRF_TRUSTED_ORIGINS = []
-if os.getenv("site_url"):
-    ALLOWED_HOSTS.append(os.getenv("site_url").replace("https://", "").replace("http://", "").split("/")[0])
-    CSRF_TRUSTED_ORIGINS.append(os.getenv("site_url").rstrip("/"))
-
-# Extra hosts (comma-separated), e.g. DigitalOcean App Platform or custom domain
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
 _extra_hosts = os.environ.get("ALLOWED_HOSTS", "")
 if _extra_hosts.strip():
-    ALLOWED_HOSTS.extend([h.strip() for h in _extra_hosts.split(",") if h.strip()])
+    ALLOWED_HOSTS.extend(h.strip() for h in _extra_hosts.split(",") if h.strip())
 
-_extra_csrf = os.environ.get("CSRF_TRUSTED_ORIGINS", "")
-if _extra_csrf.strip():
-    for _o in _extra_csrf.split(","):
-        _o = _o.strip()
-        if _o and _o not in CSRF_TRUSTED_ORIGINS:
-            CSRF_TRUSTED_ORIGINS.append(_o)
-
-
-def _add_host_and_csrf_from_public_url(url: str) -> None:
-    """Add www / apex variants so login CSRF works whether users hit www or bare domain."""
-    raw = (url or "").strip().rstrip("/")
-    if not raw:
-        return
-    if raw not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(raw)
-    if not raw.startswith(("http://", "https://")):
-        return
-    try:
-        from urllib.parse import urlparse
-        p = urlparse(raw)
-        host = (p.hostname or "").lower()
-        if not host:
-            return
-        port = f":{p.port}" if p.port else ""
-        scheme = p.scheme or "https"
-        if host.startswith("www."):
-            apex_host = host[4:]
-            if apex_host and apex_host not in ALLOWED_HOSTS:
-                ALLOWED_HOSTS.append(apex_host)
-            apex_origin = f"{scheme}://{apex_host}{port}"
-            if apex_origin not in CSRF_TRUSTED_ORIGINS:
-                CSRF_TRUSTED_ORIGINS.append(apex_origin)
-        else:
-            www_host = f"www.{host}"
-            if www_host not in ALLOWED_HOSTS:
-                ALLOWED_HOSTS.append(www_host)
-            www_origin = f"{scheme}://{www_host}{port}"
-            if www_origin not in CSRF_TRUSTED_ORIGINS:
-                CSRF_TRUSTED_ORIGINS.append(www_origin)
-    except Exception:
-        pass
-
-
-_add_host_and_csrf_from_public_url(SITE_PUBLIC_URL)
-
-# Optional: Google Search Console HTML tag verification (content token only).
-GOOGLE_SITE_VERIFICATION = os.environ.get("GOOGLE_SITE_VERIFICATION", "").strip()
-
-
+# ---------------------------------------------------------------------------
+# Apps
+# ---------------------------------------------------------------------------
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'resume_analysis',
-    'career_quiz',
-    'resume',
-    'schools',
-    'blog',
-    'accounts',
-    'chat',
-    'jobs',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    # Third-party
+    "rest_framework",
+    "rest_framework.authtoken",
+    "corsheaders",
+    # Project apps
+    "apps.quiz",
+    "apps.careers",
+    "apps.users",
 ]
 
+# ---------------------------------------------------------------------------
+# Middleware
+# ---------------------------------------------------------------------------
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-# WhiteNoise only when DEBUG=False (Gunicorn in production). With DEBUG=True, runserver
-# serves /static/ via django.contrib.staticfiles — WhiteNoise in front often breaks local CSS.
-if not DEBUG:
-    MIDDLEWARE.append('whitenoise.middleware.WhiteNoiseMiddleware')
-MIDDLEWARE.extend([
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-])
 
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'accounts.context_processors.user_profile',
-                'config.context_processors.site_seo',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = "config.wsgi.application"
 
+# ---------------------------------------------------------------------------
+# Database
+# ---------------------------------------------------------------------------
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
 if os.environ.get("DATABASE_URL"):
     import dj_database_url
+
     DATABASES["default"] = dj_database_url.config(
         conn_max_age=600,
         conn_health_checks=True,
     )
 
+# ---------------------------------------------------------------------------
+# Auth
+# ---------------------------------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+# ---------------------------------------------------------------------------
+# Internationalization
+# ---------------------------------------------------------------------------
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# Leading slash so {% static %} URLs are always rooted at /static/... (not relative to current path)
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# ---------------------------------------------------------------------------
+# Static files
+# ---------------------------------------------------------------------------
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# ---------------------------------------------------------------------------
+# Django REST Framework
+# ---------------------------------------------------------------------------
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+}
+
+# ---------------------------------------------------------------------------
+# CORS (React dev server)
+# ---------------------------------------------------------------------------
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+    "http://localhost:5175",
+    "http://127.0.0.1:5175",
+]
+CORS_ALLOW_CREDENTIALS = True
+
+_extra_cors = os.environ.get("CORS_ALLOWED_ORIGINS", "")
+if _extra_cors.strip():
+    for origin in _extra_cors.split(","):
+        origin = origin.strip()
+        if origin and origin not in CORS_ALLOWED_ORIGINS:
+            CORS_ALLOWED_ORIGINS.append(origin)
+
+# ---------------------------------------------------------------------------
+# Production hardening
+# ---------------------------------------------------------------------------
 if not DEBUG:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Auth
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-
-# Email (verification, etc.)
-# Default: console backend prints the verification link to the terminal (no real email sent).
-# To send real emails, set in .env:
-#   EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-#   EMAIL_HOST=smtp.gmail.com
-#   EMAIL_PORT=587
-#   EMAIL_USE_TLS=True
-#   EMAIL_HOST_USER=your@gmail.com
-#   EMAIL_HOST_PASSWORD=your-app-password
-# (Gmail: use an App Password, not your normal password.)
-EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'ExploringU <noreply@exploringu.example.com>')
-EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'true').lower() in ('true', '1', 'yes')
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-
-# Avoid failed SMTP (500 on signup) when .env still has example Gmail placeholders.
-if (
-    'smtp' in EMAIL_BACKEND.lower()
-    and (
-        EMAIL_HOST_USER.strip() in ('', 'your@gmail.com', 'you@example.com')
-        or EMAIL_HOST_PASSWORD.strip() in ('', 'your-app-password', 'your-password')
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", "true").lower() in (
+        "true",
+        "1",
     )
-):
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# Production (Docker / DigitalOcean App Platform)
-if not DEBUG:
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'true').lower() in ('true', '1', 'yes')
-    # HTTPS on production: keep True. For rare HTTP tests (e.g. local prod build), set DJANGO_SECURE_COOKIES=false
-    _secure_cookies = os.environ.get('DJANGO_SECURE_COOKIES', 'true').lower() in ('true', '1', 'yes')
-    SESSION_COOKIE_SECURE = _secure_cookies
-    CSRF_COOKIE_SECURE = _secure_cookies
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True

@@ -1,79 +1,122 @@
 # ExploringU
 
-**Campus to career.** Career quiz, resume templates, gap analysis, and college finder—all free for students.
+A structured career clarity assessment that maps your thinking patterns to real academic majors and career paths.
 
-![ExploringU homepage](docs/images/homepage-screenshot.png)
+## Tech Stack
 
-## Features
+| Layer    | Technology                                |
+|----------|-------------------------------------------|
+| Backend  | Django 4.2 + Django REST Framework        |
+| Frontend | React 19 + Vite 8                         |
+| Database | PostgreSQL (production) / SQLite (dev)    |
+| Auth     | Token-based (DRF `authtoken`)             |
+| Styling  | Custom CSS design system (Plus Jakarta Sans, sage color-story) |
 
-| Feature | Description |
-|---------|-------------|
-| **Career Quiz** | Short quiz by major or explore mode; personalized job suggestions |
-| **Resume Templates** | Major-specific resumes, cover letters, admissions essays + FutureBot AI |
-| **Gap Analysis** | Paste resume + job posting → AI match score, missing keywords, suggestions |
-| **College Finder** | Filter by major, location, cost, school type |
-| **Jobs** | Live job listings from LinkedIn, Indeed, Glassdoor, ZipRecruiter & more — filtered by major |
-| **Accounts** | Sign up and sign in; profile with **photo** (saved under `media/avatars/`), bio, and job preferences |
+## Project Structure
 
-## TODO:
-- [ ] Add ability to make futurebot popup larger 
-- [ ] Make resume tips section into carousel 
-- [ ] Add more colleges 
-- [ ] Finish sign-in functionality so users can save resumes
-    - [x] sign-in and profile (avatar upload on `/accounts/profile/`)
-- [ ] consider adding mbti test
-- [ ] add ability to download resumes/resume templates as docx
-- [ ] add way for AI chat to reference user behavior
-- [x] add way to search for jobs by major (JSearch API — LinkedIn, Indeed, Glassdoor, etc.)
-- [ ] change dockerfile to use actual server instead of debug server
-    - possibly using gunicorn
-    - [https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu#step-6-testing-gunicorn-s-ability-to-serve-the-project](https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu#step-6-testing-gunicorn-s-ability-to-serve-the-project)
+```
+config/             Django settings, urls, wsgi
+apps/
+  quiz/             Questions, choices, scoring engine, result interpretation
+  careers/          Personality types, majors, jobs
+  users/            Auth, profiles, dashboard
+frontend/
+  src/
+    api/            Centralized API client
+    pages/          Landing, Quiz, Results, Login, Register, Dashboard
+    components/     Navbar, brand, quiz UI, insight carousel
+    hooks/          useAuth, useQuiz, useMediaQuery
+```
 
 ## Quick Start
 
-```bash
-docker compose up --build
-```
+### Prerequisites
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000).
+- Python 3.10+
+- Node.js 18+
 
-**AI features** (gap analysis, FutureBot): add `GEMINI_API_KEY` to a `.env` file. Get a key from [Google AI Studio](https://aistudio.google.com/apikey).
-
-**Jobs page** (live listings from LinkedIn, Indeed, etc.): add `RAPIDAPI_KEY` to `.env`. Get a free key from [RapidAPI](https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch) (200 requests/month free). Without the key, the page shows curated career data with direct links to job boards.
-
-### Email (optional)
-
-Sign-up **does not** require a verification code; you are logged in immediately. You can still configure SMTP in `.env` for other features that send mail. If you set placeholder Gmail values, the app falls back to the **console** backend so nothing fails at startup.
-
-## Local Setup
+### 1. Backend
 
 ```bash
-cd ExploringU
+python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
+cp .env.example .env          # edit as needed
+python3 manage.py migrate
+python3 manage.py seed_careers
+python3 manage.py seed_quiz
+python3 manage.py runserver
 ```
 
-## GitHub Pages
+Django API runs at `http://localhost:8000`.
 
-Static preview in `docs/`. Deploy: **Settings → Pages** → source `main` / folder `docs`. Full app: use Docker.
+### 2. Frontend
 
-## Structure
-
+```bash
+cd frontend
+npm install
+npm run dev
 ```
-ExploringU/
-├── config/           # Django settings
-├── resume_analysis/  # Gap analysis
-├── career_quiz/      # Quiz
-├── resume/           # Templates, cover letters, essays
-├── schools/          # College finder
-├── jobs/             # Job market sweep (JSearch API)
-├── docs/             # Static site
-├── templates/
-└── static/
+
+Or from the repo root:
+
+```bash
+npm install && npm run dev
 ```
+
+Vite dev server runs at `http://localhost:5175` (not 5173). API calls are proxied to Django automatically.
+
+## Docker
+
+```bash
+docker compose up
+```
+
+- API: `http://localhost:8000`
+- Frontend: `http://localhost:5175`
+
+Docker Compose runs migrations and seeds data on startup.
+
+## API Endpoints
+
+| Method | URL                             | Auth     | Description                      |
+|--------|---------------------------------|----------|----------------------------------|
+| GET    | `/api/quiz/questions/`          | Public   | 10 questions with choices        |
+| POST   | `/api/quiz/submit/`             | Public   | Submit answers, get full results |
+| GET    | `/api/careers/types/`           | Public   | List personality archetypes      |
+| GET    | `/api/careers/recommendations/` | Public   | Majors + jobs for a type         |
+| POST   | `/api/users/register/`          | Public   | Create account (username + password) |
+| POST   | `/api/users/login/`             | Public   | Authenticate, get token          |
+| GET    | `/api/users/me/`                | Token    | Current user profile             |
+| GET    | `/api/users/dashboard/`         | Token    | Saved results + history          |
+
+## Quiz System
+
+- Exactly 10 weighted questions, 4 choices each
+- Multi-archetype weighted scoring (no frontend scoring)
+- 6 personality archetypes: Systems Thinker, Analytical Solver, Creative Builder, People Strategist, Explorer, Impact Visionary
+- Results include: personality profile, behavioral insights, thinking style, recommended majors, career directions
+
+## User Flow
+
+1. **Landing** -- start assessment (no signup required)
+2. **Quiz** -- 10 guided questions, one at a time
+3. **Results** -- full thinking report with personality, majors, careers
+4. **Login/Register** -- save results, unlock advanced insights
+5. **Dashboard** -- view saved profiles and report history
+
+## Environment Variables
+
+See `.env.example` for all options. Key variables:
+
+| Variable             | Default                          | Description              |
+|----------------------|----------------------------------|--------------------------|
+| `DJANGO_SECRET_KEY`  | insecure fallback                | Django secret key        |
+| `DJANGO_DEBUG`       | `True`                           | Debug mode               |
+| `DATABASE_URL`       | *(SQLite)*                       | PostgreSQL connection    |
+| `ALLOWED_HOSTS`      | `localhost,127.0.0.1,0.0.0.0`   | Extra allowed hosts      |
+| `CORS_ALLOWED_ORIGINS` | localhost:5173-5175            | Extra CORS origins       |
 
 ## License
 
-MIT
+Private project.

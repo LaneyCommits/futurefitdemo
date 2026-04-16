@@ -1,32 +1,31 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
-
-# Virtual environment
+*.egg-info/
 venv/
 .venv/
-env/
-.env
 
 # Django
-*.log
-local_settings.py
-# removed sqlite from this list since we do need it in the actual container
-/media
-/staticfiles
+*.sqlite3
+staticfiles/
+media/
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
+# Node
+node_modules/
+frontend/dist/
+
+# Build
+dist/
+build/
+
+# Environment
+.env
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Environment variables
-.env
-.env.local
-*.env
+# IDE
+.vscode/
+.idea/
+.cursor/

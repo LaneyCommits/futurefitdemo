@@ -1,13 +1,29 @@
 services:
-  web:
+  api:
     build: .
     ports:
       - "8000:8000"
     volumes:
       - .:/app
+      - /app/frontend/node_modules
     environment:
       - DJANGO_DEBUG=True
-    # Dev server serves /static/ correctly; production image uses Gunicorn + WhiteNoise
     command: >
       sh -c "python manage.py migrate --noinput &&
+             python manage.py seed_careers &&
+             python manage.py seed_quiz &&
              python manage.py runserver 0.0.0.0:8000"
+
+  frontend:
+    image: node:20-slim
+    working_dir: /app
+    # Publish same port as vite.config.js (5175) so host URL matches Vite's "Local:" log line.
+    ports:
+      - "5175:5175"
+    environment:
+      # Inside Docker, Django is the `api` service — not localhost.
+      - VITE_API_PROXY_TARGET=http://api:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run dev -- --host"
