@@ -1,5 +1,5 @@
 """
-Django settings for Exploring You.
+Django settings for ExploringU.
 """
 import os
 from pathlib import Path
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 # ---------------------------------------------------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -110,10 +111,19 @@ USE_I18N = True
 USE_TZ = True
 
 # ---------------------------------------------------------------------------
-# Static files
+# Static files + WhiteNoise
 # ---------------------------------------------------------------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+# Serve React build assets (favicon.svg, hero-owl.png, assets/*) at the root URL.
+SPA_DIST_DIR = BASE_DIR / "frontend" / "dist"
+WHITENOISE_ROOT = SPA_DIST_DIR
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -131,7 +141,7 @@ REST_FRAMEWORK = {
 }
 
 # ---------------------------------------------------------------------------
-# CORS (React dev server)
+# CORS
 # ---------------------------------------------------------------------------
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",

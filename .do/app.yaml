@@ -1,0 +1,34 @@
+name: exploringu
+region: nyc
+
+services:
+  - name: web
+    dockerfile_path: Dockerfile
+    github:
+      repo: LaneyCommits/Exploringu
+      branch: main
+      deploy_on_push: true
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    routes:
+      - path: /
+    envs:
+      - key: DJANGO_SECRET_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: DJANGO_DEBUG
+        scope: RUN_TIME
+        value: "False"
+      - key: ALLOWED_HOSTS
+        scope: RUN_TIME
+        value: "exploringu.com,www.exploringu.com"
+      - key: CORS_ALLOWED_ORIGINS
+        scope: RUN_TIME
+        value: "https://exploringu.com,https://www.exploringu.com"
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        type: SECRET
+      - key: SECURE_SSL_REDIRECT
+        scope: RUN_TIME
+        value: "true"

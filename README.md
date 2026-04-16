@@ -2,6 +2,8 @@
 
 A structured career clarity assessment that maps your thinking patterns to real academic majors and career paths.
 
+**Live at [exploringu.com](https://exploringu.com)**
+
 ## Tech Stack
 
 | Layer    | Technology                                |
@@ -10,6 +12,7 @@ A structured career clarity assessment that maps your thinking patterns to real 
 | Frontend | React 19 + Vite 8                         |
 | Database | PostgreSQL (production) / SQLite (dev)    |
 | Auth     | Token-based (DRF `authtoken`)             |
+| Hosting  | DigitalOcean App Platform                 |
 | Styling  | Custom CSS design system (Plus Jakarta Sans, sage color-story) |
 
 ## Project Structure
@@ -26,9 +29,10 @@ frontend/
     pages/          Landing, Quiz, Results, Login, Register, Dashboard
     components/     Navbar, brand, quiz UI, insight carousel
     hooks/          useAuth, useQuiz, useMediaQuery
+.do/app.yaml        DigitalOcean App Platform spec
 ```
 
-## Quick Start
+## Local Development
 
 ### Prerequisites
 
@@ -66,7 +70,7 @@ npm install && npm run dev
 
 Vite dev server runs at `http://localhost:5175` (not 5173). API calls are proxied to Django automatically.
 
-## Docker
+### Docker (local)
 
 ```bash
 docker compose up
@@ -76,6 +80,43 @@ docker compose up
 - Frontend: `http://localhost:5175`
 
 Docker Compose runs migrations and seeds data on startup.
+
+## Deployment (DigitalOcean App Platform)
+
+### 1. Create a free PostgreSQL database
+
+Sign up at [neon.tech](https://neon.tech) (free tier, 0.5 GB). Copy the connection string.
+
+### 2. Create the app on DigitalOcean
+
+1. Go to **App Platform** > **Create App**
+2. Connect your GitHub repo (`LaneyCommits/Exploringu`)
+3. DO auto-detects the `Dockerfile` and `.do/app.yaml` spec
+4. Set these environment variables in the DO console:
+
+| Variable            | Value                                              |
+|---------------------|----------------------------------------------------|
+| `DJANGO_SECRET_KEY` | A random 50+ character string (mark as secret)     |
+| `DJANGO_DEBUG`      | `False`                                            |
+| `DATABASE_URL`      | Your Neon PostgreSQL connection string (mark as secret) |
+| `ALLOWED_HOSTS`     | `exploringu.com,www.exploringu.com`                |
+| `CORS_ALLOWED_ORIGINS` | `https://exploringu.com,https://www.exploringu.com` |
+
+5. Deploy. The Dockerfile handles everything: build React, install Python deps, collect static files, run migrations, seed data, start Gunicorn.
+
+### 3. Connect your domain
+
+1. In the DO app settings, add `exploringu.com` as a custom domain
+2. Update your DNS records as instructed by DO (usually a CNAME)
+3. DO provisions SSL automatically
+
+### How it works in production
+
+- **Dockerfile** builds the React SPA and bundles it with Django
+- **Gunicorn** serves the Django API at `/api/*`
+- **WhiteNoise** serves static assets (favicon, images, JS/CSS bundles)
+- **Django catch-all** serves `index.html` for all SPA routes (`/`, `/quiz`, `/results`, etc.)
+- Everything runs as a single container on one port
 
 ## API Endpoints
 
@@ -107,15 +148,16 @@ Docker Compose runs migrations and seeds data on startup.
 
 ## Environment Variables
 
-See `.env.example` for all options. Key variables:
+See `.env.example` for all options.
 
-| Variable             | Default                          | Description              |
-|----------------------|----------------------------------|--------------------------|
-| `DJANGO_SECRET_KEY`  | insecure fallback                | Django secret key        |
-| `DJANGO_DEBUG`       | `True`                           | Debug mode               |
-| `DATABASE_URL`       | *(SQLite)*                       | PostgreSQL connection    |
-| `ALLOWED_HOSTS`      | `localhost,127.0.0.1,0.0.0.0`   | Extra allowed hosts      |
+| Variable               | Default                        | Description              |
+|------------------------|--------------------------------|--------------------------|
+| `DJANGO_SECRET_KEY`    | insecure fallback              | Django secret key        |
+| `DJANGO_DEBUG`         | `True`                         | Debug mode               |
+| `DATABASE_URL`         | *(SQLite)*                     | PostgreSQL connection    |
+| `ALLOWED_HOSTS`        | `localhost,127.0.0.1,0.0.0.0` | Extra allowed hosts      |
 | `CORS_ALLOWED_ORIGINS` | localhost:5173-5175            | Extra CORS origins       |
+| `SECURE_SSL_REDIRECT`  | `true` (when DEBUG=False)      | HTTPS redirect           |
 
 ## License
 
