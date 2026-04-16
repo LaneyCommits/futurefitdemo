@@ -2,42 +2,45 @@
 
 A structured career clarity assessment that maps your thinking patterns to real academic majors and career paths.
 
-**Live at [exploringu.com](https://exploringu.com)**
+- **Live:** [exploringu.com](https://exploringu.com)
+- **Source:** [github.com/LaneyCommits/exploringu](https://github.com/LaneyCommits/exploringu)
 
-## Tech Stack
+## Tech stack
 
 | Layer    | Technology                                |
 |----------|-------------------------------------------|
 | Backend  | Django 4.2 + Django REST Framework        |
-| Frontend | React 19 + Vite 8                         |
-| Database | PostgreSQL (production) / SQLite (dev)    |
+| Frontend | React 19 + Vite 8 |
+| Database | PostgreSQL (production) / SQLite (local)  |
 | Auth     | Token-based (DRF `authtoken`)             |
-| Hosting  | DigitalOcean App Platform                 |
-| Styling  | Custom CSS design system (Plus Jakarta Sans, sage color-story) |
+| Hosting  | DigitalOcean App Platform (Dockerfile)    |
+| Styling  | Custom CSS design system (Plus Jakarta Sans, sage palette) |
 
-## Project Structure
+## Project structure
 
 ```
-config/             Django settings, urls, wsgi
+config/             Django settings, URLs, WSGI
 apps/
-  quiz/             Questions, choices, scoring engine, result interpretation
+  quiz/             Questions, choices, scoring, results
   careers/          Personality types, majors, jobs
   users/            Auth, profiles, dashboard
 frontend/
   src/
-    api/            Centralized API client
-    pages/          Landing, Quiz, Results, Login, Register, Dashboard
+    api/            API client
+    pages/          Landing, quiz, results, login, register, dashboard
     components/     Navbar, brand, quiz UI, insight carousel
     hooks/          useAuth, useQuiz, useMediaQuery
-.do/app.yaml        DigitalOcean App Platform spec
+.do/app.yaml        DigitalOcean App Platform spec (optional)
+Dockerfile          Production image: build SPA → Gunicorn + WhiteNoise
+docker-compose.yml  Local dev: Django `runserver` + Vite dev server
 ```
 
-## Local Development
+## Local development
 
 ### Prerequisites
 
-- Python 3.10+
-- Node.js 18+
+- **Python 3.11+** (matches the production Docker image)
+- **Node.js 18+** (20.x is used in Docker)
 
 ### 1. Backend
 
@@ -45,14 +48,14 @@ frontend/
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env          # edit as needed
+cp .env.example .env # edit as needed
 python3 manage.py migrate
 python3 manage.py seed_careers
 python3 manage.py seed_quiz
 python3 manage.py runserver
 ```
 
-Django API runs at `http://localhost:8000`.
+Django runs at [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
 ### 2. Frontend
 
@@ -68,96 +71,94 @@ Or from the repo root:
 npm install && npm run dev
 ```
 
-Vite dev server runs at `http://localhost:5175` (not 5173). API calls are proxied to Django automatically.
+Vite serves the app at [http://localhost:5175](http://localhost:5175) (see `frontend/vite.config.js`). API requests are proxied to Django when you use the dev server.
 
 ### Docker (local)
 
 ```bash
-docker compose up
+docker compose up --build
 ```
 
-- API: `http://localhost:8000`
-- Frontend: `http://localhost:5175`
-
-Docker Compose runs migrations and seeds data on startup.
+- **API:** [http://127.0.0.1:8000](http://127.0.0.1:8000) — `migrate`, `seed_careers`, and `seed_quiz` run on the API container startup.
+- **Frontend:** [http://localhost:5175](http://localhost:5175) — Vite inside Docker uses `VITE_API_PROXY_TARGET=http://api:8000` so the proxy hits the Compose service name, not `localhost`.
 
 ## Deployment (DigitalOcean App Platform)
 
-### 1. Create a free PostgreSQL database
+### 1. PostgreSQL database
 
-Sign up at [neon.tech](https://neon.tech) (free tier, 0.5 GB). Copy the connection string.
+Use any managed Postgres (e.g. [Neon](https://neon.tech)) and copy the connection string for `DATABASE_URL`.
 
-### 2. Create the app on DigitalOcean
+### 2. Create the app
 
-1. Go to **App Platform** > **Create App**
-2. Connect your GitHub repo (`LaneyCommits/Exploringu`)
-3. DO auto-detects the `Dockerfile` and `.do/app.yaml` spec
-4. Set these environment variables in the DO console:
+1. In **App Platform**, choose **Create App** and connect GitHub.
+2. Select repo **`LaneyCommits/exploringu`**, branch **`main`**.
+3. DigitalOcean can build from the **`Dockerfile`**; you can optionally use the checked-in **`.do/app.yaml`** as a starting spec.
+4. Set **HTTP port** to **8080** (the `Dockerfile` exposes this; Gunicorn binds `0.0.0.0:${PORT:-8080}`).
 
-| Variable            | Value                                              |
-|---------------------|----------------------------------------------------|
-| `DJANGO_SECRET_KEY` | A random 50+ character string (mark as secret)     |
-| `DJANGO_DEBUG`      | `False`                                            |
-| `DATABASE_URL`      | Your Neon PostgreSQL connection string (mark as secret) |
-| `ALLOWED_HOSTS`     | `exploringu.com,www.exploringu.com`                |
+### 3. Environment variables
+
+| Variable                 | Value |
+|--------------------------|--------|
+| `DJANGO_SECRET_KEY`      | Random 50+ characters (**secret**) |
+| `DJANGO_DEBUG`           | `False` |
+| `DATABASE_URL`           | Postgres URL (**secret**) |
+| `ALLOWED_HOSTS`        | `exploringu.com,www.exploringu.com` (comma-separated) |
 | `CORS_ALLOWED_ORIGINS` | `https://exploringu.com,https://www.exploringu.com` |
+| `SECURE_SSL_REDIRECT`    | `true` (default when `DEBUG=False`; see `.env.example`) |
 
-5. Deploy. The Dockerfile handles everything: build React, install Python deps, collect static files, run migrations, seed data, start Gunicorn.
+On deploy, the container runs migrations, seeds careers/quiz data, then starts Gunicorn.
 
-### 3. Connect your domain
+### 4. Custom domain
 
-1. In the DO app settings, add `exploringu.com` as a custom domain
-2. Update your DNS records as instructed by DO (usually a CNAME)
-3. DO provisions SSL automatically
+Add your domain in the app settings, point DNS as DigitalOcean instructs (often a CNAME), and TLS is provisioned automatically.
 
-### How it works in production
+### How production is served
 
-- **Dockerfile** builds the React SPA and bundles it with Django
-- **Gunicorn** serves the Django API at `/api/*`
-- **WhiteNoise** serves static assets (favicon, images, JS/CSS bundles)
-- **Django catch-all** serves `index.html` for all SPA routes (`/`, `/quiz`, `/results`, etc.)
-- Everything runs as a single container on one port
+- **Multi-stage `Dockerfile`:** `npm ci` / `npm run build` for the React app, then copy `frontend/dist` into the Python image.
+- **Gunicorn** serves Django; **`/api/*`** and **`/admin/`** are handled by Django.
+- **WhiteNoise** serves static assets from the Vite build.
+- **SPA fallback:** unmatched paths return `frontend/dist/index.html` so client-side routes work.
 
-## API Endpoints
+## API endpoints
 
-| Method | URL                             | Auth     | Description                      |
-|--------|---------------------------------|----------|----------------------------------|
-| GET    | `/api/quiz/questions/`          | Public   | 10 questions with choices        |
-| POST   | `/api/quiz/submit/`             | Public   | Submit answers, get full results |
-| GET    | `/api/careers/types/`           | Public   | List personality archetypes      |
-| GET    | `/api/careers/recommendations/` | Public   | Majors + jobs for a type         |
-| POST   | `/api/users/register/`          | Public   | Create account (username + password) |
-| POST   | `/api/users/login/`             | Public   | Authenticate, get token          |
-| GET    | `/api/users/me/`                | Token    | Current user profile             |
-| GET    | `/api/users/dashboard/`         | Token    | Saved results + history          |
+| Method | URL                             | Auth | Description |
+|--------|----------------------------------|--------|-------------|
+| GET    | `/api/quiz/questions/`           | Public | Quiz questions and choices |
+| POST   | `/api/quiz/submit/`            | Public | Submit answers, get results |
+| GET    | `/api/careers/types/`            | Public | Personality archetypes |
+| GET    | `/api/careers/recommendations/` | Public | Majors and jobs for a type |
+| POST   | `/api/users/register/`         | Public | Register (username + password) |
+| POST   | `/api/users/login/`            | Public | Login, returns token |
+| GET    | `/api/users/me/`               | Token  | Current user |
+| GET    | `/api/users/dashboard/`        | Token  | Saved results / history |
 
-## Quiz System
+## Quiz system
 
-- Exactly 10 weighted questions, 4 choices each
-- Multi-archetype weighted scoring (no frontend scoring)
-- 6 personality archetypes: Systems Thinker, Analytical Solver, Creative Builder, People Strategist, Explorer, Impact Visionary
-- Results include: personality profile, behavioral insights, thinking style, recommended majors, career directions
+- Ten weighted questions, four choices each.
+- Server-side multi-archetype scoring (no client-side scoring logic).
+- Six archetypes: Systems Thinker, Analytical Solver, Creative Builder, People Strategist, Explorer, Impact Visionary.
+- Results include profile copy, behavioral insights, thinking style, majors, and career directions.
 
-## User Flow
+## User flow
 
-1. **Landing** -- start assessment (no signup required)
-2. **Quiz** -- 10 guided questions, one at a time
-3. **Results** -- full thinking report with personality, majors, careers
-4. **Login/Register** -- save results, unlock advanced insights
-5. **Dashboard** -- view saved profiles and report history
+1. **Landing** — start the assessment (no account required).
+2. **Quiz** — ten steps, one question at a time.
+3. **Results** — full report with personality, majors, and careers.
+4. **Register / login** — save results and use the dashboard.
+5. **Dashboard** — saved profiles and history.
 
-## Environment Variables
+## Environment variables
 
-See `.env.example` for all options.
+Copy **`.env.example`** to **`.env`** for local development.
 
-| Variable               | Default                        | Description              |
-|------------------------|--------------------------------|--------------------------|
-| `DJANGO_SECRET_KEY`    | insecure fallback              | Django secret key        |
-| `DJANGO_DEBUG`         | `True`                         | Debug mode               |
-| `DATABASE_URL`         | *(SQLite)*                     | PostgreSQL connection    |
-| `ALLOWED_HOSTS`        | `localhost,127.0.0.1,0.0.0.0` | Extra allowed hosts      |
-| `CORS_ALLOWED_ORIGINS` | localhost:5173-5175            | Extra CORS origins       |
-| `SECURE_SSL_REDIRECT`  | `true` (when DEBUG=False)      | HTTPS redirect           |
+| Variable               | Default (local) | Description |
+|------------------------|-------------------|-------------|
+| `DJANGO_SECRET_KEY`    | Dev fallback      | Django secret |
+| `DJANGO_DEBUG`         | `True`            | Debug mode |
+| `DATABASE_URL`         | *(empty → SQLite)* | Postgres DSN |
+| `ALLOWED_HOSTS`        | *(see settings)*  | Extra hosts, comma-separated |
+| `CORS_ALLOWED_ORIGINS` | *(see settings)*  | Extra origins, comma-separated |
+| `SECURE_SSL_REDIRECT`  | `true` when `DEBUG=False` | Redirect HTTP→HTTPS |
 
 ## License
 

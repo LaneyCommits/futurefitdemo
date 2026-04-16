@@ -5,7 +5,7 @@ services:
   - name: web
     dockerfile_path: Dockerfile
     github:
-      repo: LaneyCommits/Exploringu
+      repo: LaneyCommits/exploringu
       branch: main
       deploy_on_push: true
     http_port: 8080
